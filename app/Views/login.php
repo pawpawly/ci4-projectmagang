@@ -6,14 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Sign In Page</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script>
-        // Script untuk mendeteksi preferensi mode gelap secara otomatis
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 </head>
 <body class="bg-gray-900 dark:bg-gray-900">
 
@@ -23,33 +15,28 @@
         <div class="mb-8 text-center">
             <h1 class="text-3xl font-semibold text-gray-100">Sign in to your account</h1>
         </div>
-        <!-- Ubah action form untuk login ke URL yang sesuai -->
+
+        <!-- Pesan Error Jika Login Gagal -->
+        <?php if (session()->getFlashdata('error')) : ?>
+            <div class="bg-red-500 text-white p-4 mb-4 rounded">
+                <?= session()->getFlashdata('error'); ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Form Login -->
         <form action="<?= site_url('login/authenticate'); ?>" method="POST">
             <div class="mb-4 text-white">
-                <label for="email" class="block text-sm font-medium text-gray-300">Email address</label>
-                <input type="email" id="email" name="email" class="mt-1 px-4 py-2 w-full bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
+                <input type="text" id="username" name="username" class="mt-1 px-4 py-2 w-full bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
             </div>
             <div class="mb-6 text-white">
                 <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
                 <input type="password" id="password" name="password" class="mt-1 px-4 py-2 w-full bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
             </div>
-            <div class="flex items-center justify-between text-white">
-                <label class="flex items-center">
-                    <input type="checkbox" class="form-checkbox text-indigo-500 bg-gray-700 border-gray-600">
-                    <span class="ml-2 text-sm text-gray-400">Remember me</span>
-                </label>
-                <a href="<?= site_url('forgot-password'); ?>" class="text-sm hover:text-blue-400">Forgot password?</a>
-            </div>
             <div class="mt-6">
                 <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Sign in</button>
             </div>
         </form>
-        <div class="mt-6 text-center text-white">
-            <div class="mt-4 flex items-center justify-left space-x-4">
-                <!-- Ubah URL untuk kembali ke halaman utama -->
-                <a href="<?= site_url('./'); ?>" class="hover:text-blue-400">&larr; Back</a>
-            </div>
-        </div>
     </div>
 
     <!-- Right Side (Image) -->
