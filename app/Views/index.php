@@ -27,7 +27,7 @@
 
   <!-- Adjust the header positioning -->
 <header class="absolute top-0 right-0 py-4 px-6 z-10">
-  <a href="login.php" class="text-white hover:text-gray-300 font-semibold">Login &rarr;</a>
+<a href="<?= site_url('login'); ?>" class="text-white hover:text-gray-300 font-semibold">Login &rarr;</a>
 </header>
 
 <!-- Hero Section remains the same -->
