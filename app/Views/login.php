@@ -7,6 +7,11 @@
     <title>Sign In Page</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+<?php if (session()->getFlashdata('error')) : ?>
+    <div class="bg-red-500 text-white p-4 mb-4">
+        <?= session()->getFlashdata('error'); ?>
+    </div>
+<?php endif; ?>
 <body class="bg-gray-900 dark:bg-gray-900">
 
 <div class="flex w-full max-w-4xl mx-auto bg-gray-800 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mt-10">
