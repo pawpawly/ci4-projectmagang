@@ -4,7 +4,7 @@
       <a href="#"><img src="<?= base_url('pict/iconmuseum.png'); ?>" alt="Logo" class="h-10"></a>
     </div>
     <nav class="space-x-4 flex items-center justify-center w-full"> <!-- Ubah justify-between menjadi justify-center -->
-      <a href="#beranda" class="text-white hover:text-gray-300 font-semibold">Beranda</a>
+      <a href="<?= site_url('./');?>" class="text-white hover:text-gray-300 font-semibold">Beranda</a>
       <a href="#jadwal" class="text-white hover:text-gray-300 font-semibold">Jadwal</a>
       <a href="#koleksi" class="text-white hover:text-gray-300 font-semibold">Koleksi</a>
       <a href="#event" class="text-white hover:text-gray-300 font-semibold">Event</a>

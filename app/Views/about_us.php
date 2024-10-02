@@ -82,42 +82,6 @@
     </div>
   </section>
 
-  <!-- Milestone Section -->
-  <section class="py-20 bg-gray-100 text-gray-900">
-    <div class="container mx-auto text-center">
-      <!-- Section Title and Description -->
-      <h3 class="text-sm font-semibold text-indigo-400" data-aos="fade-up">Our track record</h3>
-      <h2 class="text-4xl font-bold mt-2 transition-all hover-scale" data-aos="fade-up">Trusted by thousands of developers worldwide</h2>
-      <p class="mt-4 max-w-2xl mx-auto text-gray-600" data-aos="fade-up">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.
-      </p>
-
-      <!-- Milestone Stats with interactive hover effects -->
-      <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-        <!-- Stat 1 -->
-        <div class="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110" data-aos="fade-up" data-aos-delay="100">
-          <h3 class="text-4xl font-bold counter" data-target="8000">0</h3>
-          <p class="mt-2 text-gray-600">Developers on the platform</p>
-        </div>
-        <!-- Stat 2 -->
-        <div class="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110" data-aos="fade-up" data-aos-delay="200">
-          <h3 class="text-4xl font-bold counter" data-target="900000000">0</h3>
-          <p class="mt-2 text-gray-600">Daily requests</p>
-        </div>
-        <!-- Stat 3 -->
-        <div class="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110" data-aos="fade-up" data-aos-delay="300">
-          <h3 class="text-4xl font-bold counter" data-target="99.9">0.0</h3>
-          <p class="mt-2 text-gray-600">Uptime guarantee</p>
-        </div>
-        <!-- Stat 4 -->
-        <div class="transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110" data-aos="fade-up" data-aos-delay="400">
-          <h3 class="text-4xl font-bold counter" data-target="12000000">0</h3>
-          <p class="mt-2 text-gray-600">Projects deployed</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <script>
     // Initialize AOS with 'once: true' to ensure animations only happen once
     AOS.init({

@@ -7,6 +7,10 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index'); 
 $routes->get('/login', 'Login::index'); 
+$routes->get('aboutus', 'AboutUs::index');
+
+
+/** Admin Only */
 $routes->get('/admin/dashboard', 'Admin::dashboard');
 $routes->post('/login/authenticate', 'Login::authenticate');
 $routes->get('/login/logout', 'Login::logout');
