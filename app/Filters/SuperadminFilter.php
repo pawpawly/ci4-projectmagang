@@ -10,12 +10,12 @@ class SuperadminFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Pastikan user login
+        // Periksa apakah user sudah login
         if (!session()->get('isLoggedIn')) {
-            return redirect()->to(site_url('login'));
+            return redirect()->to(site_url('login'))->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Pastikan user adalah superadmin (LEVEL_USER = 2)
+        // Periksa apakah LEVEL_USER adalah 2 (superadmin)
         if (session()->get('LEVEL_USER') !== '2') {
             return redirect()->to(site_url('login'))->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
         }
