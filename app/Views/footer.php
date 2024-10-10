@@ -18,27 +18,24 @@
             </div>
 
             <!-- Right Side: Social Media -->
-            <div class="w-full md:w-1/4 mb-6 md:ml-auto text-right"> <!-- Geser media sosial ke kanan -->
-                <!-- Tambahkan Logo Museum -->
-                <!-- <img src="pict/logodisbudporapar.png" class="w-22 h-auto mx-auto md:mx-0 mb-4"> -->
-                
+            <div class="w-full md:w-1/4 mb-6 md:ml-auto text-right">
                 <h3 class="text-gray-800 text-lg font-semibold mb-4">Social Media</h3>
-                <div class="flex justify-end space-x-4"> <!-- Tambahkan justify-end untuk ikon sosial media -->
+                <div class="flex justify-end space-x-4">
                     <!-- Instagram Icon -->
                     <a href="https://www.instagram.com" class="social-icon" target="_self">
-                        <img src="pict/instagramlogo.png" alt="Instagram" class="w-8 h-8 ">
+                        <img src="<?= base_url('pict/instagramlogo.png'); ?>" alt="Instagram" class="w-8 h-8">
                     </a>
                     <!-- Facebook Icon -->
                     <a href="https://www.facebook.com" class="social-icon" target="_self">
-                        <img src="pict/facebooklogo.png" alt="Facebook" class="w-8 h-8 ">
+                        <img src="<?= base_url('pict/facebooklogo.png'); ?>" alt="Facebook" class="w-8 h-8">
                     </a>
                     <!-- Twitter Icon -->
                     <a href="https://www.twitter.com" class="social-icon" target="_self">
-                        <img src="pict/xlogo.png" alt="Twitter" class="w-8 h-8 ">
+                        <img src="<?= base_url('pict/xlogo.png'); ?>" alt="Twitter" class="w-8 h-8">
                     </a>
                     <!-- YouTube Icon -->
                     <a href="https://www.youtube.com" class="social-icon" target="_self">
-                        <img src="pict/youtubelogo.png" alt="YouTube" class="w-8 h-8 ">
+                        <img src="<?= base_url('pict/youtubelogo.png'); ?>" alt="YouTube" class="w-8 h-8">
                     </a>
                 </div>
             </div>
