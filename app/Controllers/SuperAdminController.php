@@ -11,9 +11,14 @@ class SuperAdminController extends Controller
 
     public function __construct()
     {
-        // Inisialisasi UserModel sekali agar tidak diulang-ulang
         $this->userModel = new UserModel();
+    
+        helper('url');
+        header("Cache-Control: no-cache, must-revalidate, max-age=0");
+        header("Pragma: no-cache");
+        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     }
+    
 
     /**
      * Tampilkan halaman manajemen pengguna.
@@ -27,6 +32,11 @@ class SuperAdminController extends Controller
     /**
      * Tampilkan form tambah pengguna.
      */
+        public function dashboard()
+    {
+        return view('superadmin/dashboard'); // Pastikan nama file view sesuai
+    }
+
     public function addUserForm()
     {
         return view('superadmin/add_user');
@@ -89,27 +99,50 @@ class SuperAdminController extends Controller
      * Update data pengguna.
      */
     public function updateUser()
+{
+    $originalUsername = $this->request->getPost('original_username');
+    $newUsername = $this->request->getPost('username');
+    $isSelfEdit = session()->get('username') === $originalUsername;
+
+    if ($newUsername !== $originalUsername && $this->userModel->where('USERNAME', $newUsername)->first()) {
+        return redirect()->back()->with('error', 'Username sudah digunakan!');
+    }
+
+    $data = [
+        'NAMA_USER'  => $this->request->getPost('nama_lengkap'),
+        'USERNAME'   => $newUsername,
+        'LEVEL_USER' => $this->request->getPost('level_user'),
+    ];
+
+    if ($this->request->getPost('password')) {
+        $data['PASSWORD_USER'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+    }
+
+    $this->userModel->where('USERNAME', $originalUsername)->set($data)->update();
+
+    if ($isSelfEdit) {
+        session()->destroy();
+        return redirect()->to('/login')->with('message', 'Profil Anda telah diperbarui, silakan login kembali.');
+    }
+
+    return redirect()->to('superadmin/user-management')->with('message', 'User berhasil diperbarui.');
+}
+
+
+
+    /**
+     * Tampilkan halaman kategori event.
+     */
+    public function eventCategory()
     {
-        $originalUsername = $this->request->getPost('original_username');
-        $newUsername = $this->request->getPost('username');
+        return view('superadmin/event/category');
+    }
 
-        // Cek apakah username baru sudah digunakan oleh user lain
-        if ($newUsername !== $originalUsername && $this->userModel->where('USERNAME', $newUsername)->first()) {
-            return redirect()->back()->with('error', 'Username sudah digunakan!');
-        }
-
-        $data = [
-            'NAMA_USER'  => $this->request->getPost('nama_lengkap'),
-            'USERNAME'   => $newUsername,
-            'LEVEL_USER' => $this->request->getPost('level_user'),
-        ];
-
-        // Update password jika diisi
-        if ($this->request->getPost('password')) {
-            $data['PASSWORD_USER'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
-        }
-
-        $this->userModel->where('USERNAME', $originalUsername)->set($data)->update();
-        return redirect()->to('superadmin/user-management')->with('message', 'User berhasil diperbarui.');
+    /**
+     * Tampilkan halaman manajemen event.
+     */
+    public function eventManage()
+    {
+        return view('superadmin/event/manage');
     }
 }

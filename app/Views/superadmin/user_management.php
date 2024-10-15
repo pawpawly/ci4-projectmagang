@@ -21,9 +21,18 @@
             </tr>
         </thead>
         <tbody class="text-gray-700">
-            <?php foreach ($users as $user): ?>
+            <?php 
+            $loggedInUsername = session()->get('username'); 
+            foreach ($users as $user): 
+            ?>
             <tr class="border-b">
-                <td class="py-2 px-4"><?= esc($user['NAMA_USER']); ?></td>
+                <td class="py-2 px-4">
+                    <?php if ($user['USERNAME'] === $loggedInUsername): ?>
+                        <strong><?= esc($user['NAMA_USER']); ?> (Saya)</strong>
+                    <?php else: ?>
+                        <?= esc($user['NAMA_USER']); ?>
+                    <?php endif; ?>
+                </td>
                 <td class="py-2 px-4">
                     <?= $user['LEVEL_USER'] == '1' ? 'Admin' : 'Superadmin'; ?>
                 </td>
@@ -32,11 +41,11 @@
                        class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mr-2">
                         Edit
                     </a>
-                    <?php if (session()->get('username') !== $user['USERNAME']): ?>
-                    <button onclick="confirmDelete('<?= $user['USERNAME'] ?>')" 
-                            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
-                        Delete
-                    </button>
+                    <?php if ($user['USERNAME'] !== $loggedInUsername): ?>
+                        <button onclick="confirmDelete('<?= $user['USERNAME'] ?>')" 
+                                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                            Delete
+                        </button>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -56,24 +65,20 @@
     </div>
 </div>
 
+<!-- Notifikasi -->
+<div id="notification" class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-md"></div>
+
 <script>
-    <?php if (session()->getFlashdata('message')): ?>
-    Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: '<?= session()->getFlashdata('message'); ?>',
-        showConfirmButton: false,
-        timer: 1500
-    });
-    <?php elseif (session()->getFlashdata('error')): ?>
-    Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: '<?= session()->getFlashdata('error'); ?>',
-        showConfirmButton: false,
-        timer: 1500
-    });
-    <?php endif; ?>
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.classList.remove('hidden');
+
+        // Sembunyikan notifikasi setelah 3 detik
+        setTimeout(() => {
+            notification.classList.add('hidden');
+        }, 3000);
+    }
 
     function confirmDelete(username) {
         const modal = document.getElementById('deleteModal');
@@ -86,6 +91,12 @@
         const modal = document.getElementById('deleteModal');
         modal.classList.add('hidden');
     }
+
+    <?php if (session()->getFlashdata('message')): ?>
+        showNotification('<?= session()->getFlashdata('message'); ?>');
+    <?php elseif (session()->getFlashdata('error')): ?>
+        showNotification('<?= session()->getFlashdata('error'); ?>');
+    <?php endif; ?>
 </script>
 
 <?= $this->endSection() ?>
