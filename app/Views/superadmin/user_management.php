@@ -1,4 +1,4 @@
-<?= $this->extend('superadmin/dashboard') ?>
+<?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
 <div class="flex justify-between items-center mb-6">
