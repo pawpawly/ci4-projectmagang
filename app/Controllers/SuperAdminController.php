@@ -128,21 +128,14 @@ class SuperAdminController extends Controller
     return redirect()->to('superadmin/user-management')->with('message', 'User berhasil diperbarui.');
 }
 
-
-
-    /**
-     * Tampilkan halaman kategori event.
-     */
     public function eventCategory()
     {
-        return view('superadmin/event/category');
+        return view('superadmin/event/category');  // Pastikan path ini benar
     }
 
-    /**
-     * Tampilkan halaman manajemen event.
-     */
     public function eventManage()
     {
-        return view('superadmin/event/manage');
+        return view('superadmin/event/manage');  // Pastikan path ini benar
     }
 }
+

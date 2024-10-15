@@ -1,4 +1,4 @@
-<?= $this->extend('superadmin/dashboard') ?>
+<?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">

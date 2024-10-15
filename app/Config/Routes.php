@@ -28,9 +28,11 @@ $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
     $routes->post('user-management/update', 'SuperAdminController::updateUser');
     $routes->get('user-management/delete/(:any)', 'SuperAdminController::deleteUser/$1');
 
-    // Event Management Routes
-    $routes->group('event', function ($routes) {
-        $routes->get('category', 'SuperAdminController::eventCategory');
-        $routes->get('manage', 'SuperAdminController::eventManage');
-    });
+
+});
+
+ // Event Management Routes
+$routes->group('event', function($routes) {
+    $routes->get('category', 'SuperAdminController::eventCategory');
+    $routes->get('manage', 'SuperAdminController::eventManage');
 });
