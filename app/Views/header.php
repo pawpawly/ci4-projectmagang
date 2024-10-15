@@ -1,7 +1,7 @@
 <header id="navbar" class="fixed top-0 left-0 w-full z-20 transition-all duration-300 bg-transparent">
   <div class="container mx-auto flex justify-between items-center py-4 px-6">
     <div class="logo">
-      <a href="#"><img src="<?= base_url('pict/iconmuseum.png'); ?>" alt="Logo" class="h-10"></a>
+      <a href="#"><img src="<?= base_url('pict/iconmuseumputih.png'); ?>" alt="Logo" class="h-10"></a>
     </div>
     <nav class="space-x-4 flex items-center justify-center w-full"> <!-- Ubah justify-between menjadi justify-center -->
       <a href="<?= site_url('./');?>" class="text-white hover:text-gray-300 font-semibold">Beranda</a>

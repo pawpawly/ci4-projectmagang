@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,55 +7,80 @@
     <title>Sign In Page</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<?php if (session()->getFlashdata('error')) : ?>
-    <div class="bg-red-500 text-white p-4 mb-4">
-        <?= session()->getFlashdata('error'); ?>
-    </div>
-<?php endif; ?>
-<body class="bg-gray-900 dark:bg-gray-900">
+<body class="h-screen bg-cover bg-center" style="background-image: url('<?= base_url('pict/bglogin4.png'); ?>');">
 
-<div class="flex w-full max-w-4xl mx-auto bg-gray-800 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mt-10">
-    <!-- Left Side (Form) -->
-    <div class="w-1/2 p-8">
-        <div class="mb-8 text-center">
-            <h1 class="text-3xl font-semibold text-gray-100">Sign in to your account</h1>
+    <!-- Container Form -->
+    <div class="w-full max-w-md px-8 py-10 bg-white bg-opacity-90 shadow-lg rounded-lg mx-auto mt-20">
+        <div class="flex justify-center mb-6">
+            <img src="<?= base_url('pict/iconmuseum.png'); ?>" alt="Logo" class="h-13">
         </div>
 
-        <!-- Pesan Error Jika Login Gagal -->
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Login Karyawan</h1>
+
         <?php if (session()->getFlashdata('error')) : ?>
-            <div class="bg-red-500 text-white p-4 mb-4 rounded">
+            <div class="bg-red-500 text-white p-3 rounded mb-4">
                 <?= session()->getFlashdata('error'); ?>
             </div>
         <?php endif; ?>
 
-        <!-- Form Login -->
         <form action="<?= site_url('login/authenticate'); ?>" method="POST">
-            <div class="mb-4 text-white">
-                <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
-                <input type="text" id="username" name="username" class="mt-1 px-4 py-2 w-full bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" 
+                       class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
             </div>
-            <div class="mb-6 text-white">
-                <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
-                <input type="password" id="password" name="password" class="mt-1 px-4 py-2 w-full bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+            <div class="mb-4">
+                <div class="flex justify-between">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <a href="#" class="text-sm text-indigo-600 hover:underline">Lupa Password?</a>
+                </div>
+                <input type="password" id="password" name="password" 
+                       class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
             </div>
             <div class="mt-6">
-                <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Sign in</button>
+                <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded 
+                        hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Login</button>
             </div>
         </form>
+
+        <p class="mt-6 text-center text-sm text-gray-500">
+            <a href="<?= site_url('./');?>" class="text-indigo-600 font-medium hover:underline">&larr; Kembali</a>
+        </p>
     </div>
 
-    <!-- Right Side (Image) -->
-    <div class="w-1/2 bg-gray-700">
-        <img src="<?= base_url('pict/isagi.jpg'); ?>" alt="Desk Image" class="object-cover w-full h-full">
-    </div>
-</div>
+    <!-- Footer -->
+    <footer class="absolute bottom-0 w-full py-6">
+        <div class="max-w-4xl mx-auto text-center ">
+            <p class="text-sm text-gray-700 font-medium">&copy; 2024 Museum Kayuh Baimbai.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript untuk Alert -->
+<script>
+    window.onload = function() {
+        <?php if (session()->getFlashdata('message')): ?>
+        showAlert('success', '<?= session()->getFlashdata('message'); ?>');
+        <?php elseif (session()->getFlashdata('error')): ?>
+        showAlert('error', '<?= session()->getFlashdata('error'); ?>');
+        <?php endif; ?>
+    };
 
-<!-- Simple Footer -->
-<footer class="mt-8 bg-gray-900 py-6">
-    <div class="max-w-4xl mx-auto text-center">
-        <p class="text-sm text-gray-400">&copy; 2024 Your Company. All rights reserved.</p>
-    </div>
-</footer>
+    function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        const alert = document.createElement('div');
 
+        alert.className = p-4 mb-4 rounded shadow-md ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white;
+        alert.innerText = message;
+
+        alertContainer.appendChild(alert);
+
+        // Hapus alert setelah 3 detik
+        setTimeout(() => {
+            alert.remove();
+        }, 3000);
+    }
+</script>
 </body>
 </html>
