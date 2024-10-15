@@ -10,6 +10,9 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
 
+// Route untuk About Us
+$routes->get('/aboutus', 'AboutUs::index');
+
 // Login Routes
 $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');

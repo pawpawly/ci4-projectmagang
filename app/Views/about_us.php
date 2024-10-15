@@ -1,80 +1,69 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('content') ?>
-<section class="relative">
-    <img src="<?= base_url('pict/museum.png'); ?>" alt="Hero Image" class="w-full h-[500px] object-cover">
-    <div class="absolute inset-x-0 bottom-0 text-center bg-gradient-to-t from-gray-900/80 to-transparent py-20">
-      <div class="container mx-auto">
-        <h2 class="text-4xl font-bold leading-snug text-white">Museum Kayuh Baimbai Kota Banjarmasin</h2>
-        <p class="mt-4 text-lg text-gray-300">"Merawat Tradisi, Mengayuh Sejarah, dan Menginspirasi Generasi."</p>
-      </div>
-    </div>
-</section>
 
-<!-- Icon/Image Section with margins -->
-<section class="py-12 bg-gray-100 mx-2 md:mx-10">
-    <div class="container mx-auto text-center">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <!-- Icon 1 -->
-        <div class="group flex justify-center">
-          <img src="<?= base_url('pict/icon.png'); ?>" alt="Icon 1" class="w-auto h-9 md:w-auto md:h-9 transition-all transform grayscale hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">
-        </div>
-        <!-- Icon 2 -->
-        <div class="group flex justify-center">
-          <img src="<?= base_url('pict/dibanjarmasinaja.png'); ?>" alt="Icon 2" class="w-auto h-5 md:w-auto md:h-5 transition-all transform grayscale hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">
-        </div>
-        <!-- Icon 3 -->
-        <div class="group flex justify-center">
-          <img src="<?= base_url('pict/logodisbudporapar.png'); ?>" alt="Icon 3" class="w-auto h-9 md:w-auto md:h-9 transition-all transform grayscale hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">
-        </div>
-        <!-- Icon 4 -->
-        <div class="group flex justify-center">
-          <img src="<?= base_url('pict/pesonaindonesia.png'); ?>" alt="Icon 4" class="w-auto h-9 md:w-auto md:h-9 transition-all transform grayscale hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">
-        </div>
-      </div>
+<!-- Header Kuning dengan Garis Melengkung -->
+<div class="relative bg-gradient-to-r from-[#FFD202] to-[#FFD202] pb-32"> <!-- Gradien diperbarui -->
+    <div class="container mx-auto px-8 py-24">
+        <h1 class="text-5xl font-bold text-white text-center">TENTANG KAMI</h1>
     </div>
-  </section>
 
-  <!-- Visi Misi Section -->
-  <section class="py-12 bg-gray-100 px-4 md:px-16">
+    <!-- SVG untuk Garis Melengkung -->
+    <div class="absolute bottom-0 w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="#FFFFFF" fill-opacity="1" 
+                d="M0,288L48,272C96,256,192,224,288,224C384,224,480,256,576,266.7C672,277,768,267,864,250.7C960,235,1056,203,1152,186.7C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+            </path>
+        </svg>
+    </div>
+</div>
+
+<!-- Visi Misi Section -->
+<section class="py-12 bg-white px-4 md:px-16">
     <div class="container mx-auto text-center">
       <h2 class="text-4xl font-bold text-gray-800 mb-8">VISI & MISI</h2>
       <div class="flex flex-col md:flex-row justify-center space-y-8 md:space-y-0 md:space-x-16">
         <!-- Visi Section -->
         <div class="w-full md:w-1/2">
           <h3 class="text-lg font-bold text-gray-800 mb-4">VISI</h3>
-          <p class="text-gray-600 leading-relaxed text-justify mx-auto">
-            Pelopor data statistik bagi semua kalangan dengan pendataan secara digital. Dengan visi baru ini, eksistensi BPS sebagai penyedia data dan informasi statistik menjadi semakin penting, karena memegang peran dan pengaruh sentral dalam penyediaan statistik berkualitas tidak hanya di Indonesia, melainkan juga di tingkat dunia.
-          </p>
-          <p class="text-gray-600 leading-relaxed text-justify mt-4 mx-auto">
-            Dengan visi tersebut juga, semakin menguatkan peran BPS sebagai pembina data statistik.
+          <p class="text-gray-600 leading-relaxed text-justify-center mx-auto">
+            Museum Sebagai Pusat Peradabaan, Edukasi Penelitian dan Hiburan.
           </p>
         </div>
 
         <!-- Misi Section -->
         <div class="w-full md:w-1/2">
           <h3 class="text-lg font-bold text-gray-800 mb-4">MISI</h3>
-          <p class="text-gray-600 leading-relaxed text-justify mx-auto">
-            Menjadi jembatan atau penghubung untuk mendapatkan data antara pengguna dan penyedia layanan data (BPS). Dalam memenuhi kebutuhan masyarakat akan data, buku tamu elektronik memiliki tujuan sebagai berikut:
-          </p>
           <ul class="list-none text-gray-600 leading-relaxed text-left mx-auto">
             <li class="flex items-start mb-2">
               <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
-              Mengetahui data jumlah banyaknya tamu yang berkunjung
+              Mendokumentasi Benda-Benda dan Data Sejarah Kota Banjarmasin
             </li>
             <li class="flex items-start mb-2">
               <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
-              Mengetahui tujuan penggunaan data dan kunjungan tiap periode
+              Melestarikan Nilai-Nilai Budaya dan Sejarah Kota Banjarmasin
             </li>
             <li class="flex items-start mb-2">
               <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
-              Mendapat timbal balik antara pengunjung dengan layanan BPS
+              Mengedukasi Masyarakat akan Peradabaan dan Sejarah Kota Banjarmasin
+            </li>
+            <li class="flex items-start mb-2">
+              <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Sebagai Wadah Penelitian terhadap Sejarah dan Budaya Banjar
+            </li>
+            <li class="flex items-start mb-2">
+              <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Sebagai Sarana Hiburan dan Rekreasi Sejarah dan Budaya
             </li>
           </ul>
         </div>
@@ -82,37 +71,30 @@
     </div>
   </section>
 
-  <script>
-    // Initialize AOS with 'once: true' to ensure animations only happen once
-    AOS.init({
-      once: true  // This ensures animations only occur once when elements come into view
-    });
+<!-- Induk Asosiasi Section -->
+<section class="py-12 bg-white px-4 md:px-16">
+    <div class="container mx-auto text-center">
+        <h2 class="text-4xl font-bold text-gray-800 mb-8">INDUK ASOSIASI</h2>
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+            <!-- Teks Deskripsi -->
+            <div class="w-full md:w-1/2">
+                <p class="text-lg text-gray-600 leading-relaxed text-justify">
+                    Museum Penerangan adalah unit pelaksana teknis di lingkungan Direktorat Jenderal Informasi dan Komunikasi Publik 
+                    yang berada di bawah dan bertanggung jawab kepada Direktur Jenderal Informasi dan Komunikasi Publik, 
+                    secara administratif dibina oleh Sekretaris Direktorat Jenderal Informasi dan Komunikasi Publik. Hal ini diatur dan 
+                    ditetapkan dalam PERMENKOMINFO NO. 05/PER/M.KOMINFO/03/2011 TAHUN 2011, LL. KEMKOMINFO: 5 HLM. 
+                    Bahwa dengan ditetapkannya Peraturan Menteri Komunikasi dan Informatika ini, tentang Organisasi dan Tata Kerja 
+                    Kementerian Komunikasi dan Informatika, maka dipandang perlu untuk melakukan penataan organisasi dan tata kerja museum penerangan.
+                </p>
+            </div>
 
-    // Counter Animation Script - Only runs once when page is loaded
-    const counters = document.querySelectorAll('.counter');
-    const speed = 200; // The lower the slower
+            <!-- Logo Induk Asosiasi -->
+            <div class="w-full md:w-1/2 flex justify-center">
+                <img src="<?= base_url('pict/icon.png'); ?>" alt="Kominfo Logo" class="h-48 object-contain">
+            </div>
+        </div>
+    </div>
+</section>
 
-    counters.forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-target');
-        const count = +counter.innerText;
 
-        const inc = target / speed;
-
-        if(count < target) {
-          counter.innerText = Math.ceil(count + inc);
-          setTimeout(updateCount, 1);
-        } else {
-          counter.innerText = target;
-        }
-      };
-
-      updateCount();
-    });
-
-    // Scroll to top of the page on refresh or load
-    window.onbeforeunload = function () {
-        window.scrollTo(0, 0);
-    };
-  </script>
 <?= $this->endSection() ?>
