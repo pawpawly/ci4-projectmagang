@@ -9,6 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // Halaman Utama dan Halaman Lain
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
+$routes->get('/schedule', 'Schedule::index');
 
 // Route untuk About Us
 $routes->get('/aboutus', 'AboutUs::index');

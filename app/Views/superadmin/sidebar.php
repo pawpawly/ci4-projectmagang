@@ -69,7 +69,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 p-6">
+        <div class="flex-1 p-6 bg-white">
             <!-- Header -->
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold">Selamat datang, <?= session()->get('NAMA_USER'); ?></h1>

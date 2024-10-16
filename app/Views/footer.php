@@ -1,10 +1,10 @@
-<footer class="bg-[#FFD202] text-white py-8">
+<footer class="bg-[#1E0A0B] text-white py-8">
     <div class="container mx-auto px-6">
         <div class="flex flex-wrap justify-between">
             <!-- Left Side: Visit Us -->
             <div class="w-full md:w-1/3 mb-6">
                 <h3 class="text-white text-lg font-semibold mb-4">Visit Us</h3>
-                <p class="font-semibold">
+                <p>
                     Jl. Teluk Kelayan No.17, RT.005/RW.001,<br>
                     Kelayan Barat, Kecamatan Banjarmasin Selatan,<br>
                     Kota Banjarmasin, Kalimantan Selatan 70234<br>
@@ -45,7 +45,7 @@
         </div>
 
         <!-- Footer Bottom -->
-        <div class="mt-8 text-center font-semibold text-white border-t border-white pt-4">
+        <div class="mt-8 text-center text-white border-t border-white pt-4">
             &copy; Museum Kayuh Baimbai 2024
         </div>
     </div>
