@@ -35,8 +35,24 @@ $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
 
 });
 
- // Event Management Routes
-$routes->group('event', function($routes) {
+$routes->group('event', function ($routes) {
     $routes->get('category', 'SuperAdminController::eventCategory');
+    $routes->get('category/add', 'SuperAdminController::addCategoryForm');
+    $routes->post('category/save', 'SuperAdminController::saveCategory');
+    $routes->get('category/edit/(:num)', 'SuperAdminController::editCategory/$1');
+    $routes->post('category/update', 'SuperAdminController::updateCategory');
+    $routes->get('category/delete/(:num)', 'SuperAdminController::deleteCategory/$1');
+
+    // **Route untuk Event Manage**
     $routes->get('manage', 'SuperAdminController::eventManage');
+    $routes->get('add', 'SuperAdminController::addEventForm');
+    $routes->post('save', 'SuperAdminController::saveEvent');
+    $routes->get('delete/(:num)', 'SuperAdminController::deleteEvent/$1');
+    $routes->get('edit/(:num)', 'SuperAdminController::editEvent/$1');
+    $routes->post('update', 'SuperAdminController::updateEvent');
 });
+
+
+
+
+
