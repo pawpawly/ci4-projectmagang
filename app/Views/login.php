@@ -33,7 +33,6 @@
             <div class="mb-4">
                 <div class="flex justify-between">
                     <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <a href="#" class="text-sm text-indigo-600 hover:underline">Lupa Password?</a>
                 </div>
                 <input type="password" id="password" name="password" 
                        class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
