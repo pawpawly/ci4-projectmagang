@@ -1,7 +1,7 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
-<div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
+<div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Event</h1>
         <a href="<?= site_url('event/add') ?>" 
@@ -9,7 +9,7 @@
             Tambah Acara
         </a>
     </div>
-
+    <p class="mb-4 text-gray-800">Daftar semua event di Website Anda</p>
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
             <thead class="bg-gray-100">
@@ -23,12 +23,12 @@
                     <th class="text-right py-2 px-4">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-700">
+            <tbody class="text-gray-800">
                 <?php foreach ($events as $event): ?>
-                <tr class="border-b">
+                <tr class="hover:bg-gray-50 transition duration-200">
                     <td class="py-2 px-4">
                         <img src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']); ?>" 
-                             alt="Poster Acara" class="w-16 h-24 object-cover rounded-md">
+                             alt="Poster Acara" class="w-16 h-24 object-cover rounded-md shadow-sm">
                     </td>
                     <td class="py-2 px-4"><?= esc($event['NAMA_EVENT']); ?></td>
                     <td class="py-2 px-4"><?= esc($event['NAMA_KATEGORI']); ?></td>
@@ -36,14 +36,16 @@
                     <td class="py-2 px-4"><?= date('H:i', strtotime($event['JAM_EVENT'])) ?></td>
                     <td class="py-2 px-4"><?= esc($event['DEKSRIPSI_EVENT']); ?></td>
                     <td class="py-2 px-4 text-right">
-                        <a href="<?= site_url('event/edit/' . $event['ID_EVENT']) ?>" 
-                           class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mr-2">
-                           Edit
-                        </a>
-                        <button onclick="confirmDelete('<?= $event['ID_EVENT'] ?>')" 
-                                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
-                            Delete
-                        </button>
+                        <div class="flex justify-end items-center space-x-4">
+                            <a href="<?= site_url('event/edit/' . $event['ID_EVENT']) ?>" 
+                               class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">
+                               Edit
+                            </a>
+                            <a href="#" onclick="confirmDelete('<?= $event['ID_EVENT'] ?>')" 
+                               class="text-red-500 font-semibold hover:underline hover:text-red-700">
+                               Delete
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -89,10 +91,7 @@
     setTimeout(() => {
         notification.classList.add('hidden');
     }, 3000);
-    
     <?php endif; ?>
-
-    
 </script>
 
 <?= $this->endSection() ?>
