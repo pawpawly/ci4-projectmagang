@@ -10,7 +10,7 @@ class EventModel extends Model
     protected $primaryKey = 'ID_EVENT';
     protected $allowedFields = [
         'ID_KEVENT', 'USERNAME', 'NAMA_EVENT', 
-        'DEKSRIPSI_EVENT', 'TANGGAL_EVENT', 'FOTO_EVENT'
+        'DEKSRIPSI_EVENT', 'TANGGAL_EVENT', 'FOTO_EVENT','JAM_EVENT'
     ];
 
     // Matikan timestamps jika tidak digunakan

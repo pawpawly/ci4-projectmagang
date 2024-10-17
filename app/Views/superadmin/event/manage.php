@@ -18,6 +18,7 @@
                     <th class="text-left py-2 px-4">Nama Acara</th>
                     <th class="text-left py-2 px-4">Kategori Acara</th>
                     <th class="text-left py-2 px-4">Tanggal Acara</th>
+                    <th class="text-left py-2 px-4">Jam Mulai</th>
                     <th class="text-left py-2 px-4">Deskripsi Acara</th>
                     <th class="text-right py-2 px-4">Aksi</th>
                 </tr>
@@ -31,7 +32,8 @@
                     </td>
                     <td class="py-2 px-4"><?= esc($event['NAMA_EVENT']); ?></td>
                     <td class="py-2 px-4"><?= esc($event['NAMA_KATEGORI']); ?></td>
-                    <td class="py-2 px-4"><?= date('d M Y', strtotime($event['TANGGAL_EVENT'])); ?></td>
+                    <td class="py-2 px-4"><?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?></td>
+                    <td class="py-2 px-4"><?= date('H:i', strtotime($event['JAM_EVENT'])) ?></td>
                     <td class="py-2 px-4"><?= esc($event['DEKSRIPSI_EVENT']); ?></td>
                     <td class="py-2 px-4 text-right">
                         <a href="<?= site_url('event/edit/' . $event['ID_EVENT']) ?>" 
@@ -87,7 +89,10 @@
     setTimeout(() => {
         notification.classList.add('hidden');
     }, 3000);
+    
     <?php endif; ?>
+
+    
 </script>
 
 <?= $this->endSection() ?>

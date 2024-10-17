@@ -14,7 +14,8 @@
         <div class="mb-4">
             <label for="nama_event" class="block text-sm font-medium text-gray-700">Nama Event</label>
             <input type="text" id="nama_event" name="nama_event" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md" value="<?= old('nama_event') ?>" required>
+                   class="mt-1 px-4 py-2 w-full border rounded-md" 
+                   value="<?= old('nama_event') ?>" required>
         </div>
 
         <div class="mb-4">
@@ -33,8 +34,16 @@
         <div class="mb-4">
             <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
             <input type="date" id="tanggal_event" name="tanggal_event" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md" value="<?= old('tanggal_event') ?>" required>
+                   class="mt-1 px-4 py-2 w-full border rounded-md" 
+                   value="<?= old('tanggal_event') ?>" required>
         </div>
+
+        <div class="mb-4">
+    <label for="jam_event" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
+    <input type="time" id="jam_event" name="jam_event" 
+           class="mt-1 px-4 py-2 w-full border rounded-md" value="<?= old('jam_event') ?>" required>
+</div>
+
 
         <div class="mb-4">
             <label for="deskripsi_event" class="block text-sm font-medium text-gray-700">Deskripsi Acara</label>
@@ -45,7 +54,8 @@
         <div class="mb-4">
             <label for="poster_event" class="block text-sm font-medium text-gray-700">Poster Acara</label>
             <input type="file" id="poster_event" name="poster_event" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md" accept=".jpg,.jpeg,.png" required>
+                   class="mt-1 px-4 py-2 w-full border rounded-md" 
+                   accept=".jpg,.jpeg,.png" required>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">
