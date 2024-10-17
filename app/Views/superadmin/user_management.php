@@ -1,7 +1,7 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
-<div class="bg-white min-h-screen px-6 py-8">
+<div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Users</h1>
         <a href="<?= site_url('superadmin/user-management/add') ?>" 
@@ -10,11 +10,11 @@
         </a>
     </div>
 
-    <p class="mb-6 text-gray-800">Daftar semua pengguna di Website Anda termasuk nama, role, dan password mereka.</p>
+    <p class="mb-4 text-gray-800">Daftar semua pengguna di Website Anda termasuk nama, role, dan password mereka.</p>
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
-        <thead class="bg-white">
+        <thead class="bg-gray-100">
     <tr>
         <th class="text-left py-2 px-4">Nama Lengkap</th>
         <th class="text-left py-2 px-4">Role</th>
