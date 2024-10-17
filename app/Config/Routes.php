@@ -10,6 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
 $routes->get('/schedule', 'Schedule::index');
+$routes->get('/event', 'Event::index');
 
 // Route untuk About Us
 $routes->get('/aboutus', 'AboutUs::index');

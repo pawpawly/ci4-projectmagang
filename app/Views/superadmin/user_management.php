@@ -10,7 +10,7 @@
         </a>
     </div>
 
-    <p class="mb-4 text-gray-800">Daftar semua pengguna di Website Anda termasuk nama, role, dan password mereka.</p>
+    <p class="mb-4 text-gray-800">Daftar semua pengguna di Website Anda termasuk nama, role, dan password.</p>
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
