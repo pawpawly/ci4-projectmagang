@@ -35,11 +35,19 @@
 
         <div class="mb-4">
             <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
-            <!-- Gunakan format date untuk menampilkan tanggal dengan benar -->
             <input type="date" id="tanggal_event" name="tanggal_event" 
                    value="<?= date('Y-m-d', strtotime($event['TANGGAL_EVENT'])) ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md" required>
         </div>
+
+        <div class="mb-4">
+    <label for="jam_event" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
+    <input type="time" id="jam_event" name="jam_event" 
+           value="<?= date('H:i', strtotime($event['JAM_EVENT'])) ?>" 
+           class="mt-1 px-4 py-2 w-full border rounded-md" required>
+</div>
+
+
 
         <div class="mb-4">
             <label for="deskripsi_event" class="block text-sm font-medium text-gray-700">Deskripsi Event</label>
@@ -50,7 +58,7 @@
         <div class="mb-4">
             <label for="foto_event" class="block text-sm font-medium text-gray-700">Poster Acara</label>
             <input type="file" id="foto_event" name="foto_event" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md">
+                   class="mt-1 px-4 py-2 w-full border rounded-md" accept=".jpg,.jpeg,.png">
             <?php if ($event['FOTO_EVENT']): ?>
                 <img src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']) ?>" 
                      alt="Poster Acara" class="w-16 h-24 mt-2 object-cover rounded-md">

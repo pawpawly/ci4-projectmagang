@@ -19,6 +19,7 @@ class SuperAdminController extends Controller
         $this->kategoriEventModel = new KategoriEventModel();
         $this->eventModel = new EventModel();
 
+        helper('month_helper');
         helper('url');
         header("Cache-Control: no-cache, must-revalidate, max-age=0");
         header("Pragma: no-cache");
@@ -237,12 +238,13 @@ public function saveEvent()
     }
 
     $data = [
-        'ID_KEVENT' => $this->request->getPost('kategori_acara'),
-        'USERNAME' => session()->get('username'),
-        'NAMA_EVENT' => $this->request->getPost('nama_event'),
+        'ID_KEVENT'      => $this->request->getPost('kategori_acara'),
+        'USERNAME'       => session()->get('username'),
+        'NAMA_EVENT'     => $this->request->getPost('nama_event'),
         'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-        'TANGGAL_EVENT' => $this->request->getPost('tanggal_event'),
-        'FOTO_EVENT' => $posterName,
+        'TANGGAL_EVENT'  => $this->request->getPost('tanggal_event'),
+        'JAM_EVENT'      => $this->request->getPost('jam_event'), // Tambahkan Jam Event
+        'FOTO_EVENT'     => $posterName,
     ];
 
     try {
@@ -253,6 +255,7 @@ public function saveEvent()
         return redirect()->back()->with('error', 'Gagal menambahkan event.');
     }
 }
+
 public function deleteEvent($id_event)
 {
     try {
@@ -299,36 +302,31 @@ public function editEvent($id_event)
 
 public function updateEvent()
 {
-    $id_event = $this->request->getPost('id_event'); // Ambil ID event dari form
+    $id_event = $this->request->getPost('id_event');
 
-    // Ambil input dari form
     $data = [
         'ID_KEVENT'      => $this->request->getPost('kategori_id'),
         'NAMA_EVENT'     => $this->request->getPost('nama_event'),
         'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
         'TANGGAL_EVENT'  => $this->request->getPost('tanggal_event'),
+        'JAM_EVENT'      => $this->request->getPost('jam_event'), 
     ];
 
-    // Cek apakah ada file poster baru yang diupload
     $file = $this->request->getFile('foto_event');
     if ($file->isValid() && !$file->hasMoved()) {
-        // Ambil informasi event lama untuk menghapus file lama
         $oldEvent = $this->eventModel->find($id_event);
         $oldPoster = $oldEvent['FOTO_EVENT'];
 
-        // Hapus file poster lama jika ada
         if (file_exists(WRITEPATH . '../public/uploads/poster/' . $oldPoster)) {
             unlink(WRITEPATH . '../public/uploads/poster/' . $oldPoster);
         }
 
-        // Simpan file poster baru
         $newName = $file->getRandomName();
         $file->move(WRITEPATH . '../public/uploads/poster/', $newName);
         $data['FOTO_EVENT'] = $newName;
     }
 
     try {
-        // Update data event di database
         $this->eventModel->update($id_event, $data);
         return redirect()->to('/event/manage')->with('message', 'Event berhasil diperbarui.');
     } catch (\Exception $e) {
