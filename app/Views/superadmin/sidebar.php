@@ -41,6 +41,16 @@
                         <span>Manajemen Pengguna</span>
                     </a>
                 </li>
+
+                <li class="px-4 py-2 hover:bg-gray-800">
+                <a href="<?= site_url('berita/manage'); ?>" class="flex items-center space-x-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 4h6M7 9h2m-2 4h6m-6 4h2"/>
+                    </svg>
+                    <span>Manajemen Berita</span>
+                </a>
+                </li>
+
                 <li class="px-4 py-2 hover:bg-gray-800">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('eventDropdown')">
                         <div class="flex items-center space-x-4">
@@ -76,8 +86,8 @@
                             <path d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
-                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-red shadow-lg rounded-lg">
+                        <li class="px-4 py-2 hover:bg-red-100 font-semibold cursor-pointer">
                             <a href="<?= site_url('logout'); ?>">Log Out</a>
                         </li>
                     </ul>

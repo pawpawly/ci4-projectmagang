@@ -109,7 +109,10 @@ class Filters extends BaseFilters
      */
     public array $filters = [
         'adminAuth' => ['before' => ['admin/*']],
-        'superadminAuth' => ['before' => ['superadmin/*']],
+        'superadminAuth' => ['before' => ['superadmin']],
+        'superadminAuth' => ['before' => ['superadmin/berita']],
+        'superadminAuth' => ['before' => ['superadmin/event']],
         'superadminAuth' => ['before' => ['admin/user-management']], 
+        'superadminAuth' => ['before' => ['logout']], 
     ];
 }

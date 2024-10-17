@@ -335,6 +335,4 @@ public function updateEvent()
     }
 }
 
-
-
 }

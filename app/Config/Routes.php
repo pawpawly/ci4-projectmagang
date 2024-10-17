@@ -17,11 +17,14 @@ $routes->get('/aboutus', 'AboutUs::index');
 // Login Routes
 $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');
-$routes->get('/login/logout', 'Login::logout');
+$routes->get('/logout', 'Login::logout');
 
 // Admin Dashboard
 $routes->get('/admin/dashboard', 'Admin::dashboard');
 
+$routes->group('logout', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Login::index');
+});
 // Grouping untuk SuperAdmin dengan Middleware Auth
 $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
     $routes->get('dashboard', 'SuperAdminController::dashboard');
@@ -51,6 +54,17 @@ $routes->group('event', function ($routes) {
     $routes->get('edit/(:num)', 'SuperAdminController::editEvent/$1');
     $routes->post('update', 'SuperAdminController::updateEvent');
 });
+
+$routes->group('berita', function ($routes) {
+    $routes->get('manage', 'BeritaController::index');
+    $routes->get('add', 'BeritaController::add');
+    $routes->post('save', 'BeritaController::save');
+    $routes->post('update', 'BeritaController::update');
+    $routes->get('edit/(:num)', 'BeritaController::edit/$1');
+    $routes->get('delete/(:num)', 'BeritaController::delete/$1');
+
+});
+
 
 
 
