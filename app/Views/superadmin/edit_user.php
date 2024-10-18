@@ -10,27 +10,27 @@
         </div>
     <?php endif; ?>
 
-    <form action="<?= site_url('superadmin/user-management/update') ?>" method="POST">
+    <form id="editUserForm" action="<?= site_url('superadmin/user-management/update') ?>" method="POST">
         <input type="hidden" name="original_username" value="<?= esc($user['USERNAME']); ?>">
 
         <div class="mb-4">
             <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
             <input type="text" id="nama_lengkap" name="nama_lengkap" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                    value="<?= esc($user['NAMA_USER']); ?>" required>
         </div>
 
         <div class="mb-4">
             <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
             <input type="text" id="username" name="username" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                    value="<?= esc($user['USERNAME']); ?>" required>
         </div>
 
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium text-gray-700">Password (Opsional)</label>
             <input type="password" id="password" name="password" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                    placeholder="Kosongkan jika tidak ingin mengubah">
         </div>
 
@@ -48,9 +48,41 @@
 
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/user-management'); ?>" 
-               class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Batal</a>
-            <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600">Simpan Perubahan</button>
+               class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
+            <button type="button" onclick="confirmEdit()" 
+                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan Perubahan</button>
         </div>
     </form>
 </div>
+
+<!-- Modal Konfirmasi Simpan -->
+<div id="confirmEditModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-lg font-bold mb-4">Konfirmasi Simpan Perubahan</h2>
+        <p>Apakah Anda yakin ingin menyimpan perubahan ini?</p>
+        <div class="mt-6 flex justify-end space-x-4">
+            <button onclick="cancelEdit()" 
+                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</button>
+            <button onclick="submitForm()" 
+                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmEdit() {
+        const modal = document.getElementById('confirmEditModal');
+        modal.classList.remove('hidden');
+    }
+
+    function cancelEdit() {
+        const modal = document.getElementById('confirmEditModal');
+        modal.classList.add('hidden');
+    }
+
+    function submitForm() {
+        document.getElementById('editUserForm').submit();
+    }
+</script>
+
 <?= $this->endSection() ?>

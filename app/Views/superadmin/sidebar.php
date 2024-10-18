@@ -16,14 +16,14 @@
 <body class="bg-gray-100">
     <div class="flex">
         <!-- Sidebar -->
-        <div class="w-64 h-screen bg-gray-900 text-white">
+        <div class="w-64 h-screen bg-red-900 text-white">
             <div class="p-4">
                 <div class="flex items-center">
                     <img src="<?= base_url('pict/iconmuseum.png'); ?>" alt="Logo" class="w-15 h-auto">
                 </div>
             </div>
             <ul class="mt-6">
-                <li class="px-4 py-2 hover:bg-gray-800">
+                <li class="px-4 py-2 hover:bg-red-800">
                     <a href="<?= site_url('superadmin/dashboard'); ?>" class="flex items-center space-x-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path d="M3 9.5L12 2l9 7.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -32,7 +32,7 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="px-4 py-2 hover:bg-gray-800">
+                <li class="px-4 py-2 hover:bg-red-800">
                     <a href="<?= site_url('superadmin/user-management'); ?>" class="flex items-center space-x-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -42,7 +42,7 @@
                     </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-gray-800">
+                <li class="px-4 py-2 hover:bg-red-800">
                 <a href="<?= site_url('berita/manage'); ?>" class="flex items-center space-x-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 4h6M7 9h2m-2 4h6m-6 4h2"/>
@@ -51,7 +51,7 @@
                 </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-gray-800">
+                <li class="px-4 py-2 hover:bg-red-800">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('eventDropdown')">
                         <div class="flex items-center space-x-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -65,10 +65,10 @@
                     </div>
                     <ul id="eventDropdown" class="hidden mt-2 pl-6">
                         <li class="py-1">
-                            <a href="<?= site_url('event/category'); ?>" class="text-gray-400 hover:text-white">• Kategori Event</a>
+                            <a href="<?= site_url('event/category'); ?>" class="text-white hover:text-yellow-300">• Kategori Event</a>
                         </li>
                         <li class="py-1">
-                            <a href="<?= site_url('event/manage'); ?>" class="text-gray-400 hover:text-white">• Manajemen Event</a>
+                            <a href="<?= site_url('event/manage'); ?>" class="text-white hover:text-yellow-300">• Manajemen Event</a>
                         </li>
                     </ul>
                 </li>
