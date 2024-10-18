@@ -35,8 +35,8 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'adminAuth'      => \App\Filters\AdminFilter::class,
-        'superadminAuth' => \App\Filters\SuperadminFilter::class,
-        'auth' => \App\Filters\AuthCheck::class,
+            'auth' => \App\Filters\AuthCheck::class,
+            'superadmin' => \App\Filters\SuperAdminFilter::class,
     ];
 
     /**
@@ -110,9 +110,8 @@ class Filters extends BaseFilters
     public array $filters = [
         'adminAuth' => ['before' => ['admin/*']],
         'superadminAuth' => ['before' => ['superadmin']],
-        'superadminAuth' => ['before' => ['superadmin/berita']],
-        'superadminAuth' => ['before' => ['superadmin/event']],
+        'superadmin' => ['before' => ['superadmin/event', 'superadmin/berita']],
+        'auth' => ['before' => ['logout/*']],
         'superadminAuth' => ['before' => ['admin/user-management']], 
-        'superadminAuth' => ['before' => ['logout']], 
     ];
 }

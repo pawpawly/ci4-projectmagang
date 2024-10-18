@@ -242,8 +242,8 @@ public function saveEvent()
         'USERNAME'       => session()->get('username'),
         'NAMA_EVENT'     => $this->request->getPost('nama_event'),
         'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-        'TANGGAL_EVENT'  => $this->request->getPost('tanggal_event'),
-        'JAM_EVENT'      => $this->request->getPost('jam_event'), // Tambahkan Jam Event
+        'TANGGAL_EVENT'  => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
+        'JAM_EVENT'      => $this->request->getPost('jam_event'),
         'FOTO_EVENT'     => $posterName,
     ];
 
@@ -255,6 +255,7 @@ public function saveEvent()
         return redirect()->back()->with('error', 'Gagal menambahkan event.');
     }
 }
+
 
 public function deleteEvent($id_event)
 {
@@ -308,8 +309,8 @@ public function updateEvent()
         'ID_KEVENT'      => $this->request->getPost('kategori_id'),
         'NAMA_EVENT'     => $this->request->getPost('nama_event'),
         'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-        'TANGGAL_EVENT'  => $this->request->getPost('tanggal_event'),
-        'JAM_EVENT'      => $this->request->getPost('jam_event'), 
+        'TANGGAL_EVENT'  => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
+        'JAM_EVENT'      => $this->request->getPost('jam_event'),
     ];
 
     $file = $this->request->getFile('foto_event');
@@ -317,12 +318,14 @@ public function updateEvent()
         $oldEvent = $this->eventModel->find($id_event);
         $oldPoster = $oldEvent['FOTO_EVENT'];
 
-        if (file_exists(WRITEPATH . '../public/uploads/poster/' . $oldPoster)) {
-            unlink(WRITEPATH . '../public/uploads/poster/' . $oldPoster);
+        // Hapus foto lama jika ada
+        if (file_exists(FCPATH . 'uploads/poster/' . $oldPoster)) {
+            unlink(FCPATH . 'uploads/poster/' . $oldPoster);
         }
 
+        // Upload foto baru
         $newName = $file->getRandomName();
-        $file->move(WRITEPATH . '../public/uploads/poster/', $newName);
+        $file->move(FCPATH . 'uploads/poster/', $newName);
         $data['FOTO_EVENT'] = $newName;
     }
 
