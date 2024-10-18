@@ -1,18 +1,20 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
-<div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
+<div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Berita</h1>
         <a href="<?= site_url('berita/add') ?>" 
-           class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600">
+           class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Tambah Berita
         </a>
     </div>
 
+    <p class="mb-4 text-gray-800">Daftar semua berita di Website Anda</p>
+
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
-            <thead class="bg-gray-100">
+            <thead class="bg-yellow-400">
                 <tr>
                     <th class="text-left py-2 px-4">Foto Berita</th>
                     <th class="text-left py-2 px-4">Nama Berita</th>
@@ -22,27 +24,29 @@
                     <th class="text-right py-2 px-4">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-700">
+            <tbody class="text-gray-800">
                 <?php if (!empty($berita) && is_array($berita)): ?>
                     <?php foreach ($berita as $item): ?>
-                        <tr class="border-b">
+                        <tr class="border-b transition duration-200">
                             <td class="py-2 px-4">
                                 <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>" 
-                                     alt="Foto Berita" class="w-16 h-24 object-cover rounded-md">
+                                     alt="Foto Berita" class="w-16 h-24 object-cover rounded-md shadow-sm">
                             </td>
                             <td class="py-2 px-4"><?= esc($item['NAMA_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= esc($item['SUMBER_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= esc($item['NAMA_USER']); ?></td>
-                            <td class="py-2 px-4 text-right">                                <a href="<?= site_url('berita/edit/' . $item['ID_BERITA']) ?>" 
-                                   class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mr-2">
-                                   Edit
-                                </a>
-
-                                <button onclick="confirmDelete('<?= $item['ID_BERITA'] ?>')" 
-                                        class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
-                                    Delete
-                                </button>
+                            <td class="py-2 px-4 text-right">
+                                <div class="flex justify-end items-center space-x-4">
+                                    <a href="<?= site_url('berita/edit/' . $item['ID_BERITA']) ?>" 
+                                       class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">
+                                       Edit
+                                    </a>
+                                    <button href="#" onclick="confirmDelete('<?= $item['ID_BERITA'] ?>')" 
+                                            class="text-red-500 font-semibold hover:underline hover:text-red-700">
+                                        Delete
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -76,18 +80,12 @@
 <div id="notification" class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-md"></div>
 
 <script>
-    
     function confirmDelete(id_berita) {
-    if (id_berita <= 0) {
-        alert("ID berita tidak valid!");
-        return;
+        const modal = document.getElementById('deleteModal');
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        confirmBtn.href = "<?= site_url('berita/delete/') ?>" + id_berita;
+        modal.classList.remove('hidden');
     }
-    const modal = document.getElementById('deleteModal');
-    const confirmBtn = document.getElementById('confirmDeleteBtn');
-    confirmBtn.href = "<?= site_url('berita/delete/') ?>" + id_berita;
-    modal.classList.remove('hidden');
-}
-
 
     function cancelDelete() {
         const modal = document.getElementById('deleteModal');
@@ -103,5 +101,15 @@
     }, 3000);
     <?php endif; ?>
 </script>
+
+<style>
+    tbody tr:hover {
+        background-color: #FFEBB5; /* Warna latar saat hover */
+    }
+
+    tbody tr:hover td {
+        transition: background-color 0.2s ease-in-out;
+    }
+</style>
 
 <?= $this->endSection() ?>

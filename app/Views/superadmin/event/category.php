@@ -5,7 +5,7 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Kategori Event</h1>
         <a href="<?= site_url('event/category/add') ?>" 
-           class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600">
+           class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Tambah Kategori
         </a>
     </div>
@@ -14,7 +14,7 @@
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
-            <thead class="bg-gray-100">
+            <thead class="bg-yellow-400">
                 <tr>
                     <th class="text-left py-2 px-4">Jenis Acara</th>
                     <th class="text-left py-2 px-4">Deskripsi Acara</th>
@@ -95,5 +95,15 @@
         showNotification('<?= session()->getFlashdata('error'); ?>');
     <?php endif; ?>
 </script>
+
+<style>
+    tbody tr:hover {
+        background-color: #FFEBB5; /* Warna abu-abu muda saat hover */
+    }
+
+    tbody tr:hover td {
+        transition: background-color 0.2s ease-in-out;
+    }
+</style>
 
 <?= $this->endSection() ?>

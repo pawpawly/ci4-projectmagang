@@ -17,20 +17,20 @@
             <label for="kategori_kevent" class="block text-sm font-medium text-gray-700">Jenis Acara</label>
             <input type="text" id="kategori_kevent" name="kategori_kevent"
                    value="<?= esc($category['KATEGORI_KEVENT']); ?>"
-                   class="mt-1 px-4 py-2 w-full border rounded-md" required>
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" required>
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kevent" class="block text-sm font-medium text-gray-700">Deskripsi Acara</label>
             <textarea id="deskripsi_kevent" name="deskripsi_kevent" rows="4"
-                      class="mt-1 px-4 py-2 w-full border rounded-md" required><?= esc($category['DESKRIPSI_KEVENT']); ?></textarea>
+                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" required><?= esc($category['DESKRIPSI_KEVENT']); ?></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('event/category'); ?>"
-               class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Batal</a>
+               class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
             <button type="button" onclick="confirmEdit()"
-                    class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600">Update</button>
+                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Update</button>
         </div>
     </form>
 </div>
@@ -42,7 +42,7 @@
         <p>Apakah Anda yakin ingin memperbarui kategori ini?</p>
         <div class="mt-6 flex justify-end space-x-4">
             <button onclick="cancelEdit()"
-                    class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Batal</button>
+                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</button>
             <button onclick="submitForm()"
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Update</button>
         </div>

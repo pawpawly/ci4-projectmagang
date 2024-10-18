@@ -28,7 +28,7 @@
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
                 <input type="text" id="username" name="username" 
                        class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                       focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" required>
             </div>
             <div class="mb-4">
                 <div class="flex justify-between">
@@ -36,16 +36,16 @@
                 </div>
                 <input type="password" id="password" name="password" 
                        class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                       focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" required>
             </div>
             <div class="mt-6">
-                <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded 
-                        hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Login</button>
+                <button type="submit" class="w-full px-4 py-2 bg-yellow-400 text-white rounded 
+                        hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-600">Login</button>
             </div>
         </form>
 
         <p class="mt-6 text-center text-sm text-gray-500">
-            <a href="<?= site_url('./');?>" class="text-indigo-600 font-medium hover:underline">&larr; Kembali</a>
+            <a href="<?= site_url('./');?>" class="text-yellow-500 font-medium hover:underline">&larr; Kembali</a>
         </p>
     </div>
 
