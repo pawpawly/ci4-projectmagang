@@ -10,10 +10,18 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
 $routes->get('/schedule', 'Schedule::index');
-$routes->get('/event', 'Event::index');
+
+
+$routes->group('event', function ($routes) {
+    $routes->get('index', 'Event::index'); // Route untuk daftar event
+    $routes->get('(:segment)', 'Event::detail/$1'); // Route untuk detail event
+});
+
+
 
 // Route untuk About Us
 $routes->get('/aboutus', 'AboutUs::index');
+
 
 // Login Routes
 $routes->get('/login', 'Login::index');
@@ -24,8 +32,9 @@ $routes->get('/logout', 'Login::logout');
 $routes->get('/admin/dashboard', 'Admin::dashboard');
 
 $routes->group('logout', ['filter' => 'auth'], function ($routes) {
-    $routes->get('/', 'Login::index');
+    $routes->get('/', 'Auth::logout');
 });
+
 // Grouping untuk SuperAdmin dengan Middleware Auth
 $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
     $routes->get('dashboard', 'SuperAdminController::dashboard');
@@ -36,9 +45,8 @@ $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
     $routes->post('user-management/update', 'SuperAdminController::updateUser');
     $routes->get('user-management/delete/(:any)', 'SuperAdminController::deleteUser/$1');
 
-
 });
-
+    // **Route untuk Event Manage**
 $routes->group('event', function ($routes) {
     $routes->get('category', 'SuperAdminController::eventCategory');
     $routes->get('category/add', 'SuperAdminController::addCategoryForm');
@@ -46,8 +54,6 @@ $routes->group('event', function ($routes) {
     $routes->get('category/edit/(:num)', 'SuperAdminController::editCategory/$1');
     $routes->post('category/update', 'SuperAdminController::updateCategory');
     $routes->get('category/delete/(:num)', 'SuperAdminController::deleteCategory/$1');
-
-    // **Route untuk Event Manage**
     $routes->get('manage', 'SuperAdminController::eventManage');
     $routes->get('add', 'SuperAdminController::addEventForm');
     $routes->post('save', 'SuperAdminController::saveEvent');
@@ -55,7 +61,7 @@ $routes->group('event', function ($routes) {
     $routes->get('edit/(:num)', 'SuperAdminController::editEvent/$1');
     $routes->post('update', 'SuperAdminController::updateEvent');
 });
-
+    // **Route untuk Berita Manage**
 $routes->group('berita', function ($routes) {
     $routes->get('manage', 'BeritaController::index');
     $routes->get('add', 'BeritaController::add');

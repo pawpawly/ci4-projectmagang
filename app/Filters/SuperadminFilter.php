@@ -6,23 +6,28 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
 
-class SuperadminFilter implements FilterInterface
+class SuperAdminFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Periksa apakah user sudah login
+        // Cek apakah pengguna sudah login
         if (!session()->get('isLoggedIn')) {
-            return redirect()->to(site_url('login'))->with('error', 'Silakan login terlebih dahulu.');
+            session()->setFlashdata('error', 'Silakan login terlebih dahulu.');
+            return redirect()->to(site_url('login'));
         }
 
-        // Periksa apakah LEVEL_USER adalah 2 (superadmin)
+        // Cek apakah level user adalah superadmin (2)
         if (session()->get('LEVEL_USER') !== '2') {
-            return redirect()->to(site_url('login'))->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
+            session()->setFlashdata('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
+            return redirect()->to(site_url('login'));
         }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Tidak perlu digunakan untuk kasus ini
+        // Pastikan tidak ada cache pada halaman terproteksi
+        $response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->setHeader('Pragma', 'no-cache');
+        $response->setHeader('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT');
     }
 }
