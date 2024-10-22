@@ -10,7 +10,7 @@
         </div>
     <?php endif; ?>
 
-    <form id="categoryForm" method="POST" action="<?= site_url('event/category/update') ?>">
+    <form id="categoryForm" method="POST" action="<?= site_url('superadmin/event/category/update') ?>">
         <input type="hidden" name="id_kevent" value="<?= esc($category['ID_KEVENT']); ?>">
 
         <div class="mb-4">
@@ -27,7 +27,7 @@
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">
-            <a href="<?= site_url('event/category'); ?>"
+            <a href="<?= site_url('superadmin/event/category'); ?>"
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
             <button type="button" onclick="confirmEdit()"
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Update</button>

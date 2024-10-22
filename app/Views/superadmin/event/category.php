@@ -4,7 +4,7 @@
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Kategori Event</h1>
-        <a href="<?= site_url('event/category/add') ?>" 
+        <a href="<?= site_url('superadmin/event/category/add') ?>" 
            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Tambah Kategori
         </a>
@@ -32,7 +32,7 @@
                     </td>
                     <td class="py-2 px-4 text-right">
                         <div class="flex justify-end items-center space-x-4">
-                            <a href="<?= site_url('event/category/edit/' . $category['ID_KEVENT']) ?>" 
+                            <a href="<?= site_url('superadmin/event/category/edit/' . $category['ID_KEVENT']) ?>" 
                                class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">
                                Edit
                             </a>
@@ -80,7 +80,7 @@
     function confirmDelete(id_kevent) {
         const modal = document.getElementById('deleteModal');
         const confirmBtn = document.getElementById('confirmDeleteBtn');
-        confirmBtn.href = "<?= site_url('event/category/delete/') ?>" + id_kevent;
+        confirmBtn.href = "<?= site_url('superadmin/event/category/delete/') ?>" + id_kevent;
         modal.classList.remove('hidden');
     }
 

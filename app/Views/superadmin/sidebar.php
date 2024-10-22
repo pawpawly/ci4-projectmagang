@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="px-4 py-2 hover:bg-red-800">
-                    <a href="<?= site_url('superadmin/user-management'); ?>" class="flex items-center space-x-4">
+                    <a href="<?= site_url('superadmin//user/manage'); ?>" class="flex items-center space-x-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -43,12 +43,12 @@
                 </li>
 
                 <li class="px-4 py-2 hover:bg-red-800">
-                <a href="<?= site_url('berita/manage'); ?>" class="flex items-center space-x-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 4h6M7 9h2m-2 4h6m-6 4h2"/>
-                    </svg>
-                    <span>Manajemen Berita</span>
-                </a>
+                    <a href="<?= site_url('superadmin/berita/manage'); ?>" class="flex items-center space-x-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 4h6M7 9h2m-2 4h6m-6 4h2"/>
+                        </svg>
+                        <span>Manajemen Berita</span>
+                    </a>
                 </li>
 
                 <li class="px-4 py-2 hover:bg-red-800">
@@ -65,10 +65,10 @@
                     </div>
                     <ul id="eventDropdown" class="hidden mt-2 pl-6">
                         <li class="py-1">
-                            <a href="<?= site_url('event/category'); ?>" class="text-white hover:text-yellow-300">• Kategori Event</a>
+                            <a href="<?= site_url('superadmin/event/category'); ?>" class="text-white hover:text-yellow-300">• Kategori Event</a>
                         </li>
                         <li class="py-1">
-                            <a href="<?= site_url('event/manage'); ?>" class="text-white hover:text-yellow-300">• Manajemen Event</a>
+                            <a href="<?= site_url('superadmin/event/manage'); ?>" class="text-white hover:text-yellow-300">• Manajemen Event</a>
                         </li>
                     </ul>
                 </li>
@@ -77,7 +77,6 @@
 
         <!-- Main Content -->
         <div class="flex-1 p-6 bg-white">
-            <!-- Header -->
             <div class="flex justify-end items-center space-x-4 bg-transparent p-4">
                 <div class="relative">
                     <button class="flex items-center space-x-2" onclick="toggleDropdown('userDropdown')">
@@ -94,11 +93,11 @@
                 </div>
             </div>
 
-            <!-- Dynamic Content Section -->
             <div class="mt-6">
                 <?= $this->renderSection('content'); ?>
             </div>
         </div>
     </div>
 </body>
+
 </html>
