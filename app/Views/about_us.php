@@ -63,8 +63,8 @@
 
 <!-- Induk Asosiasi Section -->
 <section class="py-12 bg-white px-4 md:px-16">
-    <div class="container mx-auto text-center">
-        <h2 class="text-4xl font-bold text-gray-800 mb-8 opacity-0 animate-fade-up">INDUK ASOSIASI</h2>
+    <div class="container mx-auto text-center opacity-0 animate-fade-up">
+        <h2 class="text-4xl font-bold text-gray-800 mb-8">INDUK ASOSIASI</h2>
         <div class="flex flex-col md:flex-row items-center justify-center gap-8">
             <div class="w-full md:w-1/2 fade-in-left">
                 <p class="text-lg text-gray-600 leading-relaxed text-justify">

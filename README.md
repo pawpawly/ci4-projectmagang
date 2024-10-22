@@ -4,4 +4,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 If you use any part of this project, please provide appropriate attribution:
 - Include a link to the original project.
-- Give credit to [pawpawly & RinnHehe].
+- Give credit to [pawpaw & RinnHehe].
