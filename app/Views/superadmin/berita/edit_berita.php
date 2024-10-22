@@ -10,7 +10,7 @@
         </div>
     <?php endif; ?>
 
-    <form id="editBeritaForm" action="<?= site_url('berita/update') ?>" method="POST" enctype="multipart/form-data">
+    <form id="editBeritaForm" action="<?= site_url('superadmin/berita/update') ?>" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id_berita" value="<?= $berita['ID_BERITA'] ?>">
 
         <div class="mb-4">
@@ -44,7 +44,7 @@
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">
-            <a href="<?= site_url('berita/manage') ?>" 
+            <a href="<?= site_url('superadmin/berita/manage') ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
             <button type="button" onclick="confirmEditBerita()" 
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>

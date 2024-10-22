@@ -4,7 +4,7 @@
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Berita</h1>
-        <a href="<?= site_url('berita/add') ?>" 
+        <a href="<?= site_url('superadmin/berita/add') ?>" 
            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Tambah Berita
         </a>
@@ -38,7 +38,7 @@
                             <td class="py-2 px-4"><?= esc($item['NAMA_USER']); ?></td>
                             <td class="py-2 px-4 text-right">
                                 <div class="flex justify-end items-center space-x-4">
-                                    <a href="<?= site_url('berita/edit/' . $item['ID_BERITA']) ?>" 
+                                    <a href="<?= site_url('superadmin/berita/edit/' . $item['ID_BERITA']) ?>" 
                                        class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">
                                        Edit
                                     </a>
@@ -83,7 +83,7 @@
     function confirmDelete(id_berita) {
         const modal = document.getElementById('deleteModal');
         const confirmBtn = document.getElementById('confirmDeleteBtn');
-        confirmBtn.href = "<?= site_url('berita/delete/') ?>" + id_berita;
+        confirmBtn.href = "<?= site_url('superadmin/berita/delete/') ?>" + id_berita;
         modal.classList.remove('hidden');
     }
 

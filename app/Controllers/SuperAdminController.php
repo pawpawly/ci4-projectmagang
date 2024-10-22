@@ -2,98 +2,104 @@
 
 namespace App\Controllers;
 
-use App\Models\UserModel;
-use App\Models\KategoriEventModel;
+use App\Models\UserModel; 
 use App\Models\EventModel;
+use App\Models\KategoriEventModel;
+use App\Models\BeritaModel;
 use CodeIgniter\Controller;
 
 class SuperAdminController extends Controller
 {
     protected $userModel;
-    protected $kategoriEventModel;
     protected $eventModel;
+    protected $kategoriEventModel;
+    protected $beritaModel;
 
     public function __construct()
     {
-        $this->userModel = new UserModel();
-        $this->kategoriEventModel = new KategoriEventModel();
+        $this->userModel = new UserModel(); 
         $this->eventModel = new EventModel();
+        $this->kategoriEventModel = new KategoriEventModel();
+        $this->beritaModel = new BeritaModel();
 
-        helper('month_helper');
-        helper('url');
+        helper(['url', 'form', 'month']);
         header("Cache-Control: no-cache, must-revalidate, max-age=0");
         header("Pragma: no-cache");
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     }
 
-    public function index()
-    {
-        $users = $this->userModel->findAll();
-        return view('superadmin/user_management', ['users' => $users]);
-    }
-
+    // ============================
+    // Manajemen Pengguna (CRUD)
+    // ============================
     public function dashboard()
     {
+        // Pastikan hanya pengguna dengan level superadmin yang bisa mengakses
+        if (!session()->get('isLoggedIn') || session()->get('LEVEL_USER') !== '2') {
+            return redirect()->to(site_url('login'))->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
+        }
+
+        // Load view dashboard
         return view('superadmin/dashboard');
+    }
+    public function userManage()
+    {
+        $users = $this->userModel->findAll();
+        return view('superadmin/user/manage', ['users' => $users]);
     }
 
     public function addUserForm()
     {
-        return view('superadmin/add_user');
+        return view('superadmin/user/add_user');
     }
 
     public function saveUser()
-    {
-        $username = $this->request->getPost('username');
+{
+    // Validasi input dari form
+    $validation = $this->validate([
+        'nama_lengkap' => 'required',
+        'username' => 'required|is_unique[USER.USERNAME]',
+        'password' => 'required|min_length[1]',
+        'level_user' => 'required'
+    ]);
 
-        if ($this->userModel->where('USERNAME', $username)->first()) {
-            return redirect()->back()->with('error', 'Username sudah digunakan!');
-        }
-
-        $data = [
-            'NAMA_USER' => $this->request->getPost('nama_lengkap'),
-            'USERNAME' => $username,
-            'PASSWORD_USER' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'LEVEL_USER' => $this->request->getPost('level_user'),
-        ];
-
-        $this->userModel->insert($data);
-        return redirect()->to('superadmin/user-management')->with('message', 'User berhasil ditambahkan.');
+    if (!$validation) {
+        return redirect()->back()->withInput()->with('error', 'Mohon isi semua field dengan benar.');
     }
 
-    public function deleteUser($username)
-    {
-        try {
-            if ($this->userModel->where('USERNAME', $username)->delete()) {
-                return redirect()->to('superadmin/user-management')->with('message', 'User berhasil dihapus.');
-            } else {
-                return redirect()->to('superadmin/user-management')->with('error', 'Gagal menghapus user.');
-            }
-        } catch (\Exception $e) {
-            return redirect()->to('superadmin/user-management')->with('error', $e->getMessage());
-        }
-    }
+    // Data pengguna baru
+    $data = [
+        'NAMA_USER' => $this->request->getPost('nama_lengkap'),
+        'USERNAME' => $this->request->getPost('username'),
+        'PASSWORD_USER' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        'LEVEL_USER' => $this->request->getPost('level_user'),
+    ];
+
+    // Simpan ke database
+    $this->userModel->insert($data);
+
+    // Set flashdata untuk pesan sukses
+    return redirect()->to('superadmin/user/manage')->with('success', 'Pengguna Berhasil Ditambahkan.');
+}
+
+    
+    
+    
 
     public function editUser($username)
     {
         $user = $this->userModel->where('USERNAME', $username)->first();
 
         if (!$user) {
-            return redirect()->to('superadmin/user-management')->with('error', 'User tidak ditemukan!');
+            return redirect()->to('superadmin/user/manage')->with('error', 'User tidak ditemukan!');
         }
 
-        return view('superadmin/edit_user', ['user' => $user]);
+        return view('superadmin/user/edit_user', ['user' => $user]);
     }
 
     public function updateUser()
     {
         $originalUsername = $this->request->getPost('original_username');
         $newUsername = $this->request->getPost('username');
-        $isSelfEdit = session()->get('username') === $originalUsername;
-
-        if ($newUsername !== $originalUsername && $this->userModel->where('USERNAME', $newUsername)->first()) {
-            return redirect()->back()->with('error', 'Username sudah digunakan!');
-        }
 
         $data = [
             'NAMA_USER' => $this->request->getPost('nama_lengkap'),
@@ -106,236 +112,323 @@ class SuperAdminController extends Controller
         }
 
         $this->userModel->where('USERNAME', $originalUsername)->set($data)->update();
+        return redirect()->to('superadmin/user/manage')->with('message', 'User berhasil diperbarui.');
+    }
 
-        if ($isSelfEdit) {
-            session()->destroy();
-            return redirect()->to('/login')->with('message', 'Profil Anda telah diperbarui, silakan login kembali.');
+    public function deleteUser($username)
+    {
+        try {
+            $user = $this->userModel->getUserByUsername($username);
+    
+            if (!$user) {
+                return $this->response->setStatusCode(404)
+                    ->setJSON(['error' => 'Pengguna tidak ditemukan.']);
+            }
+    
+            // Hapus pengguna
+            $this->userModel->delete($username);
+    
+            // Ambil data pengguna terbaru setelah penghapusan
+            $updatedUsers = $this->userModel->findAll();
+    
+            // Kirim respons JSON dengan daftar pengguna terbaru
+            return $this->response->setStatusCode(200)
+                ->setJSON(['message' => 'Pengguna berhasil dihapus.', 'users' => $updatedUsers]);
+        } catch (\Exception $e) {
+            return $this->response->setStatusCode(500)
+                ->setJSON(['error' => 'Terjadi kesalahan saat menghapus pengguna.']);
+        }
+    }
+    
+    
+    
+    
+    
+    
+
+    // ==========================
+    // FUNGSI UNTUK MANAJEMEN BERITA
+    // ==========================
+    
+    public function beritaManage()
+    {
+        $data['berita'] = $this->beritaModel->getBeritaWithUser();
+        return view('superadmin/berita/manage', $data);
+    }
+
+    public function addBeritaForm()
+    {
+        return view('superadmin/berita/add_berita');
+    }
+
+    public function saveBerita()
+    {
+        // Validasi form input
+        $validation = \Config\Services::validation();
+    
+        // Aturan validasi untuk setiap field
+        $validation->setRules([
+            'nama_berita' => 'required',
+            'deskripsi_berita' => 'required',
+            'sumber_berita' => 'required',
+            'foto_berita' => 'uploaded[foto_berita]|is_image[foto_berita]|mime_in[foto_berita,image/jpg,image/jpeg,image/png]'
+        ]);
+    
+        // Jika validasi gagal
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('error', $validation->getErrors());
+        }
+    
+        // Jika validasi berhasil, proses penyimpanan data
+        $data = [
+            'USERNAME' => session()->get('username'),
+            'NAMA_BERITA' => $this->request->getPost('nama_berita'),
+            'DESKRIPSI_BERITA' => $this->request->getPost('deskripsi_berita'),
+            'SUMBER_BERITA' => $this->request->getPost('sumber_berita'),
+            'TANGGAL_BERITA' => date('Y-m-d'),  // Tanggal otomatis
+        ];
+    
+        $foto = $this->request->getFile('foto_berita');
+        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            $fotoName = $foto->getRandomName();
+            $foto->move(FCPATH . 'uploads/berita/', $fotoName);
+            $data['FOTO_BERITA'] = $fotoName;
+        }
+    
+        // Simpan ke database
+        $this->beritaModel->insert($data);
+    
+        return redirect()->to('superadmin/berita/manage')->with('success', 'Berita berhasil ditambahkan.');
+    }
+    
+
+    public function editBerita($id_berita)
+    {
+        $berita = $this->beritaModel->find($id_berita);
+
+        if (!$berita) {
+            return redirect()->to('superadmin/berita/manage')->with('error', 'Berita tidak ditemukan!');
         }
 
-        return redirect()->to('superadmin/user-management')->with('message', 'User berhasil diperbarui.');
+        return view('superadmin/berita/edit_berita', ['berita' => $berita]);
     }
+
+    public function updateBerita()
+    {
+        $id_berita = $this->request->getPost('id_berita');
+        $data = [
+            'NAMA_BERITA' => $this->request->getPost('nama_berita'),
+            'DESKRIPSI_BERITA' => $this->request->getPost('deskripsi_berita'),
+            'SUMBER_BERITA' => $this->request->getPost('sumber_berita'),
+            'TANGGAL_BERITA' => date('Y-m-d'),  // Tanggal otomatis saat update
+        ];
+
+        $foto = $this->request->getFile('foto_berita');
+        if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            $fotoLama = $this->beritaModel->find($id_berita)['FOTO_BERITA'];
+            if (is_file(FCPATH . 'uploads/berita/' . $fotoLama)) {
+                unlink(FCPATH . 'uploads/berita/' . $fotoLama);
+            }
+
+            $fotoName = $foto->getRandomName();
+            $foto->move(FCPATH . 'uploads/berita/', $fotoName);
+            $data['FOTO_BERITA'] = $fotoName;
+        }
+
+        $this->beritaModel->update($id_berita, $data);
+        return redirect()->to('superadmin/berita/manage')->with('message', 'Berita berhasil diperbarui.');
+    }
+
+    public function deleteBerita($id_berita)
+    {
+        $berita = $this->beritaModel->find($id_berita);
+        if ($berita && is_file(FCPATH . 'uploads/berita/' . $berita['FOTO_BERITA'])) {
+            unlink(FCPATH . 'uploads/berita/' . $berita['FOTO_BERITA']);
+        }
+
+        $this->beritaModel->delete($id_berita);
+        return redirect()->to('superadmin/berita/manage')->with('message', 'Berita berhasil dihapus.');
+    }
+
+
+    // ==========================
+    // FUNGSI UNTUK MANAJEMEN KATEGORI EVENT
+    // ==========================
 
     public function eventCategory()
     {
-        // Ambil semua kategori event dari database
         $categories = $this->kategoriEventModel->findAll();
-    
-        // Kirim data ke view bersama dengan flashdata untuk pesan
-        return view('superadmin/event/category', [
-            'categories' => $categories
-        ]);
+        return view('superadmin/event/category', ['categories' => $categories]);
     }
 
     public function addCategoryForm()
     {
         return view('superadmin/event/add_category');
     }
-    
 
     public function saveCategory()
     {
-        // Ambil input dari form
-        $kategoriKevent = $this->request->getPost('kategori_kevent');
-        $deskripsiKevent = $this->request->getPost('deskripsi_kevent');
-    
-        // Validasi jika input kosong
-        if (empty($kategoriKevent) || empty($deskripsiKevent)) {
-            return redirect()->back()->withInput()->with('error', 'Semua field harus diisi!');
-        }
-    
-        // Persiapkan data untuk disimpan
         $data = [
-            'KATEGORI_KEVENT' => $kategoriKevent,
-            'DESKRIPSI_KEVENT' => $deskripsiKevent,
+            'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
+            'DESKRIPSI_KEVENT' => $this->request->getPost('deskripsi_kevent')
         ];
-    
-        try {
-            // Simpan ke database
-            if ($this->kategoriEventModel->insert($data)) {
-                return redirect()->to('event/category')->with('message', 'Kategori berhasil ditambahkan.');
-            } else {
-                return redirect()->back()->withInput()->with('error', 'Gagal menambahkan kategori.');
-            }
-        } catch (\Exception $e) {
-            // Log error untuk debugging
-            log_message('error', $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+
+        $this->kategoriEventModel->insert($data);
+        return redirect()->to('superadmin/event/category')->with('message', 'Kategori berhasil ditambahkan.');
+    }
+
+    public function editCategory($id_kevent)
+    {
+        $category = $this->kategoriEventModel->find($id_kevent);
+
+        if (!$category) {
+            return redirect()->to('superadmin/event/category')->with('error', 'Kategori tidak ditemukan.');
         }
-    }
-    public function deleteCategory($id_kevent)
-{
-    try {
-        if ($this->kategoriEventModel->delete($id_kevent)) {
-            return redirect()->to('/event/category')
-                ->with('message', 'Kategori berhasil dihapus.');
-        } else {
-            return redirect()->to('/event/category')
-                ->with('error', 'Gagal menghapus kategori.');
-        }
-    } catch (\Exception $e) {
-        log_message('error', $e->getMessage());
-        return redirect()->to('/event/category')
-            ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-    }
-}
-public function editCategory($id_kevent)
-{
-    // Cari kategori berdasarkan ID
-    $category = $this->kategoriEventModel->find($id_kevent);
 
-    // Jika kategori tidak ditemukan
-    if (!$category) {
-        return redirect()->to('/event/category')->with('error', 'Kategori tidak ditemukan!');
+        return view('superadmin/event/edit_category', ['category' => $category]);
     }
 
-    // Tampilkan form edit kategori
-    return view('superadmin/event/edit_category', ['category' => $category]);
-}
+    public function updateCategory()
+    {
+        $id_kevent = $this->request->getPost('id_kevent');
+        $data = [
+            'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
+            'DESKRIPSI_KEVENT' => $this->request->getPost('deskripsi_kevent')
+        ];
 
-public function updateCategory()
-{
-    $id_kevent = $this->request->getPost('id_kevent'); // Ambil ID dari form
-
-    $data = [
-        'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
-        'DESKRIPSI_KEVENT' => $this->request->getPost('deskripsi_kevent'),
-    ];
-
-    try {
         $this->kategoriEventModel->update($id_kevent, $data);
-        return redirect()->to('/event/category')->with('message', 'Kategori berhasil diperbarui.');
-    } catch (\Exception $e) {
-        log_message('error', $e->getMessage());
-        return redirect()->back()->with('error', 'Gagal memperbarui kategori!');
+        return redirect()->to('superadmin/event/category')->with('message', 'Kategori berhasil diperbarui.');
     }
-}
-     
+
+    public function deleteCategory($id_kevent)
+    {
+        $this->kategoriEventModel->delete($id_kevent);
+        return redirect()->to('superadmin/event/category')->with('message', 'Kategori berhasil dihapus.');
+    }
+
+
+    // ==========================
+    // FUNGSI UNTUK MANAJEMEN  EVENT
+    // ==========================
+
     public function eventManage()
     {
         $events = $this->eventModel
             ->select('event.*, kategori_event.KATEGORI_KEVENT as NAMA_KATEGORI')
             ->join('kategori_event', 'kategori_event.ID_KEVENT = event.ID_KEVENT')
             ->findAll();
-
         return view('superadmin/event/manage', ['events' => $events]);
     }
+
     public function addEventForm()
-{
-    $categories = $this->kategoriEventModel->findAll();
-    return view('superadmin/event/add_event', ['categories' => $categories]);
-}
-
-public function saveEvent()
-{
-    $poster = $this->request->getFile('poster_event');
-    $posterName = '';
-
-    if ($poster->isValid() && !$poster->hasMoved()) {
-        $posterName = $poster->getRandomName();
-        $poster->move(FCPATH . 'uploads/poster/', $posterName);
-    } else {
-        return redirect()->back()->with('error', 'Gagal mengupload poster.');
+    {
+        $categories = $this->kategoriEventModel->findAll();
+        return view('superadmin/event/add_event', ['categories' => $categories]);
     }
 
-    $data = [
-        'ID_KEVENT'      => $this->request->getPost('kategori_acara'),
-        'USERNAME'       => session()->get('username'),
-        'NAMA_EVENT'     => $this->request->getPost('nama_event'),
-        'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-        'TANGGAL_EVENT'  => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
-        'JAM_EVENT'      => $this->request->getPost('jam_event'),
-        'FOTO_EVENT'     => $posterName,
-    ];
+    public function saveEvent()
+    {
+        $poster = $this->request->getFile('poster_event');
+        $posterName = '';
 
-    try {
+        if ($poster->isValid() && !$poster->hasMoved()) {
+            $posterName = $poster->getRandomName();
+            $poster->move(FCPATH . 'uploads/poster/', $posterName);
+        }
+
+        $data = [
+            'ID_KEVENT' => $this->request->getPost('kategori_acara'),
+            'USERNAME' => session()->get('username'),
+            'NAMA_EVENT' => $this->request->getPost('nama_event'),
+            'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
+            'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
+            'JAM_EVENT' => $this->request->getPost('jam_event'),
+            'FOTO_EVENT' => $posterName,
+        ];
+
         $this->eventModel->insert($data);
-        return redirect()->to('event/manage')->with('message', 'Event berhasil ditambahkan.');
-    } catch (\Exception $e) {
-        log_message('error', $e->getMessage());
-        return redirect()->back()->with('error', 'Gagal menambahkan event.');
+        return redirect()->to('superadmin/event/manage')->with('message', 'Event berhasil ditambahkan.');
     }
-}
 
+    public function editEvent($id_event)
+    {
+        $event = $this->eventModel->find($id_event);
+        $categories = $this->kategoriEventModel->findAll();
 
-public function deleteEvent($id_event)
+        if (!$event) {
+            return redirect()->to('superadmin/event/manage')->with('error', 'Event tidak ditemukan.');
+        }
+
+        return view('superadmin/event/edit_event', [
+            'event' => $event,
+            'categories' => $categories
+        ]);
+    }
+
+    public function updateEvent()
+    {
+        $id_event = $this->request->getPost('id_event');
+        
+        // Data yang akan di-update
+        $data = [
+            'ID_KEVENT' => $this->request->getPost('kategori_id'),
+            'NAMA_EVENT' => $this->request->getPost('nama_event'),
+            'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
+            'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
+            'JAM_EVENT' => $this->request->getPost('jam_event'),
+        ];
+    
+        // Cek apakah ada file foto yang diunggah
+        $file = $this->request->getFile('foto_event');
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            // Hapus foto lama
+            $oldEvent = $this->eventModel->find($id_event);
+            if (!empty($oldEvent['FOTO_EVENT'])) {
+                $oldPosterPath = FCPATH . 'uploads/poster/' . $oldEvent['FOTO_EVENT'];
+                if (is_file($oldPosterPath)) {
+                    unlink($oldPosterPath);
+                }
+            }
+    
+            // Simpan foto baru
+            $newName = $file->getRandomName();
+            $file->move(FCPATH . 'uploads/poster/', $newName);
+            $data['FOTO_EVENT'] = $newName;
+        }
+    
+        try {
+            // Update data event di database
+            $this->eventModel->update($id_event, $data);
+            return redirect()->to('superadmin/event/manage')->with('message', 'Event berhasil diperbarui.');
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui event.');
+        }
+    }
+    public function deleteEvent($id_event)
 {
     try {
-        // Ambil informasi event dari database
         $event = $this->eventModel->find($id_event);
 
         if (!$event) {
-            return redirect()->to('/event/manage')->with('error', 'Event tidak ditemukan!');
+            return redirect()->to('superadmin/event/manage')->with('error', 'Event tidak ditemukan.');
         }
 
-        // Cek apakah file poster ada dan hapus
-        $poster = $event['FOTO_EVENT'];
-        if (file_exists(WRITEPATH . '../public/uploads/poster/' . $poster)) {
-            unlink(WRITEPATH . '../public/uploads/poster/' . $poster);
+        // Hapus foto jika ada
+        if (!empty($event['FOTO_EVENT'])) {
+            $posterPath = FCPATH . 'uploads/poster/' . $event['FOTO_EVENT'];
+            if (is_file($posterPath)) {
+                unlink($posterPath);
+            }
         }
 
         // Hapus event dari database
         $this->eventModel->delete($id_event);
-
-        return redirect()->to('/event/manage')->with('message', 'Event berhasil dihapus.');
+        return redirect()->to('superadmin/event/manage')->with('message', 'Event berhasil dihapus.');
     } catch (\Exception $e) {
         log_message('error', $e->getMessage());
-        return redirect()->back()->with('error', 'Gagal menghapus event! ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Gagal menghapus event.');
     }
 }
 
-public function editEvent($id_event)
-{
-    // Cari event berdasarkan ID_EVENT
-    $event = $this->eventModel->find($id_event);
-    $categories = $this->kategoriEventModel->findAll(); // Ambil kategori untuk dropdown
-
-    // Jika event tidak ditemukan, tampilkan error
-    if (!$event) {
-        return redirect()->to('/event/manage')->with('error', 'Event tidak ditemukan!');
-    }
-
-    // Kirim data event dan kategori ke view edit
-    return view('superadmin/event/edit_event', [
-        'event' => $event,
-        'categories' => $categories
-    ]);
-}
-
-public function updateEvent()
-{
-    $id_event = $this->request->getPost('id_event');
-
-    $data = [
-        'ID_KEVENT'      => $this->request->getPost('kategori_id'),
-        'NAMA_EVENT'     => $this->request->getPost('nama_event'),
-        'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-        'TANGGAL_EVENT'  => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
-        'JAM_EVENT'      => $this->request->getPost('jam_event'),
-    ];
-
-    $file = $this->request->getFile('foto_event');
-    if ($file->isValid() && !$file->hasMoved()) {
-        $oldEvent = $this->eventModel->find($id_event);
-        $oldPoster = $oldEvent['FOTO_EVENT'];
-
-        // Hapus foto lama jika ada
-        if (file_exists(FCPATH . 'uploads/poster/' . $oldPoster)) {
-            unlink(FCPATH . 'uploads/poster/' . $oldPoster);
-        }
-
-        // Upload foto baru
-        $newName = $file->getRandomName();
-        $file->move(FCPATH . 'uploads/poster/', $newName);
-        $data['FOTO_EVENT'] = $newName;
-    }
-
-    try {
-        $this->eventModel->update($id_event, $data);
-        return redirect()->to('/event/manage')->with('message', 'Event berhasil diperbarui.');
-    } catch (\Exception $e) {
-        log_message('error', $e->getMessage());
-        return redirect()->back()->with('error', 'Gagal memperbarui event! ' . $e->getMessage());
-    }
-}
-
-}
+}    

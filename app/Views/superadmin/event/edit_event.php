@@ -10,7 +10,7 @@
         </div>
     <?php endif; ?>
 
-    <form id="editEventForm" action="<?= site_url('event/update') ?>" method="POST" enctype="multipart/form-data">
+    <form id="editEventForm" action="<?= site_url('superadmin/event/update') ?>" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id_event" value="<?= $event['ID_EVENT'] ?>">
 
         <div class="mb-4">
@@ -64,7 +64,7 @@
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">
-            <a href="<?= site_url('event/manage') ?>" 
+            <a href="<?= site_url('superadmin/event/manage') ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
             <button type="button" onclick="confirmEdit()" 
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>

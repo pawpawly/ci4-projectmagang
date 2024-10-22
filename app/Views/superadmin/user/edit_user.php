@@ -10,7 +10,7 @@
         </div>
     <?php endif; ?>
 
-    <form id="editUserForm" action="<?= site_url('superadmin/user-management/update') ?>" method="POST">
+    <form id="editUserForm" action="<?= site_url('superadmin/user/update') ?>" method="POST">
         <input type="hidden" name="original_username" value="<?= esc($user['USERNAME']); ?>">
 
         <div class="mb-4">
@@ -47,7 +47,7 @@
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">
-            <a href="<?= site_url('superadmin/user-management'); ?>" 
+            <a href="<?= site_url('superadmin/user/manage'); ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
             <button type="button" onclick="confirmEdit()" 
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan Perubahan</button>

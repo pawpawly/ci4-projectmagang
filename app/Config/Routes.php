@@ -11,69 +11,66 @@ $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
 $routes->get('/schedule', 'Schedule::index');
 
-
+// Route untuk Detail Event dan Daftar Event
 $routes->group('event', function ($routes) {
-    $routes->get('index', 'Event::index'); // Route untuk daftar event
-    $routes->get('(:segment)', 'Event::detail/$1'); // Route untuk detail event
+    $routes->get('index', 'Event::index');  // Daftar event
+    $routes->get('(:segment)', 'Event::detail/$1');  // Detail event berdasarkan nama
 });
-
-
-
-// Route untuk About Us
-$routes->get('/aboutus', 'AboutUs::index');
-
 
 // Login Routes
 $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');
 $routes->get('/logout', 'Login::logout');
 
-// Admin Dashboard
-$routes->get('/admin/dashboard', 'Admin::dashboard');
-
+// Grouping Logout dengan Middleware Auth
 $routes->group('logout', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Auth::logout');
 });
 
 // Grouping untuk SuperAdmin dengan Middleware Auth
 $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
-    $routes->get('dashboard', 'SuperAdminController::dashboard');
-    $routes->get('user-management', 'SuperAdminController::index');
-    $routes->get('user-management/add', 'SuperAdminController::addUserForm');
-    $routes->post('user-management/save', 'SuperAdminController::saveUser');
-    $routes->get('user-management/edit/(:any)', 'SuperAdminController::editUser/$1');
-    $routes->post('user-management/update', 'SuperAdminController::updateUser');
-    $routes->get('user-management/delete/(:any)', 'SuperAdminController::deleteUser/$1');
-
+    $routes->get('dashboard', 'SuperAdminController::dashboard');  // Dashboard SuperAdmin
 });
-    // **Route untuk Event Manage**
-$routes->group('event', function ($routes) {
-    $routes->get('category', 'SuperAdminController::eventCategory');
+
+// Route untuk Manajemen User
+$routes->group('superadmin/user', ['filter' => 'auth'], function ($routes) {
+    $routes->get('manage', 'SuperAdminController::userManage');  // Manajemen Pengguna
+    $routes->get('add', 'SuperAdminController::addUserForm');  // Tambah Pengguna
+    $routes->post('save', 'SuperAdminController::saveUser');  // Simpan Pengguna Baru
+    $routes->get('edit/(:any)', 'SuperAdminController::editUser/$1');  // Edit Pengguna
+    $routes->post('update', 'SuperAdminController::updateUser');  // Update Pengguna
+    $routes->delete('delete/(:any)', 'SuperAdminController::deleteUser/$1');  // Hapus Pengguna
+});
+
+
+
+
+
+
+
+// Route untuk Manajemen Event
+$routes->group('superadmin/event', ['filter' => 'auth'], function ($routes) {
+    $routes->get('category', 'SuperAdminController::eventCategory');  
+    $routes->get('manage', 'SuperAdminController::eventManage'); 
     $routes->get('category/add', 'SuperAdminController::addCategoryForm');
     $routes->post('category/save', 'SuperAdminController::saveCategory');
     $routes->get('category/edit/(:num)', 'SuperAdminController::editCategory/$1');
     $routes->post('category/update', 'SuperAdminController::updateCategory');
     $routes->get('category/delete/(:num)', 'SuperAdminController::deleteCategory/$1');
-    $routes->get('manage', 'SuperAdminController::eventManage');
     $routes->get('add', 'SuperAdminController::addEventForm');
     $routes->post('save', 'SuperAdminController::saveEvent');
-    $routes->get('delete/(:num)', 'SuperAdminController::deleteEvent/$1');
     $routes->get('edit/(:num)', 'SuperAdminController::editEvent/$1');
     $routes->post('update', 'SuperAdminController::updateEvent');
-});
-    // **Route untuk Berita Manage**
-$routes->group('berita', function ($routes) {
-    $routes->get('manage', 'BeritaController::index');
-    $routes->get('add', 'BeritaController::add');
-    $routes->post('save', 'BeritaController::save');
-    $routes->post('update', 'BeritaController::update');
-    $routes->get('edit/(:num)', 'BeritaController::edit/$1');
-    $routes->get('delete/(:num)', 'BeritaController::delete/$1');
-
+    $routes->get('delete/(:num)', 'SuperAdminController::deleteEvent/$1');
 });
 
-
-
-
-
+// Route untuk Manajemen Berita
+$routes->group('superadmin/berita', ['filter' => 'auth'], function ($routes) {
+    $routes->get('manage', 'SuperAdminController::beritaManage');
+    $routes->get('add', 'SuperAdminController::addBeritaForm');
+    $routes->post('save', 'SuperAdminController::saveBerita');  // Simpan Berita
+    $routes->post('update', 'SuperAdminController::updateBerita');  // Update Berita
+    $routes->get('edit/(:num)', 'SuperAdminController::editBerita/$1');  // Edit Berita
+    $routes->get('delete/(:num)', 'SuperAdminController::deleteBerita/$1');  // Delete Berita
+});
 
