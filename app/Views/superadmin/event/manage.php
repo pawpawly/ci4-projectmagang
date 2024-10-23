@@ -1,6 +1,18 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="bg-red-500 text-white p-4 rounded mb-4">
+        <ul>
+            <?php foreach (session()->getFlashdata('error') as $error): ?>
+                <li><?= esc($error) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Event</h1>
