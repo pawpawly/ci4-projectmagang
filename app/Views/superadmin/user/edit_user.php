@@ -10,21 +10,23 @@
         </div>
     <?php endif; ?>
 
-    <form id="editUserForm" action="<?= site_url('superadmin/user/update') ?>" method="POST">
+    <form id="editUserForm" action="<?= site_url('superadmin/user/update') ?>" method="POST" novalidate>
         <input type="hidden" name="original_username" value="<?= esc($user['USERNAME']); ?>">
 
         <div class="mb-4">
             <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
             <input type="text" id="nama_lengkap" name="nama_lengkap" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
-                   value="<?= esc($user['NAMA_USER']); ?>" required>
+                   value="<?= esc($user['NAMA_USER']); ?>" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                   placeholder="Masukkan nama lengkap" required>
         </div>
 
         <div class="mb-4">
             <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
             <input type="text" id="username" name="username" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
-                   value="<?= esc($user['USERNAME']); ?>" required>
+                   value="<?= esc($user['USERNAME']); ?>" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                   placeholder="Masukkan username" required>
         </div>
 
         <div class="mb-4">
@@ -38,10 +40,12 @@
             <label class="block text-sm font-medium text-gray-700">Level User</label>
             <div class="mt-1 flex space-x-4">
                 <label>
-                    <input type="radio" name="level_user" value="1" <?= $user['LEVEL_USER'] == '1' ? 'checked' : ''; ?>> Admin
+                    <input type="radio" name="level_user" value="1" 
+                           <?= $user['LEVEL_USER'] == '1' ? 'checked' : ''; ?> required> Admin
                 </label>
                 <label>
-                    <input type="radio" name="level_user" value="2" <?= $user['LEVEL_USER'] == '2' ? 'checked' : ''; ?>> Superadmin
+                    <input type="radio" name="level_user" value="2" 
+                           <?= $user['LEVEL_USER'] == '2' ? 'checked' : ''; ?> required> Superadmin
                 </label>
             </div>
         </div>
@@ -49,40 +53,10 @@
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/user/manage'); ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
-            <button type="button" onclick="confirmEdit()" 
+            <button type="submit" 
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan Perubahan</button>
         </div>
     </form>
 </div>
-
-<!-- Modal Konfirmasi Simpan -->
-<div id="confirmEditModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-lg font-bold mb-4">Konfirmasi Simpan Perubahan</h2>
-        <p>Apakah Anda yakin ingin menyimpan perubahan ini?</p>
-        <div class="mt-6 flex justify-end space-x-4">
-            <button onclick="cancelEdit()" 
-                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</button>
-            <button onclick="submitForm()" 
-                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    function confirmEdit() {
-        const modal = document.getElementById('confirmEditModal');
-        modal.classList.remove('hidden');
-    }
-
-    function cancelEdit() {
-        const modal = document.getElementById('confirmEditModal');
-        modal.classList.add('hidden');
-    }
-
-    function submitForm() {
-        document.getElementById('editUserForm').submit();
-    }
-</script>
 
 <?= $this->endSection() ?>
