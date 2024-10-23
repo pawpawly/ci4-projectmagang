@@ -52,7 +52,19 @@ class SuperAdminController extends Controller
         return view('superadmin/user/add_user');
     }
 
-    public function saveUser()
+public function editUser($username)
+{
+    $user = $this->userModel->getUserByUsername($username);
+
+    if (!$user) {
+        return redirect()->to('superadmin/user/manage')->with('error', 'User tidak ditemukan!');
+    }
+
+    return view('superadmin/user/edit_user', ['user' => $user]);
+}
+
+
+public function saveUser()
 {
     // Validasi input dari form
     $validation = $this->validate([
@@ -63,7 +75,14 @@ class SuperAdminController extends Controller
     ]);
 
     if (!$validation) {
-        return redirect()->back()->withInput()->with('error', 'Mohon isi semua field dengan benar.');
+        // Cek apakah kesalahan disebabkan oleh username duplikat
+        if ($this->validator->hasError('username')) {
+            $errorMessage = 'Username sudah digunakan, silakan gunakan username lain.';
+        } else {
+            $errorMessage = 'Mohon isi semua field dengan benar.';
+        }
+
+        return redirect()->back()->withInput()->with('error', $errorMessage);
     }
 
     // Data pengguna baru
@@ -74,47 +93,72 @@ class SuperAdminController extends Controller
         'LEVEL_USER' => $this->request->getPost('level_user'),
     ];
 
-    // Simpan ke database
-    $this->userModel->insert($data);
+    try {
+        // Simpan ke database
+        $this->userModel->insert($data);
 
-    // Set flashdata untuk pesan sukses
-    return redirect()->to('superadmin/user/manage')->with('success', 'Pengguna Berhasil Ditambahkan.');
+        // Set flashdata untuk pesan sukses
+        return redirect()->to('superadmin/user/manage')->with('success', 'Pengguna Berhasil Ditambahkan.');
+    } catch (\Exception $e) {
+        // Jika terjadi kesalahan, tampilkan pesan error
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan pengguna: ' . $e->getMessage());
+    }
 }
 
-    
-    
-    
 
-    public function editUser($username)
-    {
-        $user = $this->userModel->where('USERNAME', $username)->first();
-
-        if (!$user) {
-            return redirect()->to('superadmin/user/manage')->with('error', 'User tidak ditemukan!');
-        }
-
-        return view('superadmin/user/edit_user', ['user' => $user]);
+public function updateUser()
+{
+    if (!$this->request->is('post')) {
+        return redirect()->back()->with('error', 'Invalid request method.');
     }
 
-    public function updateUser()
-    {
-        $originalUsername = $this->request->getPost('original_username');
-        $newUsername = $this->request->getPost('username');
+    $originalUsername = $this->request->getPost('original_username');
+    $newUsername = $this->request->getPost('username');
 
-        $data = [
-            'NAMA_USER' => $this->request->getPost('nama_lengkap'),
-            'USERNAME' => $newUsername,
-            'LEVEL_USER' => $this->request->getPost('level_user'),
-        ];
+    // Validasi input form
+    $validation = $this->validate([
+        'nama_lengkap' => 'required',
+        'username' => "required|is_unique[USER.USERNAME,USERNAME,{$originalUsername}]",
+        'level_user' => 'required'
+    ]);
 
-        if ($this->request->getPost('password')) {
-            $data['PASSWORD_USER'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+    if (!$validation) {
+        return redirect()->back()->withInput()->with('error', 'Mohon isi semua field dengan benar.');
+    }
+
+    $data = [
+        'NAMA_USER' => $this->request->getPost('nama_lengkap'),
+        'USERNAME' => $newUsername,
+        'LEVEL_USER' => $this->request->getPost('level_user'),
+    ];
+
+    if ($this->request->getPost('password')) {
+        $data['PASSWORD_USER'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+    }
+
+    $result = $this->userModel->updateUserWithTransaction($originalUsername, $data);
+
+    if ($result) {
+        if ($originalUsername === session()->get('username')) {
+            session()->destroy(); // Hancurkan session jika username sendiri diubah
+            return redirect()->to('login')->with('message', 'Username Anda telah berubah. Silakan login kembali.');
         }
-
-        $this->userModel->where('USERNAME', $originalUsername)->set($data)->update();
         return redirect()->to('superadmin/user/manage')->with('message', 'User berhasil diperbarui.');
+    } else {
+        return redirect()->back()->with('error', 'Gagal memperbarui user.');
     }
+}
 
+
+
+
+
+
+    
+    
+    
+    
+    
     public function deleteUser($username)
     {
         try {
@@ -216,28 +260,52 @@ class SuperAdminController extends Controller
     public function updateBerita()
     {
         $id_berita = $this->request->getPost('id_berita');
+    
+        // Aturan validasi
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'nama_berita' => 'required',
+            'deskripsi_berita' => 'required',
+            'sumber_berita' => 'required',
+            'foto_berita' => 'permit_empty|is_image[foto_berita]|mime_in[foto_berita,image/jpg,image/jpeg,image/png]'
+        ]);
+    
+        // Jika validasi gagal, kembalikan ke form dengan pesan error
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('error', 'Mohon isi semua field dengan benar.');
+        }
+    
+        // Data yang akan diperbarui (tanpa TANGGAL_BERITA)
         $data = [
             'NAMA_BERITA' => $this->request->getPost('nama_berita'),
             'DESKRIPSI_BERITA' => $this->request->getPost('deskripsi_berita'),
             'SUMBER_BERITA' => $this->request->getPost('sumber_berita'),
-            'TANGGAL_BERITA' => date('Y-m-d'),  // Tanggal otomatis saat update
         ];
-
+    
+        // Proses foto jika ada
         $foto = $this->request->getFile('foto_berita');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
+            // Hapus foto lama jika ada
             $fotoLama = $this->beritaModel->find($id_berita)['FOTO_BERITA'];
             if (is_file(FCPATH . 'uploads/berita/' . $fotoLama)) {
                 unlink(FCPATH . 'uploads/berita/' . $fotoLama);
             }
-
+    
+            // Simpan foto baru
             $fotoName = $foto->getRandomName();
             $foto->move(FCPATH . 'uploads/berita/', $fotoName);
             $data['FOTO_BERITA'] = $fotoName;
         }
-
-        $this->beritaModel->update($id_berita, $data);
-        return redirect()->to('superadmin/berita/manage')->with('message', 'Berita berhasil diperbarui.');
+    
+        // Update berita di database
+        try {
+            $this->beritaModel->update($id_berita, $data);
+            return redirect()->to('superadmin/berita/manage')->with('message', 'Berita berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui berita: ' . $e->getMessage());
+        }
     }
+    
 
     public function deleteBerita($id_berita)
     {

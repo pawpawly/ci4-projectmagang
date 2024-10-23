@@ -65,20 +65,5 @@
     </form>
 </div>
 
-<script>
-    // Validasi JavaScript untuk memastikan semua field terisi
-    function validateForm() {
-        const namaLengkap = document.getElementById('nama_lengkap').value.trim();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const levelUser = document.querySelector('input[name="level_user"]:checked');
-
-        if (!namaLengkap || !username || !password || !levelUser) {
-            alert('Semua field wajib diisi.');
-            return false;
-        }
-        return true;
-    }
-</script>
 
 <?= $this->endSection() ?>
