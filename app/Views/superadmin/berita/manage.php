@@ -34,15 +34,18 @@
                             </td>
                             <td class="py-2 px-4"><?= esc($item['NAMA_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= esc($item['SUMBER_BERITA']); ?></td>
-                            <td class="py-2 px-4"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></td>
-                            <td class="py-2 px-4"><?= esc($item['NAMA_USER']); ?></td>
+                            <td class="py-2 px-4"><?= date('d F Y', strtotime($item['TANGGAL_BERITA'])); ?></td>
+                            <td class="py-2 px-4">
+    <?= esc($item['PENYIAR_BERITA'] ?? 'Pengguna tidak diketahui'); ?>
+</td>
+
                             <td class="py-2 px-4 text-right">
                                 <div class="flex justify-end items-center space-x-4">
                                     <a href="<?= site_url('superadmin/berita/edit/' . $item['ID_BERITA']) ?>" 
                                        class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">
                                        Edit
                                     </a>
-                                    <button href="#" onclick="confirmDelete('<?= $item['ID_BERITA'] ?>')" 
+                                    <button onclick="confirmDelete('<?= $item['ID_BERITA'] ?>')" 
                                             class="text-red-500 font-semibold hover:underline hover:text-red-700">
                                         Delete
                                     </button>

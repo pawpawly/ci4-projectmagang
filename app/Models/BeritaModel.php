@@ -9,15 +9,15 @@ class BeritaModel extends Model
     protected $table = 'berita';
     protected $primaryKey = 'ID_BERITA';
     protected $allowedFields = [
-        'USERNAME', 'NAMA_BERITA', 'DESKRIPSI_BERITA', 'SUMBER_BERITA', 
-        'TANGGAL_BERITA', 'FOTO_BERITA'
+        'PENYIAR_BERITA', 'NAMA_BERITA', 'DESKRIPSI_BERITA', 
+        'SUMBER_BERITA', 'TANGGAL_BERITA', 'FOTO_BERITA'
     ];
 
+    // Metode untuk mendapatkan semua berita beserta nama penyiar
     public function getBeritaWithUser()
     {
         return $this->db->table($this->table)
-            ->select('berita.*, user.NAMA_USER')
-            ->join('user', 'user.USERNAME = berita.USERNAME')
+            ->select('berita.*, berita.PENYIAR_BERITA AS NAMA_USER')
             ->get()
             ->getResultArray();
     }
