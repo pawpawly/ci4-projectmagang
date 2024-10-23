@@ -14,6 +14,7 @@ class SuperAdminController extends Controller
     protected $eventModel;
     protected $kategoriEventModel;
     protected $beritaModel;
+    protected $db;
 
     public function __construct()
     {
@@ -21,6 +22,7 @@ class SuperAdminController extends Controller
         $this->eventModel = new EventModel();
         $this->kategoriEventModel = new KategoriEventModel();
         $this->beritaModel = new BeritaModel();
+        $this->db = \Config\Database::connect();
 
         helper(['url', 'form', 'month']);
         header("Cache-Control: no-cache, must-revalidate, max-age=0");
@@ -207,10 +209,9 @@ public function updateUser()
 
     public function saveBerita()
     {
-        // Validasi form input
+        // Validasi input
         $validation = \Config\Services::validation();
     
-        // Aturan validasi untuk setiap field
         $validation->setRules([
             'nama_berita' => 'required',
             'deskripsi_berita' => 'required',
@@ -223,15 +224,26 @@ public function updateUser()
             return redirect()->back()->withInput()->with('error', $validation->getErrors());
         }
     
-        // Jika validasi berhasil, proses penyimpanan data
+        // Ambil USERNAME dari session
+        $username = session()->get('username');
+    
+        // Ambil NAMA_USER berdasarkan USERNAME
+        $user = $this->userModel->where('USERNAME', $username)->first();
+        if (!$user) {
+            return redirect()->back()->with('error', 'User tidak ditemukan.');
+        }
+        
+        // Siapkan data berita untuk disimpan
         $data = [
-            'USERNAME' => session()->get('username'),
+            'USERNAME' => $username,  // Simpan USERNAME
+            'PENYIAR_BERITA' => $user['NAMA_USER'],  // Simpan NAMA_USER di PENYIAR_BERITA
             'NAMA_BERITA' => $this->request->getPost('nama_berita'),
             'DESKRIPSI_BERITA' => $this->request->getPost('deskripsi_berita'),
             'SUMBER_BERITA' => $this->request->getPost('sumber_berita'),
-            'TANGGAL_BERITA' => date('Y-m-d'),  // Tanggal otomatis
+            'TANGGAL_BERITA' => date('Y-m-d'),  // Otomatis ambil tanggal
         ];
     
+        // Proses upload foto
         $foto = $this->request->getFile('foto_berita');
         if ($foto && $foto->isValid() && !$foto->hasMoved()) {
             $fotoName = $foto->getRandomName();
@@ -239,10 +251,13 @@ public function updateUser()
             $data['FOTO_BERITA'] = $fotoName;
         }
     
-        // Simpan ke database
-        $this->beritaModel->insert($data);
-    
-        return redirect()->to('superadmin/berita/manage')->with('success', 'Berita berhasil ditambahkan.');
+        // Simpan berita ke database
+        try {
+            $this->beritaModel->insert($data);
+            return redirect()->to('superadmin/berita/manage')->with('success', 'Berita berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menyimpan berita: ' . $e->getMessage());
+        }
     }
     
 
