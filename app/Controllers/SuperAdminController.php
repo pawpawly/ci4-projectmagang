@@ -7,6 +7,7 @@ use App\Models\EventModel;
 use App\Models\KategoriEventModel;
 use App\Models\BeritaModel;
 use CodeIgniter\Controller;
+use App\Validation\CustomValidation;
 
 class SuperAdminController extends Controller
 {
@@ -151,16 +152,6 @@ public function updateUser()
     }
 }
 
-
-
-
-
-
-    
-    
-    
-    
-    
     public function deleteUser($username)
     {
         try {
@@ -187,11 +178,6 @@ public function updateUser()
     }
     
     
-    
-    
-    
-    
-
     // ==========================
     // FUNGSI UNTUK MANAJEMEN BERITA
     // ==========================
@@ -351,43 +337,116 @@ public function updateUser()
 
     public function saveCategory()
     {
+        // Validasi input dari form
+        $validation = \Config\Services::validation();
+    
+        // Aturan validasi
+        $validation->setRules([
+            'kategori_kevent' => 'required',
+            'deskripsi_kevent' => 'required'
+        ], [
+            'kategori_kevent' => [
+                'required' => 'Kategori event harus diisi.'
+            ],
+            'deskripsi_kevent' => [
+                'required' => 'Deskripsi event harus diisi.'
+            ]
+        ]);
+    
+        // Jika validasi gagal
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('error', $validation->getErrors());
+        }
+    
+        // Data kategori yang akan disimpan
         $data = [
             'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
             'DESKRIPSI_KEVENT' => $this->request->getPost('deskripsi_kevent')
         ];
-
+    
+        // Simpan ke database
         $this->kategoriEventModel->insert($data);
+    
+        // Redirect dengan pesan sukses
         return redirect()->to('superadmin/event/category')->with('message', 'Kategori berhasil ditambahkan.');
     }
+    
 
     public function editCategory($id_kevent)
     {
         $category = $this->kategoriEventModel->find($id_kevent);
-
+    
         if (!$category) {
             return redirect()->to('superadmin/event/category')->with('error', 'Kategori tidak ditemukan.');
         }
-
+    
         return view('superadmin/event/edit_category', ['category' => $category]);
     }
-
+    
     public function updateCategory()
     {
+        $validation = \Config\Services::validation();
+    
+        $validation->setRules([
+            'kategori_kevent' => 'required',
+            'deskripsi_kevent' => 'required',
+        ], [
+            'kategori_kevent' => [
+                'required' => 'Nama kategori tidak boleh kosong.'
+            ],
+            'deskripsi_kevent' => [
+                'required' => 'Deskripsi kategori tidak boleh kosong.'
+            ]
+        ]);
+    
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('validation', $validation);
+        }
+    
         $id_kevent = $this->request->getPost('id_kevent');
         $data = [
             'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
-            'DESKRIPSI_KEVENT' => $this->request->getPost('deskripsi_kevent')
+            'DESKRIPSI_KEVENT' => $this->request->getPost('deskripsi_kevent'),
         ];
-
-        $this->kategoriEventModel->update($id_kevent, $data);
-        return redirect()->to('superadmin/event/category')->with('message', 'Kategori berhasil diperbarui.');
+    
+        try {
+            $this->kategoriEventModel->update($id_kevent, $data);
+            return redirect()->to('superadmin/event/category')
+                ->with('message', 'Kategori berhasil diperbarui.');
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui kategori.');
+        }
     }
+    
+    
+    
 
     public function deleteCategory($id_kevent)
     {
-        $this->kategoriEventModel->delete($id_kevent);
-        return redirect()->to('superadmin/event/category')->with('message', 'Kategori berhasil dihapus.');
+        // Cek apakah kategori masih digunakan di tabel event
+        $eventCount = $this->db->table('event')
+            ->where('ID_KEVENT', $id_kevent)
+            ->countAllResults();
+    
+        if ($eventCount > 0) {
+            return redirect()->to('superadmin/event/category')
+                ->with('error', 'Tidak Bisa Menghapus Karena Ada Event yang Berlangsung.');
+        }
+    
+        // Hapus kategori jika tidak terhubung dengan event
+        try {
+            $this->kategoriEventModel->delete($id_kevent);
+            return redirect()->to('superadmin/event/category')
+                ->with('message', 'Kategori berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->to('superadmin/event/category')
+                ->with('error', 'Terjadi kesalahan saat menghapus kategori.');
+        }
     }
+    
 
 
     // ==========================
@@ -411,14 +470,38 @@ public function updateUser()
 
     public function saveEvent()
     {
+        // Validasi form input
+        $validation = \Config\Services::validation();
+    
+        $validation->setRules([
+            'nama_event' => 'required',
+            'kategori_acara' => 'required',
+            'tanggal_event' => 'required|valid_date[Y-m-d]|checkFutureDate',
+            'jam_event' => 'required',
+            'deskripsi_event' => 'required',
+            'poster_event' => 'uploaded[poster_event]|is_image[poster_event]|mime_in[poster_event,image/jpg,image/jpeg,image/png]',
+        ], [
+            'tanggal_event' => [
+                'checkFutureDate' => 'Tanggal acara tidak boleh di masa lalu. Harap pilih tanggal yang valid.',
+            ]
+        ]);
+    
+        // Jika validasi gagal
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('validation', $validation->getErrors());
+        }
+    
+        // Proses upload poster
         $poster = $this->request->getFile('poster_event');
         $posterName = '';
-
         if ($poster->isValid() && !$poster->hasMoved()) {
             $posterName = $poster->getRandomName();
             $poster->move(FCPATH . 'uploads/poster/', $posterName);
         }
-
+    
+        // Data untuk disimpan
         $data = [
             'ID_KEVENT' => $this->request->getPost('kategori_acara'),
             'USERNAME' => session()->get('username'),
@@ -428,11 +511,14 @@ public function updateUser()
             'JAM_EVENT' => $this->request->getPost('jam_event'),
             'FOTO_EVENT' => $posterName,
         ];
-
+    
+        // Simpan data ke database
         $this->eventModel->insert($data);
+    
         return redirect()->to('superadmin/event/manage')->with('message', 'Event berhasil ditambahkan.');
     }
-
+    
+    
     public function editEvent($id_event)
     {
         $event = $this->eventModel->find($id_event);
@@ -451,20 +537,47 @@ public function updateUser()
     public function updateEvent()
     {
         $id_event = $this->request->getPost('id_event');
-        
-        // Data yang akan di-update
+
+        // Setup validation rules
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'nama_event' => 'required',
+            'kategori_id' => 'required',
+            'tanggal_event' => [
+                'rules' => 'required|valid_date[Y-m-d]|checkFutureDate',
+                'errors' => [
+                    'required' => 'Tanggal acara wajib diisi.',
+                    'valid_date' => 'Format tanggal tidak valid.',
+                    'checkFutureDate' => CustomValidation::checkFutureDateError()
+                ]
+            ],
+            'jam_event' => 'required',
+            'deskripsi_event' => 'required',
+            'foto_event' => 'permit_empty|uploaded[foto_event]|is_image[foto_event]|mime_in[foto_event,image/jpg,image/jpeg,image/png]'
+        ]);
+
+        // Jika validasi gagal
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('validation', $validation)
+                ->with('error', 'Mohon isi semua field dengan benar.');
+        }
+
+        // Data untuk di-update
         $data = [
             'ID_KEVENT' => $this->request->getPost('kategori_id'),
             'NAMA_EVENT' => $this->request->getPost('nama_event'),
             'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
             'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
-            'JAM_EVENT' => $this->request->getPost('jam_event'),
+            'JAM_EVENT' => $this->request->getPost('jam_event')
         ];
-    
+
         // Cek apakah ada file foto yang diunggah
         $file = $this->request->getFile('foto_event');
         if ($file && $file->isValid() && !$file->hasMoved()) {
-            // Hapus foto lama
+            // Hapus foto lama jika ada
             $oldEvent = $this->eventModel->find($id_event);
             if (!empty($oldEvent['FOTO_EVENT'])) {
                 $oldPosterPath = FCPATH . 'uploads/poster/' . $oldEvent['FOTO_EVENT'];
@@ -472,13 +585,13 @@ public function updateUser()
                     unlink($oldPosterPath);
                 }
             }
-    
+
             // Simpan foto baru
             $newName = $file->getRandomName();
             $file->move(FCPATH . 'uploads/poster/', $newName);
             $data['FOTO_EVENT'] = $newName;
         }
-    
+
         try {
             // Update data event di database
             $this->eventModel->update($id_event, $data);
@@ -488,6 +601,8 @@ public function updateUser()
             return redirect()->back()->with('error', 'Gagal memperbarui event.');
         }
     }
+    
+    
     public function deleteEvent($id_event)
 {
     try {

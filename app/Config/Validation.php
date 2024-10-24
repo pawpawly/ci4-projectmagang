@@ -7,6 +7,7 @@ use CodeIgniter\Validation\StrictRules\CreditCardRules;
 use CodeIgniter\Validation\StrictRules\FileRules;
 use CodeIgniter\Validation\StrictRules\FormatRules;
 use CodeIgniter\Validation\StrictRules\Rules;
+use App\Validation\CustomValidation;
 
 class Validation extends BaseConfig
 {
@@ -25,7 +26,10 @@ class Validation extends BaseConfig
         FormatRules::class,
         FileRules::class,
         CreditCardRules::class,
+        CustomValidation::class,
+        
     ];
+
 
     /**
      * Specifies the views that are used to display the
@@ -38,7 +42,11 @@ class Validation extends BaseConfig
         'single' => 'CodeIgniter\Validation\Views\single',
     ];
 
+    public $checkFutureDate = [
+        'checkFutureDate' => 'Tanggal acara tidak boleh di masa lalu. Harap pilih tanggal yang valid.'
+    ];
     // --------------------------------------------------------------------
     // Rules
     // --------------------------------------------------------------------
+    
 }

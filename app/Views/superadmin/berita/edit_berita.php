@@ -46,40 +46,10 @@
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/berita/manage') ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
-            <button type="button" onclick="confirmEditBerita()" 
+            <button type="submit" 
                     class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>
         </div>
     </form>
 </div>
-
-<!-- Modal Konfirmasi -->
-<div id="confirmEditBeritaModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-lg font-bold mb-4">Konfirmasi Simpan Perubahan</h2>
-        <p>Apakah Anda yakin ingin menyimpan perubahan berita ini?</p>
-        <div class="mt-6 flex justify-end space-x-4">
-            <button onclick="cancelEditBerita()" 
-                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</button>
-            <button onclick="submitEditBeritaForm()" 
-                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    function confirmEditBerita() {
-        const modal = document.getElementById('confirmEditBeritaModal');
-        modal.classList.remove('hidden');
-    }
-
-    function cancelEditBerita() {
-        const modal = document.getElementById('confirmEditBeritaModal');
-        modal.classList.add('hidden');
-    }
-
-    function submitEditBeritaForm() {
-        document.getElementById('editBeritaForm').submit();
-    }
-</script>
 
 <?= $this->endSection() ?>

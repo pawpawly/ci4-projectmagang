@@ -1,6 +1,19 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="bg-red-500 text-white p-4 rounded mb-4">
+        <?= session()->getFlashdata('error'); ?>
+    </div>
+<?php elseif (session()->getFlashdata('message')): ?>
+    <div class="bg-green-500 text-white p-4 rounded mb-4">
+        <?= session()->getFlashdata('message'); ?>
+    </div>
+<?php endif; ?>
+
+
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Kategori Event</h1>
@@ -88,12 +101,6 @@
         const modal = document.getElementById('deleteModal');
         modal.classList.add('hidden');
     }
-
-    <?php if (session()->getFlashdata('message')): ?>
-        showNotification('<?= session()->getFlashdata('message'); ?>');
-    <?php elseif (session()->getFlashdata('error')): ?>
-        showNotification('<?= session()->getFlashdata('error'); ?>');
-    <?php endif; ?>
 </script>
 
 <style>

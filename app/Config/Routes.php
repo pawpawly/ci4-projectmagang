@@ -10,6 +10,11 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
 $routes->get('/schedule', 'Schedule::index');
+// Login Routes
+$routes->get('/login', 'Login::index');
+$routes->post('/login/authenticate', 'Login::authenticate');
+$routes->get('/logout', 'Login::logout');
+
 
 // Route untuk Detail Event dan Daftar Event
 $routes->group('event', function ($routes) {
@@ -17,10 +22,6 @@ $routes->group('event', function ($routes) {
     $routes->get('(:segment)', 'Event::detail/$1');  // Detail event berdasarkan nama
 });
 
-// Login Routes
-$routes->get('/login', 'Login::index');
-$routes->post('/login/authenticate', 'Login::authenticate');
-$routes->get('/logout', 'Login::logout');
 
 // Grouping Logout dengan Middleware Auth
 $routes->group('logout', ['filter' => 'auth'], function ($routes) {
@@ -41,11 +42,6 @@ $routes->group('superadmin/user', ['filter' => 'auth'], function ($routes) {
     $routes->post('update', 'SuperAdminController::updateUser');  // Update Pengguna
     $routes->delete('delete/(:any)', 'SuperAdminController::deleteUser/$1');  // Hapus Pengguna
 });
-
-
-
-
-
 
 
 // Route untuk Manajemen Event

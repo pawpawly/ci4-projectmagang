@@ -34,10 +34,10 @@
                             </td>
                             <td class="py-2 px-4"><?= esc($item['NAMA_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= esc($item['SUMBER_BERITA']); ?></td>
-                            <td class="py-2 px-4"><?= date('d F Y', strtotime($item['TANGGAL_BERITA'])); ?></td>
+                            <td class="py-2 px-4"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></td>
                             <td class="py-2 px-4">
-    <?= esc($item['PENYIAR_BERITA'] ?? 'Pengguna tidak diketahui'); ?>
-</td>
+                            <?= esc($item['PENYIAR_BERITA'] ?? 'Pengguna tidak diketahui'); ?>
+                            </td>
 
                             <td class="py-2 px-4 text-right">
                                 <div class="flex justify-end items-center space-x-4">
