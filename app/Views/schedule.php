@@ -2,6 +2,9 @@
 
 <?= $this->section('content') ?>
 
+<!-- Tambahkan SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 <!-- Header dengan Latar Gambar -->
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
@@ -13,61 +16,87 @@
 <section class="py-12 bg-white px-4 md:px-16">
     <div class="container mx-auto">
         <div class="bg-white shadow-md rounded-lg">
-            <!-- Header Kalender -->
             <div class="flex justify-between items-center px-6 py-4">
-                <!-- Nama Bulan dan Tahun di Kiri -->
                 <h2 id="monthYear" class="text-2xl font-semibold text-gray-800"></h2>
 
-                <!-- Tombol Navigasi dan Today di Kanan -->
                 <div class="flex space-x-2">
-                    <button id="today" 
-                            class="px-4 py-2 text-white rounded-md font-semibold hover:scale-105 hover:bg-yellow-900" 
-                            style="background-color: #2C1011;">
-                        Today
-                    </button>
+                    <button id="today" class="px-4 py-2 text-white rounded-md font-semibold hover:scale-105 hover:bg-yellow-900" 
+                            style="background-color: #2C1011;">Today</button>
                     <div class="flex space-x-2">
-                        <button id="prev" 
-                                class="px-4 py-2 text-white rounded-md hover:scale-105 hover:bg-yellow-900" 
-                                style="background-color: #2C1011;">
-                            &lt;
-                        </button>
-                        <button id="next" 
-                                class="px-4 py-2 text-white rounded-md hover:scale-105 hover:bg-yellow-900" 
-                                style="background-color: #2C1011;">
-                            &gt;
-                        </button>
+                        <button id="prev" class="px-4 py-2 text-white rounded-md hover:scale-105 hover:bg-yellow-900" 
+                                style="background-color: #2C1011;">&lt;</button>
+                        <button id="next" class="px-4 py-2 text-white rounded-md hover:scale-105 hover:bg-yellow-900" 
+                                style="background-color: #2C1011;">&gt;</button>
                     </div>
                 </div>
             </div>
 
             <!-- Header Hari -->
             <div class="grid grid-cols-7 gap-px bg-gray-300">
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Sun</div>
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Mon</div>
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Tue</div>
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Wed</div>
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Thu</div>
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Fri</div>
-                <div class="text-center py-3" style="background-color: #2C1011; color: white; font-weight: 600;">Sat</div>
+                <?php foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $day): ?>
+                    <div class="text-center py-3" 
+                         style="background-color: #2C1011; color: white; font-weight: 600;">
+                        <?= $day; ?>
+                    </div>
+                <?php endforeach; ?>
             </div>
 
-            <!-- Grid Kalender Fullscreen -->
-            <div id="calendar" class="grid grid-cols-7 gap-px bg-white min-h-[80vh]">
-                <!-- Tanggal akan diisi dinamis dengan JavaScript -->
-            </div>
+            <!-- Grid Kalender -->
+            <div id="calendar" class="grid grid-cols-7 gap-px bg-white min-h-[80vh]"></div>
         </div>
     </div>
 </section>
 
-<!-- Tombol Scroll to Top -->
-<button id="scrollTopButton" 
-    class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-yellow-500 shadow-lg 
-    flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#2C1011]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-    </svg>
-</button>
+<!-- Modal Form Reservasi -->
+<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
+        <p id="selectedDateText" class="text-gray-700 mb-4"></p>
+        
+        <form id="reservationForm" action="/reservasi/store" method="post">
+    <input type="hidden" name="tanggal_reservasi" id="selectedDate">
 
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Nama</label>
+        <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Instansi</label>
+        <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
+        <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
+        <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
+        <input type="number" name="jmlpengunjung_reservasi" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div class="flex justify-end">
+        <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
+        <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded">Simpan</button>
+    </div>
+</form>
+
+    </div>
+</div>
+
+<!-- Tambahkan SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     const calendar = document.getElementById('calendar');
@@ -75,11 +104,15 @@
     const todayButton = document.getElementById('today');
     const prevButton = document.getElementById('prev');
     const nextButton = document.getElementById('next');
+    const reservationModal = document.getElementById('reservationModal');
+    const selectedDateText = document.getElementById('selectedDateText');
+    const selectedDateInput = document.getElementById('selectedDate');
+    const closeModalButton = document.getElementById('closeModal');
 
     let currentDate = new Date();
 
     function renderCalendar(date) {
-        calendar.innerHTML = '';
+        calendar.innerHTML = ''; // Kosongkan kalender
         const year = date.getFullYear();
         const month = date.getMonth();
 
@@ -88,6 +121,7 @@
 
         monthYear.textContent = date.toLocaleString('default', { month: 'long', year: 'numeric' });
 
+        // Elemen kosong sebelum tanggal 1
         for (let i = 0; i < firstDay; i++) {
             calendar.appendChild(document.createElement('div'));
         }
@@ -95,98 +129,68 @@
         for (let day = 1; day <= lastDate; day++) {
             const dayElement = document.createElement('div');
             dayElement.textContent = day;
-            dayElement.className = 'text-center px-2 py-1 bg-white border border-gray-300 rounded hover:bg-yellow-200';
+            dayElement.className = 'text-center px-2 py-1 bg-white border border-gray-300 rounded hover:bg-yellow-200 cursor-pointer';
 
             const today = new Date();
-            if (day === today.getDate() &&
-                month === today.getMonth() &&
-                year === today.getFullYear()) {
+            if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
                 dayElement.classList.add('bg-yellow-100');
             }
 
+            dayElement.addEventListener('click', () => handleDateClick(year, month, day));
             calendar.appendChild(dayElement);
         }
     }
+
+    function handleDateClick(year, month, day) {
+        const selectedDate = new Date(year, month, day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set waktu ke awal hari untuk perbandingan
+
+        if (selectedDate < today) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Anda tidak dapat memilih tanggal dari masa lalu!',
+            });
+            return; // Jangan buka modal
+        }
+
+        openModal(selectedDate);
+    }
+
+    function openModal(date) {
+        selectedDateText.textContent = `Tanggal Dipilih: ${date.toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        })}`;
+        selectedDateInput.value = date.toISOString().split('T')[0];
+        reservationModal.classList.remove('hidden');
+    }
+
+    closeModalButton.addEventListener('click', () => reservationModal.classList.add('hidden'));
+
+    prevButton.addEventListener('click', () => changeMonth(-1));
+    nextButton.addEventListener('click', () => changeMonth(1));
+    todayButton.addEventListener('click', () => {
+        currentDate = new Date();
+        renderCalendar(currentDate);
+    });
 
     function changeMonth(offset) {
         currentDate.setMonth(currentDate.getMonth() + offset);
         renderCalendar(currentDate);
     }
 
-    prevButton.addEventListener('click', () => {
-        if (currentDate.getMonth() === 0) {
-            currentDate.setFullYear(currentDate.getFullYear() - 1);
-            currentDate.setMonth(11);
-        } else {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-        }
-        renderCalendar(currentDate);
-    });
-
-    nextButton.addEventListener('click', () => {
-        if (currentDate.getMonth() === 11) {
-            currentDate.setFullYear(currentDate.getFullYear() + 1);
-            currentDate.setMonth(0);
-        } else {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-        }
-        renderCalendar(currentDate);
-    });
-
-    todayButton.addEventListener('click', () => {
-        currentDate = new Date();
-        renderCalendar(currentDate);
-    });
-
     renderCalendar(currentDate);
 
-    // Scroll ke atas ketika tombol diklik
-document.getElementById('scrollTopButton').addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-});
-
-// Pantau scroll dan tampilkan/hilangkan tombol
-window.addEventListener('scroll', () => {
-    const scrollTopButton = document.getElementById('scrollTopButton');
-    if (window.scrollY > 100) { // Jika scroll lebih dari 100px
-        scrollTopButton.classList.add('opacity-100');
-        scrollTopButton.classList.remove('opacity-0', 'pointer-events-none');
-    } else {
-        scrollTopButton.classList.remove('opacity-100');
-        scrollTopButton.classList.add('opacity-0', 'pointer-events-none');
-    }
-});
-
-    // Scroll ke bagian atas saat halaman dimuat atau di-refresh
-    window.onbeforeunload = function () {
-      window.scrollTo(0, 0);
-    };
-
+    <?php if (session()->getFlashdata('success')): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '<?= session()->getFlashdata('success'); ?>',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    <?php endif; ?>
 </script>
-
-<style>
-
-    /* Efek Hover untuk Teks */
-h2:hover {
-    transform: scale(1.1); /* Membesar 10% */
-    transition: transform 0.3s ease-in-out; /* Animasi transisi halus */
-}
-
-#scrollTopButton {
-    transition: opacity 0.3s ease-in-out;
-}
-
-.opacity-0 {
-    opacity: 0;
-}
-
-.opacity-100 {
-    opacity: 1;
-}
-
-</style>
 
 <?= $this->endSection() ?>
