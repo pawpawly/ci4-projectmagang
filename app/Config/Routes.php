@@ -70,3 +70,19 @@ $routes->group('superadmin/berita', ['filter' => 'auth'], function ($routes) {
     $routes->get('delete/(:num)', 'SuperAdminController::deleteBerita/$1');  // Delete Berita
 });
 
+
+// Route untuk Manajemen Koleksi
+$routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
+    $routes->get('category', 'SuperAdminController::kategoriKoleksi');  
+    $routes->get('category/add', 'SuperAdminController::addKategoriKoleksiForm');
+    $routes->post('category/save', 'SuperAdminController::saveKategoriKoleksi');
+    $routes->get('category/edit/(:num)', 'SuperAdminController::editKategoriKoleksi/$1');
+    $routes->post('category/update', 'SuperAdminController::updateKategoriKoleksi');
+    $routes->get('category/delete/(:num)', 'SuperAdminController::deleteKategoriKoleksi/$1');
+    $routes->get('manage', 'SuperAdminController::koleksiManage');
+    $routes->get('add', 'SuperAdminController::addKoleksiForm');
+    $routes->post('save', 'SuperAdminController::saveKoleksi');
+    $routes->get('edit/(:num)', 'SuperAdminController::editKoleksi/$1');
+    $routes->post('update', 'SuperAdminController::updateKoleksi');
+    $routes->get('delete/(:num)', 'SuperAdminController::deleteKoleksi/$1');
+});
