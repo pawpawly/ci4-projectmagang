@@ -5,12 +5,11 @@
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
     <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center">EVENT</h1>
+        <h1 class="text-5xl font-bold text-white text-center">DAFTAR EVENT</h1>
     </div>
 </div>
 
 <div class="container mx-auto px-8 py-12 max-w-5xl"> <!-- Menambah max-width agar tidak full screen -->
-    <h1 class="text-4xl font-bold mb-6"><?= esc($title) ?></h1>
 
     <?php if (!empty($events) && is_array($events)): ?>
         <div class="space-y-8"> <!-- Memberi jarak vertikal antar event -->
