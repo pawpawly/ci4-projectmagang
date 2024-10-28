@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // Halaman Utama dan Halaman Lain
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
-$routes->get('/schedule', 'Schedule::index');
+$routes->get('/schedule', 'ReservationController::index');
 // Login Routes
 $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');
@@ -22,6 +22,10 @@ $routes->group('event', function ($routes) {
     $routes->get('(:segment)', 'Event::detail/$1');  // Detail event berdasarkan nama
 });
 
+$routes->group('reservasi', function ($routes) {
+    $routes->post('store', 'ReservationController::store'); 
+    $routes->get('/update-status/(:num)/(:alpha)', 'ReservasiController::updateStatus/$1/$2');
+});
 
 // Grouping Logout dengan Middleware Auth
 $routes->group('logout', ['filter' => 'auth'], function ($routes) {
@@ -85,4 +89,13 @@ $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'SuperAdminController::editKoleksi/$1');
     $routes->post('update', 'SuperAdminController::updateKoleksi');
     $routes->get('delete/(:num)', 'SuperAdminController::deleteKoleksi/$1');
+
+
+
+});
+
+$routes->group('superadmin/reservasi', ['filter' => 'auth'], function ($routes) {
+    $routes->get('manage', 'SuperAdminController::reservationManage');
+    $routes->post('status/(:num)', 'SuperAdminController::reservationStatus/$1');
+    $routes->delete('delete/(:num)', 'SuperAdminController::reservationDelete/$1'); 
 });

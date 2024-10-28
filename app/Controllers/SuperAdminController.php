@@ -8,6 +8,7 @@ use App\Models\KategoriEventModel;
 use App\Models\BeritaModel;
 use App\Models\KoleksiModel;
 use App\Models\KategoriKoleksiModel;
+use App\Models\ReservasiModel;
 use CodeIgniter\Controller;
 use App\Validation\CustomValidation;
 
@@ -19,6 +20,7 @@ class SuperAdminController extends Controller
     protected $kategoriEventModel;
     protected $koleksiModel;
     protected $kategoriKoleksiModel;
+    protected $reservasiModel;
     protected $db;
 
     public function __construct()
@@ -29,6 +31,7 @@ class SuperAdminController extends Controller
         $this->beritaModel = new BeritaModel();
         $this->koleksiModel = new KoleksiModel();
         $this->kategoriKoleksiModel = new KategoriKoleksiModel();
+        $this->reservasiModel = new ReservasiModel();
         $this->db = \Config\Database::connect();
 
         helper(['url', 'form', 'month']);
@@ -892,4 +895,73 @@ public function deleteKoleksi($id_koleksi)
         return redirect()->back()->with('error', 'Gagal menghapus koleksi.');
     }
 }
+
+
+// ==========================
+// FUNGSI UNTUK MANAJEMEN KOLEKSI
+// ==========================
+
+public function reservationManage()
+{
+    $reservasiModel = new \App\Models\ReservasiModel();
+    $data['reservasi'] = $reservasiModel->findAll();
+
+    if (empty($data['reservasi'])) {
+        $data['reservasi'] = []; // Pastikan data selalu berupa array
+    }
+
+    return view('superadmin/reservasi/manage', $data);
+}
+
+public function reservationStatus($id_reservasi)
+{
+    try {
+        // Ambil data status dari request JSON
+        $request = $this->request->getJSON(true); // Mengembalikan sebagai array
+
+        // Debugging: Pastikan ID dan data JSON diterima
+        log_message('debug', 'Request JSON: ' . json_encode($request));
+        log_message('debug', 'ID Reservasi: ' . $id_reservasi);
+
+        // Validasi apakah status_reservasi tersedia
+        if (isset($request['status_reservasi'])) {
+            $status = $request['status_reservasi'];
+
+            // Update status di database
+            $updated = $this->reservasiModel->update($id_reservasi, ['STATUS_RESERVASI' => $status]);
+
+            // Periksa apakah update berhasil
+            if ($updated) {
+                return $this->response->setJSON(['success' => true]);
+            } else {
+                return $this->response->setJSON(['success' => false, 'message' => 'Gagal memperbarui status.']);
+            }
+        } else {
+            return $this->response->setJSON(['success' => false, 'message' => 'Status tidak ditemukan dalam request.']);
+        }
+    } catch (\Exception $e) {
+        // Tangani jika terjadi kesalahan
+        log_message('error', 'Error: ' . $e->getMessage());
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ]);
+    }
+}
+
+
+
+
+public function reservationDelete($id_reservasi)
+{
+    // Hapus data berdasarkan ID reservasi
+    $deleted = $this->reservasiModel->delete($id_reservasi);
+
+    if ($deleted) {
+        return $this->response->setJSON(['success' => true]);
+    } else {
+        return $this->response->setJSON(['success' => false]);
+    }
+}
+
 }
