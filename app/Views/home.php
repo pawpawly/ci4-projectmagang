@@ -10,7 +10,7 @@
     <div class="absolute inset-x-0 bottom-0 text-center bg-gradient-to-t from-gray-900/80 to-transparent py-20">
         <div class="container mx-auto">
             <h2 class="text-4xl font-bold leading-snug text-white hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Museum Kayuh Baimbai Kota Banjarmasin</h2>
-            <p class="mt-4 text-lg text-gray-300">"Merawat Tradisi, Mengayuh Sejarah, dan Menginspirasi Generasi."</p>
+            <p class="mt-4 text-lg text-gray-300 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">"Merawat Tradisi, Mengayuh Sejarah, dan Menginspirasi Generasi."</p>
         </div>
     </div>
 </section>
@@ -36,11 +36,11 @@
 </section>
 
 <!-- Event Section -->
-<section class="py-12 bg-gradient-to-r from-[#B09091] to-white relative overflow-hidden">
+<section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
     <div class="container mx-auto px-8 relative">
         <div class="relative text-center">
             <h2 class="event-overlay">EVENT</h2>
-            <h2 class="event-heading text-4xl font-bold mb-8">Event</h2>
+            <h2 class="event-heading text-4xl font-bold mb-8 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Event</h2>
         </div>
 
         <?php if (!empty($events) && is_array($events)): ?>
@@ -74,6 +74,40 @@
         <?php endif; ?>
     </div>
 </section>
+
+<!-- Forum Section -->
+<section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
+    <div class="container mx-auto px-8">
+        <div class="relative text-center">
+            <h2 class="event-overlay">FORUM</h2> <!-- Overlay yang sama dengan EVENT -->
+            <h2 class="event-heading text-4xl font-bold mb-8 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Forum</h2>
+        </div>
+
+        <?php if (!empty($berita) && is_array($berita)): ?>
+            <div class="forum-grid-wrapper">
+                <div class="forum-grid">
+                    <?php foreach ($berita as $item): ?>
+                        <div class="forum-card">
+                            <div class="forum-image-wrapper">
+                                <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
+                                     alt="<?= esc($item['NAMA_BERITA']); ?>"
+                                     class="forum-image">
+                            </div>
+                            <p class="text-gray-600 mt-2 "><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
+                            <h3 class="forum-title mt-1 text-lg font-semibold">
+                                <?= esc($item['NAMA_BERITA']); ?>
+                            </h3>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php else: ?>
+            <p class="text-center text-gray-500">Tidak ada berita tersedia saat ini.</p>
+        <?php endif; ?>
+    </div>
+</section>
+
+
 
 <style>
 .event-overlay {
@@ -136,6 +170,75 @@
     cursor: -webkit-grabbing;
 }
 
+/* Forum Section Layout */
+.forum-grid-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.forum-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Gambar dengan efek hover zoom */
+.forum-image-wrapper {
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.forum-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.forum-card:hover .forum-image {
+    transform: scale(1.1);
+}
+
+/* Judul berita dengan ellipsis dan efek underline */
+.forum-title {
+    position: relative;
+    display: inline-block;
+    color: #2C1011;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.forum-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #2C1011;
+    transition: width 0.3s ease-in-out;
+}
+
+.forum-title:hover::before {
+    width: 100%;
+}
+
+/* Styling untuk responsif */
+@media (max-width: 768px) {
+    .forum-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
 </style>
 
 <script>
@@ -186,7 +289,37 @@
     if (!eventCarousel || eventCarousel.children.length === 0) {
         leftArrow.style.display = 'none';
         rightArrow.style.display = 'none';
-    }
+
+
+const forumCarousel = document.getElementById('forumCarousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+forumCarousel.addEventListener('mousedown', (e) => {
+    isDown = true;
+    startX = e.pageX - forumCarousel.offsetLeft;
+    scrollLeft = forumCarousel.scrollLeft;
+});
+
+forumCarousel.addEventListener('mouseleave', () => {
+    isDown = false;
+});
+
+forumCarousel.addEventListener('mouseup', () => {
+    isDown = false;
+});
+
+forumCarousel.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - forumCarousel.offsetLeft;
+    const walk = (x - startX) * 2;
+    forumCarousel.scrollLeft = scrollLeft - walk;
+});
+
+
+}
 
 </script>
 
