@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superadmin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <script>
         // JavaScript untuk dropdown event dan akun
         function toggleDropdown(id) {
@@ -71,7 +72,28 @@
                             <a href="<?= site_url('superadmin/event/manage'); ?>" class="text-white hover:text-yellow-300">• Manajemen Event</a>
                         </li>
                     </ul>
-                </li>
+                    <li class="px-4 py-2 hover:bg-red-800">
+    <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('koleksiDropdown')">
+        <div class="flex items-center space-x-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 20H6a2 2 0 01-2-2V6a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 6h4a2 2 0 012 2v12a2 2 0 01-2 2h-4" />
+            </svg>
+            <span>Koleksi</span>
+        </div>
+        <svg id="koleksiDropdownIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+    <ul id="koleksiDropdown" class="hidden mt-2 pl-6">
+        <li class="py-1">
+            <a href="<?= site_url('superadmin/koleksi/category'); ?>" class="text-white hover:text-yellow-300">• Kategori Koleksi</a>
+        </li>
+        <li class="py-1">
+            <a href="<?= site_url('superadmin/koleksi/manage'); ?>" class="text-white hover:text-yellow-300">• Manajemen Koleksi</a>
+        </li>
+    </ul>
+</li>
             </ul>
         </div>
 

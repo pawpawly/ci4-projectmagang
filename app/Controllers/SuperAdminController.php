@@ -6,15 +6,19 @@ use App\Models\UserModel;
 use App\Models\EventModel;
 use App\Models\KategoriEventModel;
 use App\Models\BeritaModel;
+use App\Models\KoleksiModel;
+use App\Models\KategoriKoleksiModel;
 use CodeIgniter\Controller;
 use App\Validation\CustomValidation;
 
 class SuperAdminController extends Controller
 {
     protected $userModel;
+    protected $beritaModel;
     protected $eventModel;
     protected $kategoriEventModel;
-    protected $beritaModel;
+    protected $koleksiModel;
+    protected $kategoriKoleksiModel;
     protected $db;
 
     public function __construct()
@@ -23,6 +27,8 @@ class SuperAdminController extends Controller
         $this->eventModel = new EventModel();
         $this->kategoriEventModel = new KategoriEventModel();
         $this->beritaModel = new BeritaModel();
+        $this->koleksiModel = new KoleksiModel();
+        $this->kategoriKoleksiModel = new KategoriKoleksiModel();
         $this->db = \Config\Database::connect();
 
         helper(['url', 'form', 'month']);
@@ -629,4 +635,261 @@ public function updateUser()
     }
 }
 
-}    
+
+
+    // ==========================
+    // FUNGSI UNTUK MANAJEMEN KATEGORI KOLEKSI
+    // ==========================
+
+    public function kategoriKoleksi()
+    {
+        $categories = $this->kategoriKoleksiModel->findAll();
+
+        return view('superadmin/koleksi/category', [
+            'categories' => $categories
+        ]);
+    }
+
+    // Menampilkan form tambah kategori koleksi
+    public function addKategoriKoleksiForm()
+    {
+        return view('superadmin/koleksi/add_category');
+    }
+
+    // Menyimpan kategori koleksi baru
+    public function saveKategoriKoleksi()
+    {
+        $validation = \Config\Services::validation();
+
+        $validation->setRules([
+            'kategori_kkoleksi' => 'required',
+            'deskripsi_kkoleksi' => 'required'
+        ], [
+            'kategori_kkoleksi' => [
+                'required' => 'Nama kategori tidak boleh kosong.'
+            ],
+            'deskripsi_kkoleksi' => [
+                'required' => 'Deskripsi kategori tidak boleh kosong.'
+            ]
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('validation', $validation);
+        }
+
+        $data = [
+            'KATEGORI_KKOLEKSI' => $this->request->getPost('kategori_kkoleksi'),
+            'DESKRIPSI_KKOLEKSI' => $this->request->getPost('deskripsi_kkoleksi')
+        ];
+
+        $this->kategoriKoleksiModel->insert($data);
+
+        return redirect()->to('superadmin/koleksi/category')->with('message', 'Kategori berhasil ditambahkan.');
+    }
+
+    // Menampilkan form edit kategori koleksi
+    public function editKategoriKoleksi($id_kkoleksi)
+    {
+        $category = $this->kategoriKoleksiModel->find($id_kkoleksi);
+    
+        if (!$category) {
+            return redirect()->to('superadmin/koleksi/category')->with('error', 'Kategori tidak ditemukan.');
+        }
+    
+        return view('superadmin/koleksi/edit_category', ['category' => $category]);
+    }
+    
+    public function updateKategoriKoleksi()
+    {
+        $validation = \Config\Services::validation();
+    
+        $validation->setRules([
+            'kategori_kkoleksi' => 'required',
+            'deskripsi_kkoleksi' => 'required',
+        ], [
+            'kategori_kkoleksi' => [
+                'required' => 'Nama kategori tidak boleh kosong.',
+            ],
+            'deskripsi_kkoleksi' => [
+                'required' => 'Deskripsi kategori tidak boleh kosong.',
+            ],
+        ]);
+    
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('validation', $validation);
+        }
+    
+        $id_kkoleksi = $this->request->getPost('id_kkoleksi');
+        $data = [
+            'KATEGORI_KKOLEKSI' => $this->request->getPost('kategori_kkoleksi'),
+            'DESKRIPSI_KKOLEKSI' => $this->request->getPost('deskripsi_kkoleksi'),
+        ];
+    
+        try {
+            $this->kategoriKoleksiModel->update($id_kkoleksi, $data);
+            return redirect()->to('superadmin/koleksi/category')->with('message', 'Kategori berhasil diperbarui.');
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui kategori.');
+        }
+    }
+    public function deleteKategoriKoleksi($id_kkoleksi)
+{
+    try {
+        // Cek apakah kategori ada
+        $category = $this->kategoriKoleksiModel->find($id_kkoleksi);
+        if (!$category) {
+            return redirect()->to('superadmin/koleksi/category')->with('error', 'Kategori tidak ditemukan.');
+        }
+
+        // Hapus kategori
+        $this->kategoriKoleksiModel->delete($id_kkoleksi);
+        return redirect()->to('superadmin/koleksi/category')->with('message', 'Kategori berhasil dihapus.');
+    } catch (\Exception $e) {
+        log_message('error', $e->getMessage());
+        return redirect()->back()->with('error', 'Gagal menghapus kategori.');
+    }
+}
+
+    
+// ==========================
+// FUNGSI UNTUK MANAJEMEN KOLEKSI
+// ==========================
+
+public function koleksiManage()
+{
+    $koleksi = $this->koleksiModel
+        ->select('koleksi.*, kategori_koleksi.KATEGORI_KKOLEKSI as NAMA_KATEGORI')
+        ->join('kategori_koleksi', 'kategori_koleksi.ID_KKOLEKSI = koleksi.ID_KKOLEKSI', 'left')
+        ->findAll();
+
+    return view('superadmin/koleksi/manage', ['koleksi' => $koleksi]);
+}
+
+
+public function addKoleksiForm()
+{
+    $categories = $this->kategoriKoleksiModel->findAll();
+    return view('superadmin/koleksi/add_collection', ['categories' => $categories]);
+}
+
+public function saveKoleksi()
+{
+    $validation = \Config\Services::validation();
+
+    $validation->setRules([
+        'nama_koleksi' => 'required',
+        'kategori_koleksi' => 'required',
+        'deskripsi_koleksi' => 'required',
+        'foto_koleksi' => 'uploaded[foto_koleksi]|is_image[foto_koleksi]|mime_in[foto_koleksi,image/jpg,image/jpeg,image/png]'
+    ]);
+
+    if (!$validation->withRequest($this->request)->run()) {
+        return redirect()->back()
+            ->withInput()
+            ->with('validation', $validation->getErrors());
+    }
+
+    $foto = $this->request->getFile('foto_koleksi');
+    $fotoName = '';
+    if ($foto->isValid() && !$foto->hasMoved()) {
+        $fotoName = $foto->getRandomName();
+        $foto->move(FCPATH . 'uploads/koleksi/', $fotoName);
+    }
+
+    $data = [
+        'ID_KKOLEKSI' => $this->request->getPost('kategori_koleksi'),
+        'NAMA_KOLEKSI' => $this->request->getPost('nama_koleksi'),
+        'DESKRIPSI_KOLEKSI' => $this->request->getPost('deskripsi_koleksi'), // Perbaikan di sini
+        'FOTO_KOLEKSI' => $fotoName
+    ];
+
+    $this->koleksiModel->insert($data);
+    return redirect()->to('superadmin/koleksi/manage')->with('message', 'Koleksi berhasil ditambahkan.');
+}
+
+public function editKoleksi($id_koleksi)
+{
+    $koleksi = $this->koleksiModel->find($id_koleksi);
+    $categories = $this->kategoriKoleksiModel->findAll();
+
+    if (!$koleksi) {
+        return redirect()->to('superadmin/koleksi/manage')->with('error', 'Koleksi tidak ditemukan.');
+    }
+
+    return view('superadmin/koleksi/edit_collection', [
+        'koleksi' => $koleksi,
+        'categories' => $categories
+    ]);
+}
+
+
+
+public function updateKoleksi()
+{
+    $id_koleksi = $this->request->getPost('id_koleksi');
+
+    $validation = \Config\Services::validation();
+    $validation->setRules([
+        'nama_koleksi' => 'required',
+        'kategori_koleksi' => 'required',
+        'deskripsi_koleksi' => 'required',
+        'foto_koleksi' => 'permit_empty|uploaded[foto_koleksi]|is_image[foto_koleksi]|mime_in[foto_koleksi,image/jpg,image/jpeg,image/png]'
+    ]);
+
+    if (!$validation->withRequest($this->request)->run()) {
+        return redirect()->back()
+            ->withInput()
+            ->with('validation', $validation->getErrors());
+    }
+
+    $data = [
+        'ID_KKOLEKSI' => $this->request->getPost('kategori_koleksi'),
+        'NAMA_KOLEKSI' => $this->request->getPost('nama_koleksi'),
+        'DESKRIPSI_KOLEKSI' => $this->request->getPost('deskripsi_koleksi')
+    ];
+    
+
+    $file = $this->request->getFile('foto_koleksi');
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $oldKoleksi = $this->koleksiModel->find($id_koleksi);
+        if (!empty($oldKoleksi['FOTO_KOLEKSI'])) {
+            $oldFotoPath = FCPATH . 'uploads/koleksi/' . $oldKoleksi['FOTO_KOLEKSI'];
+            if (is_file($oldFotoPath)) {
+                unlink($oldFotoPath);
+            }
+        }
+
+        $newName = $file->getRandomName();
+        $file->move(FCPATH . 'uploads/koleksi/', $newName);
+        $data['FOTO_KOLEKSI'] = $newName;
+    }
+
+    $this->koleksiModel->update($id_koleksi, $data);
+    return redirect()->to('superadmin/koleksi/manage')->with('message', 'Koleksi berhasil diperbarui.');
+}
+
+public function deleteKoleksi($id_koleksi)
+{
+    try {
+        $koleksi = $this->koleksiModel->find($id_koleksi);
+
+        if (!$koleksi) {
+            return redirect()->to('superadmin/koleksi/manage')->with('error', 'Koleksi tidak ditemukan.');
+        }
+
+        if (!empty($koleksi['FOTO_KOLEKSI'])) {
+            $fotoPath = FCPATH . 'uploads/koleksi/' . $koleksi['FOTO_KOLEKSI'];
+            if (is_file($fotoPath)) {
+                unlink($fotoPath);
+            }
+        }
+
+        $this->koleksiModel->delete($id_koleksi);
+        return redirect()->to('superadmin/koleksi/manage')->with('message', 'Koleksi berhasil dihapus.');
+    } catch (\Exception $e) {
+        log_message('error', $e->getMessage());
+        return redirect()->back()->with('error', 'Gagal menghapus koleksi.');
+    }
+}
+}
