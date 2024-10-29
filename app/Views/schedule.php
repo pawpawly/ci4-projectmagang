@@ -99,6 +99,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
+    // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
+    window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+    };
+    
     const calendar = document.getElementById('calendar');
     const monthYear = document.getElementById('monthYear');
     const todayButton = document.getElementById('today');

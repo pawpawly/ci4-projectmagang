@@ -40,7 +40,7 @@
                             </a>
                             <div class="flex-1">
                                 <a href="<?= site_url('berita/' . urlencode($post['NAMA_BERITA'])); ?>" 
-                                   class="text-lg font-semibold hover:text-red-400 transition duration-300 ease-in-out">
+                                   class="text-lg font-semibold hover:text-red-400 transition duration-300 ease-in-out line-clamp-2">
                                     <?= esc($post['NAMA_BERITA']); ?>
                                 </a>
                                 <p class="text-sm text-gray-600"><?= formatTanggalIndonesia($post['TANGGAL_BERITA']); ?></p>
@@ -55,4 +55,11 @@
     </div>
 </div>
 
+<script>
+    // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
+    window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+    };
+    
+</script>
 <?= $this->endSection() ?>

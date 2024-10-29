@@ -21,6 +21,13 @@ $routes->group('berita', function ($routes) {
     $routes->get('(:segment)', 'Berita::detail/$1'); // Detail berita berdasarkan slug
 });
 
+// Route untuk Koleksi
+$routes->group('koleksi', function ($routes) {
+    $routes->get('/', 'Koleksi::index');  // Route untuk halaman daftar koleksi
+    $routes->get('detail/(:num)', 'Koleksi::detail/$1');  // Route untuk halaman detail koleksi
+});
+
+
 
 // Route untuk Detail Event dan Daftar Event
 $routes->group('event', function ($routes) {
