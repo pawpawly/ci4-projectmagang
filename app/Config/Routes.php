@@ -15,6 +15,12 @@ $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');
 $routes->get('/logout', 'Login::logout');
 
+// Route untuk Detail Berita dan Daftar Berita
+$routes->group('berita', function ($routes) {
+    $routes->get('/', 'Berita::index'); // Daftar berita
+    $routes->get('(:segment)', 'Berita::detail/$1'); // Detail berita berdasarkan slug
+});
+
 
 // Route untuk Detail Event dan Daftar Event
 $routes->group('event', function ($routes) {

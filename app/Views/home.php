@@ -79,28 +79,39 @@
 <section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
     <div class="container mx-auto px-8">
         <div class="relative text-center">
-            <h2 class="event-overlay">FORUM</h2> <!-- Overlay yang sama dengan EVENT -->
+            <h2 class="event-overlay">FORUM</h2> <!-- Overlay -->
             <h2 class="event-heading text-4xl font-bold mb-8 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Forum</h2>
         </div>
 
         <?php if (!empty($berita) && is_array($berita)): ?>
             <div class="forum-grid-wrapper">
-                <div class="forum-grid">
-                    <?php foreach ($berita as $item): ?>
+                <div class="forum-grid grid-cols-2"> <!-- 2 berita per baris -->
+                    <?php foreach (array_slice($berita, 0, 4) as $item): ?>
                         <div class="forum-card">
                             <div class="forum-image-wrapper">
-                                <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
-                                     alt="<?= esc($item['NAMA_BERITA']); ?>"
-                                     class="forum-image">
+                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>"> <!-- Link ke detail berita -->
+                                    <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
+                                         alt="<?= esc($item['NAMA_BERITA']); ?>"
+                                         class="forum-image">
+                                </a>
                             </div>
-                            <p class="text-gray-600 mt-2 "><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
+                            <p class="text-gray-600 mt-2"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
                             <h3 class="forum-title mt-1 text-lg font-semibold">
-                                <?= esc($item['NAMA_BERITA']); ?>
+                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
+                                   class="hover:text-red-400 transition duration-300 ease-in-out">
+                                    <?= esc($item['NAMA_BERITA']); ?>
+                                </a>
                             </h3>
                         </div>
                     <?php endforeach; ?>
                 </div>
             </div>
+            <div class="text-center mt-8">
+                <a href="<?= site_url('berita'); ?>" 
+                   class="bg-red-900 text-white py-2 px-6 rounded-full hover:bg-red-700">
+                   Lihat Berita Lebih Banyak
+                </a>
+            </div>         
         <?php else: ?>
             <p class="text-center text-gray-500">Tidak ada berita tersedia saat ini.</p>
         <?php endif; ?>

@@ -13,12 +13,22 @@ class BeritaModel extends Model
         'SUMBER_BERITA', 'TANGGAL_BERITA', 'FOTO_BERITA'
     ];
 
-    // Metode untuk mendapatkan semua berita beserta nama penyiar
-    public function getBeritaWithUser()
+    /**
+     * Mendapatkan semua berita beserta penyiar, diurutkan berdasarkan tanggal.
+     *
+     * @param int|null $limit Jumlah berita yang ingin diambil (opsional).
+     * @return array Daftar berita.
+     */
+    public function getBeritaWithUser($limit = null)
     {
-        return $this->db->table($this->table)
+        $builder = $this->db->table($this->table)
             ->select('berita.*, berita.PENYIAR_BERITA AS NAMA_USER')
-            ->get()
-            ->getResultArray();
+            ->orderBy('TANGGAL_BERITA', 'DESC'); // Urutkan dari berita terbaru
+
+        if ($limit !== null) {
+            $builder->limit($limit);
+        }
+
+        return $builder->get()->getResultArray();
     }
 }
