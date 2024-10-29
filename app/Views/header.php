@@ -11,7 +11,7 @@
       <nav class="space-x-8 flex items-center">
         <a href="<?= site_url('./');?>" class="text-white hover:text-gray-300 font-semibold">Beranda</a>
         <a href="<?= site_url('schedule');?>" class="text-white hover:text-gray-300 font-semibold">Jadwal</a>
-        <a href="#koleksi" class="text-white hover:text-gray-300 font-semibold">Koleksi</a>
+        <a href="<?= site_url('koleksi'); ?>" class="text-white hover:text-gray-300 font-semibold">Koleksi</a>
         <a href="<?= site_url('event/index'); ?>" class="text-white hover:text-gray-300 font-semibold">Event</a>
         <a href="<?= site_url('aboutus');?>" class="text-white hover:text-gray-300 font-semibold">Tentang Kami</a>
       </nav>

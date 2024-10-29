@@ -18,20 +18,26 @@ class Home extends BaseController
 
     public function index()
     {
-        // Ambil semua event
-        $events = $this->eventModel->findAll();
-
+        $today = date('Y-m-d'); // Ambil tanggal hari ini
+    
+        // Ambil hanya event yang belum lewat (tanggal event >= hari ini)
+        $events = $this->eventModel
+                       ->where('TANGGAL_EVENT >=', $today)
+                       ->orderBy('TANGGAL_EVENT', 'ASC') // Urutkan berdasarkan tanggal terdekat
+                       ->findAll();
+    
         // Ambil maksimal 4 berita terbaru berdasarkan tanggal
         $berita = $this->beritaModel
                        ->orderBy('TANGGAL_BERITA', 'DESC')
                        ->limit(4)
                        ->getBeritaWithUser();
-
+    
         // Kirim data ke view
         return view('home', [
             'title' => 'Home',
-            'events' => $events,
-            'berita' => $berita, // Kirim berita terbaru ke view
+            'events' => $events, // Hanya event mendatang
+            'berita' => $berita, // Berita terbaru
         ]);
     }
+    
 }

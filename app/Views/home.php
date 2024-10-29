@@ -248,11 +248,34 @@
 }
 
 
-
-
 </style>
 
 <script>
+    // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
+    window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+    };
+
+    // Ambil semua elemen gambar dengan kelas carousel-image
+    const carouselImages = document.querySelectorAll('.carousel-image');
+    let currentImageIndex = 0; // Indeks gambar aktif
+
+    // Fungsi untuk menampilkan gambar berikutnya
+    function showNextImage() {
+        // Sembunyikan gambar saat ini
+        carouselImages[currentImageIndex].classList.remove('opacity-100');
+        carouselImages[currentImageIndex].classList.add('opacity-0');
+
+        // Pindah ke gambar berikutnya
+        currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
+
+        // Tampilkan gambar baru
+        carouselImages[currentImageIndex].classList.remove('opacity-0');
+        carouselImages[currentImageIndex].classList.add('opacity-100');
+    }
+    setInterval(showNextImage, 3500);
+
+
     const eventCarousel = document.getElementById('eventCarousel');
     const leftArrow = document.getElementById('leftArrow');
     const rightArrow = document.getElementById('rightArrow');

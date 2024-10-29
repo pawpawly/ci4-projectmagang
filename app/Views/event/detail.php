@@ -16,11 +16,16 @@
     <div class="flex flex-col lg:flex-row items-start gap-8">
         <!-- Gambar Event -->
         <div class="w-full lg:w-1/2">
-            <img 
-                src="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 
-                alt="<?= esc($event['NAMA_EVENT']); ?>" 
-                class="object-contain w-full max-h-[500px] bg-gray-100 p-2 rounded-lg">
+            <a href="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 
+               target="_blank" 
+               rel="noopener noreferrer">
+                <img 
+                    src="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 
+                    alt="<?= esc($event['NAMA_EVENT']); ?>" 
+                    class="object-contain w-full max-h-[500px] bg-gray-100 p-2 rounded-lg">
+            </a>
         </div>
+
 
         <!-- Detail Event -->
         <div class="w-full lg:w-1/2">
