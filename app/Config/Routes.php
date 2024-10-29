@@ -65,16 +65,17 @@ $routes->group('superadmin/user', ['filter' => 'auth'], function ($routes) {
 $routes->group('superadmin/event', ['filter' => 'auth'], function ($routes) {
     $routes->get('category', 'SuperAdminController::eventCategory');  
     $routes->get('manage', 'SuperAdminController::eventManage'); 
-    $routes->get('category/add', 'SuperAdminController::addCategoryForm');
+    $routes->get('category/add', 'SuperAdminController::addCategory');
     $routes->post('category/save', 'SuperAdminController::saveCategory');
     $routes->get('category/edit/(:num)', 'SuperAdminController::editCategory/$1');
     $routes->post('category/update', 'SuperAdminController::updateCategory');
-    $routes->get('category/delete/(:num)', 'SuperAdminController::deleteCategory/$1');
+    $routes->delete('category/delete/(:num)', 'SuperAdminController::deleteCategory/$1');
     $routes->get('add', 'SuperAdminController::addEventForm');
     $routes->post('save', 'SuperAdminController::saveEvent');
     $routes->get('edit/(:num)', 'SuperAdminController::editEvent/$1');
     $routes->post('update', 'SuperAdminController::updateEvent');
-    $routes->get('delete/(:num)', 'SuperAdminController::deleteEvent/$1');
+    $routes->delete('delete/(:num)', 'SuperAdminController::deleteEvent/$1');
+
 });
 
 // Route untuk Manajemen Berita
@@ -84,7 +85,8 @@ $routes->group('superadmin/berita', ['filter' => 'auth'], function ($routes) {
     $routes->post('save', 'SuperAdminController::saveBerita');  // Simpan Berita
     $routes->post('update', 'SuperAdminController::updateBerita');  // Update Berita
     $routes->get('edit/(:num)', 'SuperAdminController::editBerita/$1');  // Edit Berita
-    $routes->get('delete/(:num)', 'SuperAdminController::deleteBerita/$1');  // Delete Berita
+    $routes->post('delete/(:num)', 'SuperAdminController::deleteBerita/$1');
+
 });
 
 
@@ -95,13 +97,14 @@ $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
     $routes->post('category/save', 'SuperAdminController::saveKategoriKoleksi');
     $routes->get('category/edit/(:num)', 'SuperAdminController::editKategoriKoleksi/$1');
     $routes->post('category/update', 'SuperAdminController::updateKategoriKoleksi');
-    $routes->get('category/delete/(:num)', 'SuperAdminController::deleteKategoriKoleksi/$1');
+    $routes->delete('category/delete/(:num)', 'SuperadminController::deleteKategoriKoleksi/$1');
     $routes->get('manage', 'SuperAdminController::koleksiManage');
     $routes->get('add', 'SuperAdminController::addKoleksiForm');
     $routes->post('save', 'SuperAdminController::saveKoleksi');
     $routes->get('edit/(:num)', 'SuperAdminController::editKoleksi/$1');
     $routes->post('update', 'SuperAdminController::updateKoleksi');
-    $routes->get('delete/(:num)', 'SuperAdminController::deleteKoleksi/$1');
+    $routes->delete('delete/(:num)', 'SuperAdminController::deleteKoleksi/$1');
+
 
 
 
@@ -110,5 +113,6 @@ $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
 $routes->group('superadmin/reservasi', ['filter' => 'auth'], function ($routes) {
     $routes->get('manage', 'SuperAdminController::reservationManage');
     $routes->post('status/(:num)', 'SuperAdminController::reservationStatus/$1');
-    $routes->delete('delete/(:num)', 'SuperAdminController::reservationDelete/$1'); 
+    $routes->delete('delete/(:num)', 'SuperAdminController::deleteReservation/$1');
+ 
 });

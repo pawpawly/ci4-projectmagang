@@ -58,106 +58,70 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Modal Konfirmasi Hapus -->
-    <div id="deleteModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-lg font-bold mb-4">Konfirmasi Penghapusan</h2>
-            <p>Apakah Anda yakin ingin menghapus pengguna ini?</p>
-            <div class="mt-6 flex justify-end space-x-4">
-                <button onclick="cancelDelete()" 
-                        class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Batal</button>
-                <button id="confirmDeleteBtn" 
-                        class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Hapus</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notifikasi -->
-    <div id="notification" class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-md"></div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 let deleteUsername = null;
 
+// Fungsi untuk konfirmasi delete dengan SweetAlert2
 function confirmDelete(username) {
-    deleteUsername = username;
-    const modal = document.getElementById('deleteModal');
-    modal.classList.remove('hidden');
-}
-
-function cancelDelete() {
-    deleteUsername = null;
-    const modal = document.getElementById('deleteModal');
-    modal.classList.add('hidden');
-}
-
-document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-    if (deleteUsername) {
-        fetch(`<?= site_url('superadmin/user/delete/') ?>${encodeURIComponent(deleteUsername)}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                renderUserTable(data.users); // Render ulang tabel dengan data terbaru
-                showNotification(data.message, 'success');
-            } else if (data.error) {
-                showNotification(data.error, 'error');
-            }
-        })
-        .catch(() => showNotification('Terjadi kesalahan saat menghapus pengguna.', 'error'));
-
-        cancelDelete();
-    }
-});
-
-function renderUserTable(users) {
-    const userTable = document.getElementById('userTable');
-    userTable.innerHTML = ''; // Hapus semua baris sebelumnya
-
-    users.forEach(user => {
-        const isCurrentUser = user.USERNAME === '<?= session()->get('username'); ?>';
-        const userRow = `
-            <tr id="user-${user.USERNAME}" class="border-b">
-                <td class="py-2 px-4">${isCurrentUser ? `<strong>${user.NAMA_USER} (Saya)</strong>` : user.NAMA_USER}</td>
-                <td class="py-2 px-4">${user.LEVEL_USER == '1' ? 'Admin' : 'Superadmin'}</td>
-                <td class="py-2 px-4 text-right">
-                    <div class="flex justify-end items-center space-x-4">
-                        <a href="<?= site_url('superadmin/user/edit/') ?>${encodeURIComponent(user.USERNAME)}" 
-                           class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700 mr-4">Edit</a>
-                        ${!isCurrentUser ? 
-                            `<button onclick="confirmDelete('${user.USERNAME}')" 
-                                class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</button>` : 
-                            `<span class="text-transparent">Delete</span>`}
-                    </div>
-                </td>
-            </tr>`;
-        userTable.insertAdjacentHTML('beforeend', userRow);
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Pengguna ini akan dihapus secara permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteUser(username);
+        }
     });
 }
 
-function showNotification(message, type) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.classList.remove('hidden', 'bg-green-500', 'bg-red-500');
-    notification.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500');
-    setTimeout(() => {
-        notification.classList.add('hidden');
-    }, 3000);
+// Fungsi untuk delete user melalui AJAX
+function deleteUser(username) {
+    fetch(`<?= site_url('superadmin/user/delete/') ?>${encodeURIComponent(username)}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Pengguna berhasil dihapus.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                document.getElementById(`user-${username}`).remove(); // Hapus baris user dari tabel
+            });
+        } else {
+            Swal.fire({
+                title: 'Gagal!',
+                text: data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Terjadi kesalahan pada server.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        console.error('Error:', error);
+    });
 }
-
-
-
-
-
-
-
-
-
 </script>
 
 <style>

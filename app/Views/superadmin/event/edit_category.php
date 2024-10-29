@@ -4,17 +4,7 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Edit Kategori</h1>
 
-    <?php if (session()->getFlashdata('validation')): ?>
-        <div class="bg-red-500 text-white p-4 rounded mb-4">
-            <ul>
-                <?php foreach (session()->getFlashdata('validation')->getErrors() as $error): ?>
-                    <li><?= esc($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-
-    <form action="<?= site_url('superadmin/event/category/update') ?>" method="POST">
+    <form id="editCategoryForm" action="<?= site_url('superadmin/event/category/update') ?>" method="POST">
         <input type="hidden" name="id_kevent" value="<?= $category['ID_KEVENT'] ?>">
 
         <div class="mb-4">
@@ -38,4 +28,52 @@
         </div>
     </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.getElementById('editCategoryForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Mencegah submit form secara default
+
+        const formData = new FormData(this);
+
+        fetch('<?= site_url('superadmin/event/category/update') ?>', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '<?= site_url('superadmin/event/category') ?>';
+                });
+            } else {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'Semua field wajib diisi!',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Terjadi kesalahan pada server.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            console.error('Error:', error);
+        });
+    });
+</script>
+
 <?= $this->endSection() ?>
