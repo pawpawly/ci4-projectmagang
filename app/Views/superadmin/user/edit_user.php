@@ -4,12 +4,6 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Edit Pengguna</h1>
 
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="bg-red-500 text-white p-4 rounded mb-4">
-            <?= session()->getFlashdata('error'); ?>
-        </div>
-    <?php endif; ?>
-
     <form id="editUserForm" action="<?= site_url('superadmin/user/update') ?>" method="POST" novalidate>
         <input type="hidden" name="original_username" value="<?= esc($user['USERNAME']); ?>">
 
@@ -58,5 +52,85 @@
         </div>
     </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.getElementById('editUserForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        const formData = new FormData(this);
+
+        fetch('<?= site_url('superadmin/user/update') ?>', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = data.redirect;
+                });
+            } else {
+                Swal.fire({
+                    title: 'Gagal!',
+                    text: data.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Terjadi kesalahan pada server.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            console.error('Error:', error);
+        });
+    });
+
+    function validateForm() {
+        const namaLengkap = document.getElementById('nama_lengkap').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const levelUser = document.querySelector('input[name="level_user"]:checked');
+
+        if (!namaLengkap || !username || !levelUser) {
+            Swal.fire({
+                title: 'Oops!',
+                text: 'Semua field wajib diisi!',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        if (password && password.length < 8) {
+            Swal.fire({
+                title: 'Oops!',
+                text: 'Password harus minimal 8 karakter!',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        return true;
+    }
+</script>
 
 <?= $this->endSection() ?>

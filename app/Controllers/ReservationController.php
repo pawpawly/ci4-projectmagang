@@ -26,19 +26,27 @@ class ReservationController extends Controller
 
     public function store()
     {
-        // Validasi input
-        if (!$this->validate([
+        $validation = \Config\Services::validation();
+    
+        $validation->setRules([
             'nama_reservasi' => 'required',
             'instansi_reservasi' => 'required',
             'email_reservasi' => 'required|valid_email',
             'telepon_reservasi' => 'required',
             'jmlpengunjung_reservasi' => 'required|integer',
             'tanggal_reservasi' => 'required|valid_date[Y-m-d]',
-        ])) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        ]);
+    
+        // Validasi input
+        if (!$validation->withRequest($this->request)->run()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Semua field wajib diisi!',
+                'errors' => $validation->getErrors()
+            ]);
         }
     
-        // Ambil data dari request
+        // Ambil data dari form
         $data = [
             'NAMA_RESERVASI' => $this->request->getPost('nama_reservasi'),
             'INSTANSI_RESERVASI' => $this->request->getPost('instansi_reservasi'),
@@ -47,13 +55,15 @@ class ReservationController extends Controller
             'JMLPENGUNJUNG_RESERVASI' => $this->request->getPost('jmlpengunjung_reservasi'),
             'KEGIATAN_RESERVASI' => $this->request->getPost('kegiatan_reservasi'),
             'TANGGAL_RESERVASI' => $this->request->getPost('tanggal_reservasi'),
-            'STATUS_RESERVASI' => 'pending'
+            'STATUS_RESERVASI' => 'pending',
         ];
     
         // Simpan data ke database
         $this->reservasiModel->insert($data);
     
-        // Redirect dengan pesan sukses
-        return redirect()->to('/schedule')->with('success', 'Reservasi berhasil disimpan.');
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Reservasi berhasil disimpan!'
+        ]);
     }
 }    

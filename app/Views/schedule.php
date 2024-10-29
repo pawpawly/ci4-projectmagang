@@ -58,32 +58,32 @@
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Nama</label>
-        <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2" required>
+        <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2">
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Instansi</label>
-        <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2" required>
+        <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2">
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" required>
+        <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
-        <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" required>
+        <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
-        <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" required>
+        <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-        <input type="number" name="jmlpengunjung_reservasi" class="w-full border rounded px-3 py-2" required>
+        <input type="number" name="jmlpengunjung_reservasi" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="flex justify-end">
@@ -108,8 +108,60 @@
     const selectedDateText = document.getElementById('selectedDateText');
     const selectedDateInput = document.getElementById('selectedDate');
     const closeModalButton = document.getElementById('closeModal');
+    const reservationForm = document.getElementById('reservationForm');
 
     let currentDate = new Date();
+
+    reservationForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Cegah form dikirim langsung
+
+        const formData = new FormData(reservationForm); // Ambil data dari form
+
+        fetch('/reservasi/store', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                // Jika validasi gagal, tampilkan pesan error SweetAlert2
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Semua field wajib diisi!',
+                });
+            } else {
+                // Jika validasi berhasil, tampilkan konfirmasi SweetAlert2
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Konfirmasi Reservasi',
+                    text: 'Apakah data yang Anda isi sudah benar?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Simpan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Reservasi berhasil diajukan!',
+                            confirmButtonText: 'Lanjutkan ke WhatsApp'
+                        }).then(() => {
+                            window.location.href = 'https://wa.me/6281231231231';
+                        });
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Terjadi kesalahan, silakan coba lagi.',
+            });
+        });
+    });
 
     function renderCalendar(date) {
         calendar.innerHTML = ''; // Kosongkan kalender
@@ -126,6 +178,7 @@
             calendar.appendChild(document.createElement('div'));
         }
 
+        // Tampilkan tanggal dalam kalender
         for (let day = 1; day <= lastDate; day++) {
             const dayElement = document.createElement('div');
             dayElement.textContent = day;
@@ -183,13 +236,18 @@
     renderCalendar(currentDate);
 
     <?php if (session()->getFlashdata('success')): ?>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: '<?= session()->getFlashdata('success'); ?>',
-            showConfirmButton: false,
-            timer: 1500
-        });
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Reservasi berhasil diajukan, silahkan melanjutkan konfirmasi ke WhatsApp.',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjutkan ke WhatsApp',
+        cancelButtonText: 'Tutup',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'https://wa.me/6281231231231';
+        }
+    });
     <?php endif; ?>
 </script>
 
