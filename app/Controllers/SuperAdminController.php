@@ -9,6 +9,7 @@ use App\Models\BeritaModel;
 use App\Models\KoleksiModel;
 use App\Models\KategoriKoleksiModel;
 use App\Models\ReservasiModel;
+use App\Models\BukuTamuModel;
 use CodeIgniter\Controller;
 use App\Validation\CustomValidation;
 
@@ -21,6 +22,7 @@ class SuperAdminController extends Controller
     protected $koleksiModel;
     protected $kategoriKoleksiModel;
     protected $reservasiModel;
+    protected $bukuTamuModel;
     protected $db;
 
     public function __construct()
@@ -32,6 +34,7 @@ class SuperAdminController extends Controller
         $this->koleksiModel = new KoleksiModel();
         $this->kategoriKoleksiModel = new KategoriKoleksiModel();
         $this->reservasiModel = new ReservasiModel();
+        $this->bukuTamuModel = new BukuTamuModel();
         $this->db = \Config\Database::connect();
 
         helper(['url', 'form', 'month']);
@@ -1186,4 +1189,67 @@ public function deleteReservation($id_reservasi)
     }
 }
 
+
+// ==========================
+// FUNGSI UNTUK MANAJEMEN BUKU TAMU
+// ==========================
+
+
+public function manageBukuTamu()
+    {
+        $data = [
+            'bukutamu' => $this->bukuTamuModel->findAll(), // Ambil semua data buku tamu
+            'title' => 'Manajemen Buku Tamu'
+        ];
+
+        return view('superadmin/bukutamu/manage', $data);
+    }
+
+    // Hapus data buku tamu
+    public function deleteBukuTamu($id_tamu)
+    {
+        try {
+            $tamu = $this->bukuTamuModel->find($id_tamu);
+
+            if (!$tamu) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Data tamu tidak ditemukan.'
+                ]);
+            }
+
+            $this->bukuTamuModel->delete($id_tamu);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Data tamu berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Terjadi kesalahan pada server.'
+            ]);
+        }
+    }
+
+    public function grantAccess()
+    {
+        // Set session akses form
+        session()->set('form_access', true);
+        return redirect()->to('/bukutamu/form');
+    }
+
+    public function form()
+    {
+        if (!session()->get('form_access')) {
+            // Jika session tidak valid, arahkan kembali ke dashboard
+            return redirect()->to('/superadmin/dashboard')->with('error', 'Akses tidak diizinkan!');
+        }
+
+        // Hapus session setelah form dibuka untuk mencegah akses ulang
+        session()->remove('form_access');
+        return view('bukutamu/form_guestbook');
+    }
 }
