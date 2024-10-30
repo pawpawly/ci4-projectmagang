@@ -1243,13 +1243,15 @@ public function manageBukuTamu()
 
     public function form()
     {
+        // Validasi apakah session 'form_access' ada
         if (!session()->get('form_access')) {
-            // Jika session tidak valid, arahkan kembali ke dashboard
-            return redirect()->to('/superadmin/dashboard')->with('error', 'Akses tidak diizinkan!');
+            // Jika tidak ada akses, arahkan kembali ke dashboard atau halaman login
+            return redirect()->to('/superadmin/dashboard')->with('error', 'Akses ditolak!');
         }
 
-        // Hapus session setelah form dibuka untuk mencegah akses ulang
-        session()->remove('form_access');
-        return view('bukutamu/form_guestbook');
+        // Load halaman form buku tamu dan kemudian hancurkan session
+        session()->remove('form_access'); // Hapus session agar tidak bisa diakses ulang
+
+        return view('bukutamu/form_guestbook'); // Tampilkan form buku tamu
     }
 }
