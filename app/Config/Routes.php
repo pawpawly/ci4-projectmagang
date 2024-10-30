@@ -104,15 +104,27 @@ $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'SuperAdminController::editKoleksi/$1');
     $routes->post('update', 'SuperAdminController::updateKoleksi');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteKoleksi/$1');
-
-
-
-
 });
 
 $routes->group('superadmin/reservasi', ['filter' => 'auth'], function ($routes) {
     $routes->get('manage', 'SuperAdminController::reservationManage');
     $routes->post('status/(:num)', 'SuperAdminController::reservationStatus/$1');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteReservation/$1');
- 
+});
+
+$routes->group('superadmin/bukutamu', ['filter' => 'auth'], function ($routes) {
+    $routes->get('manage', 'SuperAdminController::manageBukuTamu');
+    $routes->delete('delete/(:num)', 'SuperAdminController::deleteBukuTamu/$1');
+    $routes->get('form', 'SuperAdminController::grantAccess');
+});
+
+
+
+
+
+$routes->group('bukutamu', function ($routes) {
+    $routes->get('form', 'SuperAdminController::form');
+    $routes->get('grant', 'BukuTamuController::grantAccess');
+    $routes->get('destroy', 'BukuTamuController::destroyAccess');
+    
 });
