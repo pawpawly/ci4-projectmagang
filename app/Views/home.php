@@ -85,23 +85,26 @@
 
         <?php if (!empty($berita) && is_array($berita)): ?>
             <div class="forum-grid-wrapper">
-                <div class="forum-grid grid-cols-2"> <!-- 2 berita per baris -->
-                    <?php foreach (array_slice($berita, 0, 4) as $item): ?>
-                        <div class="forum-card">
-                            <div class="forum-image-wrapper">
-                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>"> <!-- Link ke detail berita -->
+                <div class="forum-grid grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto"> 
+                    <!-- 2 berita per baris pada layar medium dan besar -->
+                    <?php foreach (array_slice($berita, 0, 3) as $item): ?>
+                        <div class="forum-card relative">
+                            <div class="forum-image-wrapper overflow-hidden rounded-lg">
+                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>"> 
                                     <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
                                          alt="<?= esc($item['NAMA_BERITA']); ?>"
-                                         class="forum-image">
+                                         class="forum-image transition-transform duration-300 ease-in-out hover:scale-105">
                                 </a>
                             </div>
-                            <p class="text-gray-600 mt-2"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
-                            <h3 class="forum-title mt-1 text-lg font-semibold">
-                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
-                                   class="hover:text-red-400 transition duration-300 ease-in-out">
-                                    <?= esc($item['NAMA_BERITA']); ?>
-                                </a>
-                            </h3>
+                            <div class="absolute bottom-4 left-4 text-white">
+                                <p class="text-sm"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
+                                <h3 class="mt-1 text-xl font-semibold">
+                                    <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
+                                       class="hover:text-red-400 transition duration-300 ease-in-out">
+                                        <?= esc($item['NAMA_BERITA']); ?>
+                                    </a>
+                                </h3>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -117,6 +120,8 @@
         <?php endif; ?>
     </div>
 </section>
+
+
 
 
 

@@ -44,6 +44,7 @@
             <!-- Grid Kalender -->
             <div id="calendar" class="grid grid-cols-7 gap-px bg-white min-h-[80vh]"></div>
         </div>
+        <p class="italic">Klik pada tanggal untuk melakukan reservasi.</p>
     </div>
 </section>
 
