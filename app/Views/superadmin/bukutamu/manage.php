@@ -36,7 +36,7 @@
                             </td>
                             <td class="py-2 px-4"><?= esc($tamu['NAMA_TAMU']); ?></td>
                             <td class="py-2 px-4">
-                                <?= date('d-m-Y H:i', strtotime($tamu['TGLKUNJUNGAN_TAMU'])); ?>
+                                <?= formatTanggalIndonesia($tamu['TGLKUNJUNGAN_TAMU']) . ' ' . date('H:i:s', strtotime($tamu['TGLKUNJUNGAN_TAMU'])) . ' WITA'; ?>
                             </td>
                             <td class="py-2 px-4">
                                 <?= esc($tamu['JKL_TAMU'] + $tamu['JKP_TAMU']); ?> Orang
@@ -72,7 +72,6 @@
         <p><strong>Tanggal Kunjungan:</strong> <span id="detailTanggal"></span></p>
         <p><strong>Jumlah Tamu Laki-laki:</strong> <span id="detailTamuLaki"></span></p>
         <p><strong>Jumlah Tamu Perempuan:</strong> <span id="detailTamuPerempuan"></span></p>
-        <p><strong>Saran:</strong> <span id="detailSaran"></span></p>
         <div class="mt-6 flex justify-end space-x-4">
             <button onclick="closeDetail()" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Tutup</button>
         </div>
@@ -95,10 +94,24 @@
         document.getElementById('detailNama').textContent = tamu.NAMA_TAMU;
         document.getElementById('detailAlamat').textContent = tamu.ALAMAT_TAMU;
         document.getElementById('detailNoHP').textContent = tamu.NOHP_TAMU;
-        document.getElementById('detailTanggal').textContent = new Date(tamu.TGLKUNJUNGAN_TAMU).toLocaleString();
+
+        const tanggalKunjungan = new Date(tamu.TGLKUNJUNGAN_TAMU);
+        const options = {
+            timeZone: 'Asia/Makassar',
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            timeZoneName: 'short'
+        };
+
+        document.getElementById('detailTanggal').textContent = tanggalKunjungan.toLocaleString('id-ID', options);
+
         document.getElementById('detailTamuLaki').textContent = `${tamu.JKL_TAMU} Orang`;
         document.getElementById('detailTamuPerempuan').textContent = `${tamu.JKP_TAMU} Orang`;
-        document.getElementById('detailSaran').textContent = tamu.SARAN_TAMU;
 
         const modal = document.getElementById('detailModal');
         modal.classList.remove('hidden');
@@ -163,7 +176,7 @@
             console.error('Error:', error);
         });
     }
-    
+
 </script>
 
 <?= $this->endSection() ?>

@@ -1234,24 +1234,28 @@ public function manageBukuTamu()
         }
     }
 
-    public function grantAccess()
-    {
-        // Set session akses form
-        session()->set('form_access', true);
-        return redirect()->to('/bukutamu/form');
-    }
+// SuperAdminController.php
 
-    public function form()
-    {
-        // Validasi apakah session 'form_access' ada
-        if (!session()->get('form_access')) {
-            // Jika tidak ada akses, arahkan kembali ke dashboard atau halaman login
-            return redirect()->to('/superadmin/dashboard')->with('error', 'Akses ditolak!');
-        }
+// SuperAdminController.php
 
-        // Load halaman form buku tamu dan kemudian hancurkan session
-        session()->remove('form_access'); // Hapus session agar tidak bisa diakses ulang
+public function grantGuestbookAccess()
+{
+    // Set session khusus untuk autentikasi buku tamu
+    session()->set('guestbook_auth', true);
 
-        return view('bukutamu/form_guestbook'); // Tampilkan form buku tamu
-    }
+    // Hapus sesi login untuk mencegah akses kembali ke halaman superadmin
+    session()->remove('isLoggedIn');
+    
+    // Redirect langsung ke form buku tamu
+    return redirect()->to('/bukutamu/form');
+}
+
+
+
+
+public function form()
+{
+    // Tampilkan form buku tamu tanpa menghapus sesi guestbook_auth
+    return view('bukutamu/form_guestbook');
+}
 }

@@ -24,12 +24,14 @@
         <?php endif; ?>
 
         <form action="<?= site_url('login/authenticate'); ?>" method="POST">
-            <div class="mb-4">
-                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" id="username" name="username" 
-                       class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
-                       focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" required>
-            </div>
+        <div class="mb-4">
+    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+    <input type="text" id="username" name="username" 
+           class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
+           focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" 
+           autocomplete="off" required>
+</div>
+
             <div class="mb-4">
                 <div class="flex justify-between">
                     <label for="password" class="block text-sm font-medium text-gray-700">Password</label>

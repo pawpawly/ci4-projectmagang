@@ -18,7 +18,6 @@ class BukuTamuModel extends Model
         'TGLKUNJUNGAN_TAMU', 
         'JKL_TAMU', 
         'JKP_TAMU', 
-        'SARAN_TAMU'
     ];
 
     protected $useTimestamps = false; // Nonaktifkan fitur timestamps
