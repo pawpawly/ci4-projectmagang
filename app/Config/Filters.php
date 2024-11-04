@@ -37,6 +37,7 @@ class Filters extends BaseFilters
         'adminAuth'      => \App\Filters\AdminFilter::class,
             'auth' => \App\Filters\AuthCheck::class,
             'superadmin' => \App\Filters\SuperAdminFilter::class,
+            'guestbookAuth' => \App\Filters\GuestbookAuth::class,
     ];
 
     /**
