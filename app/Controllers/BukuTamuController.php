@@ -27,7 +27,6 @@ class BukuTamuController extends Controller
     
     public function storeIndividual()
     {
-        // Validate form input
         $validation = \Config\Services::validation();
         $validation->setRules([
             'NAMA_TAMU' => 'required',
@@ -37,35 +36,28 @@ class BukuTamuController extends Controller
         ]);
     
         if (!$validation->withRequest($this->request)->run()) {
-            // If validation fails, redirect back with error messages
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors())->with('form_type', 'individual');
         }
     
-        // Retrieve data from the form
         $jenisKelamin = $this->request->getPost('JENIS_KELAMIN');
         $data = [
             'NAMA_TAMU' => $this->request->getPost('NAMA_TAMU'),
-            'TIPE_TAMU' => '1', // Assuming this is for individual, hard-coded or modify as needed
+            'TIPE_TAMU' => '1',
             'ALAMAT_TAMU' => $this->request->getPost('ALAMAT_TAMU'),
             'NOHP_TAMU' => $this->request->getPost('NOHP_TAMU'),
-            'TGLKUNJUNGAN_TAMU' => date('Y-m-d H:i:s'), // Use current timestamp
+            'TGLKUNJUNGAN_TAMU' => date('Y-m-d H:i:s'),
             'JKL_TAMU' => $jenisKelamin == 'Laki-Laki' ? 1 : 0,
             'JKP_TAMU' => $jenisKelamin == 'Perempuan' ? 1 : 0,
         ];
     
-        // Save data to the database
         $guestbookModel = new \App\Models\BukuTamuModel();
         $guestbookModel->insert($data);
     
-        // Redirect back to the form with a success message
         return redirect()->to('/bukutamu/form')->with('success', 'Data berhasil disimpan.');
     }
     
-
     public function storeInstansi()
     {
-        helper(['form', 'url']);
-
         $validation = \Config\Services::validation();
         $validation->setRules([
             'NAMA_TAMU' => 'required',
@@ -74,28 +66,29 @@ class BukuTamuController extends Controller
             'JKL_TAMU' => 'required|numeric|greater_than_equal_to[0]',
             'JKP_TAMU' => 'required|numeric|greater_than_equal_to[0]',
         ]);
-
+    
         if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors())->with('form_type', 'instansi');
         }
-
+    
         $data = [
             'TGLKUNJUNGAN_TAMU' => date('Y-m-d H:i:s'),
-            'TIPE_TAMU' => 2, // Instansi
+            'TIPE_TAMU' => 2,
             'NAMA_TAMU' => $this->request->getPost('NAMA_TAMU'),
             'ALAMAT_TAMU' => $this->request->getPost('ALAMAT_TAMU'),
             'NOHP_TAMU' => $this->request->getPost('NOHP_TAMU'),
             'JKL_TAMU' => $this->request->getPost('JKL_TAMU'),
             'JKP_TAMU' => $this->request->getPost('JKP_TAMU'),
         ];
-
+    
         $model = new BukuTamuModel();
         if ($model->insert($data)) {
             return redirect()->to('/bukutamu/form')->with('success', 'Data instansi berhasil disimpan.');
         } else {
-            return redirect()->back()->withInput()->with('errors', ['Data gagal disimpan. Silakan coba lagi.']);
+            return redirect()->back()->withInput()->with('errors', ['Data gagal disimpan. Silakan coba lagi.'])->with('form_type', 'instansi');
         }
     }
+    
 }
 
     

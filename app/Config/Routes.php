@@ -127,5 +127,18 @@ $routes->group('bukutamu', ['filter' => 'guestbookAuth'], function ($routes) {
     $routes->post('storeInstansi', 'BukuTamuController::storeInstansi');
 });
 
+$routes->group('superadmin/bukudigital', ['filter' => 'auth'], function ($routes) {
+    $routes->get('manage', 'SuperAdminController::manageBukuDigital');
+    $routes->get('add', 'SuperAdminController::addBukuDigital');
+    $routes->post('save', 'SuperAdminController::saveBukuDigital');
+    $routes->get('view/(:num)', 'SuperAdminController::viewBukuDigital/$1');
+    $routes->get('edit/(:num)', 'SuperAdminController::editBukuDigital/$1');
+    $routes->post('update', 'SuperAdminController::updateBukuDigital');
+    $routes->post('delete/(:num)', 'SuperAdminController::deleteBukuDigital/$1');
+
+    
+
+
+});
 
 
