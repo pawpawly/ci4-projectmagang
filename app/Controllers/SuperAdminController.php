@@ -10,6 +10,7 @@ use App\Models\KoleksiModel;
 use App\Models\KategoriKoleksiModel;
 use App\Models\ReservasiModel;
 use App\Models\BukuTamuModel;
+use App\Models\BukuDigitalModel;    
 use CodeIgniter\Controller;
 use App\Validation\CustomValidation;
 
@@ -23,6 +24,7 @@ class SuperAdminController extends Controller
     protected $kategoriKoleksiModel;
     protected $reservasiModel;
     protected $bukuTamuModel;
+    protected $bukuDigitalModel;
     protected $db;
 
     public function __construct()
@@ -35,6 +37,8 @@ class SuperAdminController extends Controller
         $this->kategoriKoleksiModel = new KategoriKoleksiModel();
         $this->reservasiModel = new ReservasiModel();
         $this->bukuTamuModel = new BukuTamuModel();
+        $this->bukuDigitalModel = new BukuDigitalModel();
+
         $this->db = \Config\Database::connect();
 
         helper(['url', 'form', 'month']);
@@ -1234,10 +1238,6 @@ public function manageBukuTamu()
         }
     }
 
-// SuperAdminController.php
-
-// SuperAdminController.php
-
 public function grantGuestbookAccess()
 {
     // Set session khusus untuk autentikasi buku tamu
@@ -1258,4 +1258,242 @@ public function form()
     // Tampilkan form buku tamu tanpa menghapus sesi guestbook_auth
     return view('bukutamu/form_guestbook');
 }
+
+    
+// ==========================
+// FUNGSI UNTUK MANAJEMEN BUKU DIGITAL
+// ==========================
+
+
+    public function manageBukuDigital()
+    {
+        // Fetch all records from the BukuDigitalModel
+        $data['bukudigital'] = $this->bukuDigitalModel->findAll();
+
+        // Load the manage view and pass the data to it
+        return view('superadmin/bukudigital/manage', $data);
+    }
+
+    public function addBukuDigital()
+    {
+        return view('superadmin/bukudigital/add_bukudigital');
+    }
+
+    // Function to save the digital book
+    public function saveBukuDigital()
+    {
+        $validation = \Config\Services::validation();
+    
+        $validation->setRules([
+            'judul_buku'   => 'required|max_length[255]',
+            'penulis_buku' => 'required|max_length[64]',
+            'tahun_buku'   => 'required|valid_date[Y]',
+            'sinopsis_buku'=> 'required',
+            'sampul_buku'  => 'uploaded[sampul_buku]|max_size[sampul_buku,2024]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
+            'produk_buku'  => 'uploaded[produk_buku]|max_size[produk_buku,42400]|mime_in[produk_buku,application/pdf]'
+        ]);
+    
+        if (!$validation->withRequest($this->request)->run()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Validation failed: ' . json_encode($validation->getErrors()),
+            ]);
+        }
+    
+        // File handling
+        $sampul = $this->request->getFile('sampul_buku');
+        $produk = $this->request->getFile('produk_buku');
+    
+        $sampulName = $sampul->getRandomName();
+        $produkName = $produk->getRandomName();
+    
+        try {
+            // Move the files
+            $sampul->move(FCPATH . 'uploads/bukudigital/sampul', $sampulName);
+            $produk->move(FCPATH . 'uploads/bukudigital/pdf', $produkName);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'File upload error: ' . $e->getMessage(),
+            ]);
+        }
+    
+        // Prepare data for database insertion
+        $data = [
+            'JUDUL_BUKU' => $this->request->getPost('judul_buku'),
+            'PENULIS_BUKU' => $this->request->getPost('penulis_buku'),
+            'TAHUN_BUKU' => $this->request->getPost('tahun_buku'),
+            'SINOPSIS_BUKU' => $this->request->getPost('sinopsis_buku'),
+            'SAMPUL_BUKU' => $sampulName,
+            'PRODUK_BUKU' => $produkName,
+        ];
+    
+        // Attempt to insert data into the database
+        try {
+            $inserted = $this->bukuDigitalModel->insert($data);
+            if ($inserted === false) {
+                // Log the error if insertion fails
+                log_message('error', 'Database error: ' . json_encode($this->bukuDigitalModel->errors()));
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Failed to save digital book. Database error: ' . json_encode($this->bukuDigitalModel->errors()),
+                ]);
+            }
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Buku digital berhasil ditambahkan.',
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Database exception: ' . $e->getMessage());
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Failed to save digital book. Exception: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function viewBukuDigital($id)
+{
+    // Load the book details from the database
+    $book = $this->bukuDigitalModel->find($id);
+
+    // Check if the book exists
+    if (!$book) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException("Book with ID $id not found");
+    }
+
+    // Pass the book data to the view
+    return view('superadmin/bukudigital/view_buku_digital', ['book' => $book]);
 }
+
+public function editBukuDigital($id_buku)
+{
+    $book = $this->bukuDigitalModel->find($id_buku);
+
+    if (!$book) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Buku Digital dengan ID $id_buku tidak ditemukan.");
+    }
+
+    return view('superadmin/bukudigital/edit_bukudigital', ['bukudigital' => $book]);
+}
+
+
+public function updateBukuDigital()
+{
+    $id_buku = $this->request->getPost('id_buku');
+
+    // Validation rules
+    $validation = \Config\Services::validation();
+    $validation->setRules([
+        'judul_buku' => 'required|max_length[255]',
+        'penulis_buku' => 'required|max_length[64]',
+        'tahun_buku' => 'required|valid_date[Y]',
+        'sinopsis_buku' => 'required',
+        'sampul_buku' => 'permit_empty|is_image[sampul_buku]|mime_in[sampul_buku,image/jpg,image/jpeg,image/png]|max_size[sampul_buku,2024]',
+        'produk_buku' => 'permit_empty|mime_in[produk_buku,application/pdf]|max_size[produk_buku,42400]'
+    ]);
+
+    // Check validation
+    if (!$validation->withRequest($this->request)->run()) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Mohon isi semua field dengan benar.',
+            'errors'  => $validation->getErrors() // Send validation errors
+        ]);
+    }
+
+    // Data to be updated
+    $data = [
+        'JUDUL_BUKU' => $this->request->getPost('judul_buku'),
+        'PENULIS_BUKU' => $this->request->getPost('penulis_buku'),
+        'TAHUN_BUKU' => $this->request->getPost('tahun_buku'),
+        'SINOPSIS_BUKU' => $this->request->getPost('sinopsis_buku')
+    ];
+
+    // Handle cover image if uploaded
+    $sampul = $this->request->getFile('sampul_buku');
+    if ($sampul && $sampul->isValid() && !$sampul->hasMoved()) {
+        // Delete old cover
+        $oldSampul = $this->bukuDigitalModel->find($id_buku)['SAMPUL_BUKU'];
+        if (is_file(FCPATH . 'uploads/bukudigital/sampul/' . $oldSampul)) {
+            unlink(FCPATH . 'uploads/bukudigital/sampul/' . $oldSampul);
+        }
+
+        // Save new cover
+        $sampulName = $sampul->getRandomName();
+        $sampul->move(FCPATH . 'uploads/bukudigital/sampul', $sampulName);
+        $data['SAMPUL_BUKU'] = $sampulName;
+    }
+
+    // Handle PDF file if uploaded
+    $produk = $this->request->getFile('produk_buku');
+    if ($produk && $produk->isValid() && !$produk->hasMoved()) {
+        // Delete old PDF
+        $oldProduk = $this->bukuDigitalModel->find($id_buku)['PRODUK_BUKU'];
+        if (is_file(FCPATH . 'uploads/bukudigital/pdf/' . $oldProduk)) {
+            unlink(FCPATH . 'uploads/bukudigital/pdf/' . $oldProduk);
+        }
+
+        // Save new PDF
+        $produkName = $produk->getRandomName();
+        $produk->move(FCPATH . 'uploads/bukudigital/pdf', $produkName);
+        $data['PRODUK_BUKU'] = $produkName;
+    }
+
+    // Update digital book in database
+    try {
+        $this->bukuDigitalModel->update($id_buku, $data);
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Buku digital berhasil diperbarui.',
+            'redirect' => site_url('superadmin/bukudigital/manage')
+        ]);
+    } catch (\Exception $e) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat memperbarui buku: ' . $e->getMessage()
+        ]);
+    }
+}
+public function deleteBukuDigital($id_buku)
+{
+    try {
+        // Find the digital book by its ID
+        $bukuDigital = $this->bukuDigitalModel->find($id_buku);
+
+        // Check if the book exists
+        if (!$bukuDigital) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Buku digital tidak ditemukan.'
+            ]);
+        }
+
+        // Delete the sampul file if it exists
+        if (is_file(FCPATH . 'uploads/bukudigital/sampul/' . $bukuDigital['SAMPUL_BUKU'])) {
+            unlink(FCPATH . 'uploads/bukudigital/sampul/' . $bukuDigital['SAMPUL_BUKU']);
+        }
+
+        // Delete the produk file if it exists
+        if (is_file(FCPATH . 'uploads/bukudigital/pdf/' . $bukuDigital['PRODUK_BUKU'])) {
+            unlink(FCPATH . 'uploads/bukudigital/pdf/' . $bukuDigital['PRODUK_BUKU']);
+        }
+
+        // Delete the digital book record from the database
+        $this->bukuDigitalModel->delete($id_buku);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Buku digital berhasil dihapus.'
+        ]);
+    } catch (\Exception $e) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ]);
+    }
+}
+
+    
+}    

@@ -12,7 +12,7 @@ class BukuTamuModel extends Model
     // Kolom yang diizinkan untuk diisi secara massal
     protected $allowedFields = [
         'NAMA_TAMU', 
-        'TIPE_TAMU',  // Char(1) -> 1: Individual, 2: Instansi
+        'TIPE_TAMU', 
         'ALAMAT_TAMU', 
         'NOHP_TAMU', 
         'TGLKUNJUNGAN_TAMU', 
