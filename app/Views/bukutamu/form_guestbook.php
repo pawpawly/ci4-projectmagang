@@ -67,20 +67,20 @@ setInterval(preventBack, 0);
 
                 <div id="individualForm" class="form-container">
                     <h2 class="text-xl font-bold mb-4">Form Buku Tamu - Individual</h2>
-                    <form id="guestbookFormIndividual" action="/bukutamu/submit" method="POST" onsubmit="return validateFormIndividual()">
+                    <form id="guestbookFormIndividual" action="/bukutamu/submit" method="POST" autocomplete="off" onsubmit="return validateFormIndividual()">
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Nama</label>
-                            <input type="text" id="NAMA_TAMU" name="NAMA_TAMU" value="<?= old('NAMA_TAMU'); ?>" class="w-full border rounded px-3 py-2" autocomplete="off">
+                            <input type="text" id="NAMA_TAMU" name="NAMA_TAMU" value="<?= old('NAMA_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" autocomplete="off">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Alamat</label>
-                            <input type="text" id="ALAMAT_TAMU" name="ALAMAT_TAMU" value="<?= old('ALAMAT_TAMU'); ?>" class="w-full border rounded px-3 py-2" autocomplete="off">
+                            <input type="text" id="ALAMAT_TAMU" name="ALAMAT_TAMU" value="<?= old('ALAMAT_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" autocomplete="off">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">No WhatsApp</label>
-                            <input type="number" id="NOHP_TAMU" name="NOHP_TAMU" value="<?= old('NOHP_TAMU'); ?>" class="w-full border rounded px-3 py-2" min="0">
+                            <input type="number" id="NOHP_TAMU" name="NOHP_TAMU" value="<?= old('NOHP_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" min="0">
                         </div>
 
                         <div class="mb-4">
@@ -109,27 +109,27 @@ setInterval(preventBack, 0);
                         <input type="hidden" name="TIPE_TAMU" value="2">
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
-                            <input type="text" id="NAMA_INSTANSI" name="NAMA_TAMU" value="<?= old('NAMA_TAMU'); ?>" class="w-full border rounded px-3 py-2" autocomplete="off">
+                            <input type="text" id="NAMA_INSTANSI" name="NAMA_TAMU" value="<?= old('NAMA_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" autocomplete="off">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Alamat Instansi</label>
-                            <input type="text" id="ALAMAT_INSTANSI" name="ALAMAT_TAMU" value="<?= old('ALAMAT_TAMU'); ?>" class="w-full border rounded px-3 py-2" autocomplete="off">
+                            <input type="text" id="ALAMAT_INSTANSI" name="ALAMAT_TAMU" value="<?= old('ALAMAT_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" autocomplete="off">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">No WhatsApp</label>
-                            <input type="number" id="NOHP_INSTANSI" name="NOHP_TAMU" value="<?= old('NOHP_TAMU'); ?>" class="w-full border rounded px-3 py-2" min="0">
+                            <input type="number" id="NOHP_INSTANSI" name="NOHP_TAMU" value="<?= old('NOHP_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" min="0">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Jumlah Laki-Laki</label>
-                            <input type="number" id="JKL_INSTANSI" name="JKL_TAMU" value="<?= old('JKL_TAMU'); ?>" class="w-full border rounded px-3 py-2" min="0">
+                            <input type="number" id="JKL_INSTANSI" name="JKL_TAMU" value="<?= old('JKL_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" min="0">
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700">Jumlah Perempuan</label>
-                            <input type="number" id="JKP_INSTANSI" name="JKP_TAMU" value="<?= old('JKP_TAMU'); ?>" class="w-full border rounded px-3 py-2" min="0">
+                            <input type="number" id="JKP_INSTANSI" name="JKP_TAMU" value="<?= old('JKP_TAMU'); ?>" autocomplete="off" class="w-full border rounded px-3 py-2" min="0">
                         </div>
 
                         <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">

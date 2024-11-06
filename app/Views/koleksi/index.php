@@ -2,22 +2,21 @@
 
 <?= $this->section('content') ?>
 
-<!-- Header dengan Latar Gambar dan Overlay -->
+
+<!-- Header dengan Latar Gambar -->
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="absolute inset-0 bg-black opacity-50"></div> <!-- Overlay -->
-    <div class="container mx-auto px-8 py-24 relative z-10">
-        <h1 class="text-5xl font-bold text-white text-center drop-shadow-md">
-            Daftar Koleksi
-        </h1>
+    <div class="container mx-auto px-8 py-24">
+        <h1 class="text-5xl font-bold text-white text-center">DAFTAR KOLEKSI</h1>
     </div>
 </div>
+
 
 <!-- Filter dan Pencarian (Posisi di Tengah Atas) -->
 <div class="container mx-auto px-8 py-8">
     <div class="flex flex-col md:flex-row justify-center items-center gap-6">
-        <form id="searchForm" class="flex items-center space-x-4 w-full md:w-1/2">
-            <input type="text" name="keyword" placeholder="Cari Koleksi..." 
+        <form id="searchForm" autocomplete="off" class="flex items-center space-x-4 w-full md:w-1/2">
+            <input type="text" name="keyword" autocomplete="off" placeholder="Cari Koleksi..." 
                    class="border border-gray-300 p-3 rounded-lg w-full shadow-md focus:outline-none"
                    value="<?= esc($keyword ?? ''); ?>">
             <button type="submit" 

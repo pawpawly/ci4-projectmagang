@@ -4,7 +4,7 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Edit Pengguna</h1>
 
-    <form id="editUserForm" action="<?= site_url('superadmin/user/update') ?>" method="POST" novalidate>
+    <form id="editUserForm" action="<?= site_url('superadmin/user/update') ?>" method="POST" autocomplete="off" novalidate>
         <input type="hidden" name="original_username" value="<?= esc($user['USERNAME']); ?>">
 
         <div class="mb-4">
@@ -17,7 +17,7 @@
 
         <div class="mb-4">
             <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" id="username" name="username" 
+            <input type="text" id="username" name="username" autocomplete="off"
                    value="<?= esc($user['USERNAME']); ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                    placeholder="Masukkan username" required>
@@ -25,7 +25,7 @@
 
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium text-gray-700">Password (Opsional)</label>
-            <input type="password" id="password" name="password" 
+            <input type="password" id="password" name="password" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                    placeholder="Kosongkan jika tidak ingin mengubah">
         </div>
