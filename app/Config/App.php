@@ -60,6 +60,7 @@ class App extends BaseConfig
      */
     public string $uriProtocol = 'REQUEST_URI';
 
+
     /*
     |--------------------------------------------------------------------------
     | Allowed URL Characters
@@ -82,7 +83,8 @@ class App extends BaseConfig
     | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
     |
     */
-    public string $permittedURIChars = 'a-z 0-9~%.:_\-';
+    public $permittedURIChars = 'a-z 0-9~%.:_\-!@#&';
+
 
     /**
      * --------------------------------------------------------------------------
@@ -200,4 +202,5 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
+    
 }

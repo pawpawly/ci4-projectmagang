@@ -35,14 +35,14 @@
         </div>
 
         <div class="mb-4">
-            <label for="sampul_buku" class="block text-sm font-medium text-gray-700">Sampul Buku <i>Max 1MB</i></label>
+            <label for="sampul_buku" class="block text-sm font-medium text-gray-700">Sampul Buku <i>Max 2MB</i></label>
             <input type="file" id="sampul_buku" name="sampul_buku" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    accept=".jpg,.jpeg,.png" required>
         </div>
 
         <div class="mb-4">
-            <label for="produk_buku" class="block text-sm font-medium text-gray-700">File Buku (PDF) <i>Max 100MB</i></label>
+            <label for="produk_buku" class="block text-sm font-medium text-gray-700">File Buku (PDF) <i>Max 40MB</i></label>
             <input type="file" id="produk_buku" name="produk_buku" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    accept=".pdf" required>

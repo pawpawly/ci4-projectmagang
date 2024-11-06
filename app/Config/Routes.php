@@ -97,7 +97,7 @@ $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
     $routes->post('category/save', 'SuperAdminController::saveKategoriKoleksi');
     $routes->get('category/edit/(:num)', 'SuperAdminController::editKategoriKoleksi/$1');
     $routes->post('category/update', 'SuperAdminController::updateKategoriKoleksi');
-    $routes->delete('category/delete/(:num)', 'SuperadminController::deleteKategoriKoleksi/$1');
+    $routes->delete('category/delete/(:num)', 'SuperAdminController::deleteKategoriKoleksi/$1');
     $routes->get('manage', 'SuperAdminController::koleksiManage');
     $routes->get('add', 'SuperAdminController::addKoleksiForm');
     $routes->post('save', 'SuperAdminController::saveKoleksi');

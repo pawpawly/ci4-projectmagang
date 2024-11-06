@@ -918,7 +918,19 @@ public function deleteUser($id)
                 ]);
             }
     
-            // Hapus kategori dari database
+            // Cek apakah kategori masih digunakan di tabel koleksi
+            $koleksiCount = $this->db->table('koleksi')
+                ->where('ID_KKOLEKSI', $id_kkoleksi)
+                ->countAllResults();
+    
+            if ($koleksiCount > 0) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Tidak bisa menghapus karena ada koleksi yang terkait.'
+                ]);
+            }
+    
+            // Hapus kategori jika tidak ada koleksi terkait
             $this->kategoriKoleksiModel->delete($id_kkoleksi);
     
             return $this->response->setJSON([
@@ -927,12 +939,14 @@ public function deleteUser($id)
             ]);
         } catch (\Exception $e) {
             log_message('error', $e->getMessage());
+    
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Gagal menghapus kategori.'
+                'message' => 'Terjadi kesalahan saat menghapus kategori.'
             ]);
         }
     }
+    
 
 
     
@@ -1087,6 +1101,7 @@ public function deleteKoleksi($id_koleksi)
         $koleksi = $this->koleksiModel->find($id_koleksi);
 
         if (!$koleksi) {
+            log_message('error', 'Koleksi tidak ditemukan dengan ID: ' . $id_koleksi);
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Koleksi tidak ditemukan.'
@@ -1103,19 +1118,21 @@ public function deleteKoleksi($id_koleksi)
 
         // Hapus koleksi dari database
         $this->koleksiModel->delete($id_koleksi);
+        log_message('info', 'Koleksi berhasil dihapus dengan ID: ' . $id_koleksi);
 
         return $this->response->setJSON([
             'success' => true,
             'message' => 'Koleksi berhasil dihapus.'
         ]);
     } catch (\Exception $e) {
-        log_message('error', $e->getMessage());
+        log_message('error', 'Gagal menghapus koleksi: ' . $e->getMessage());
         return $this->response->setJSON([
             'success' => false,
             'message' => 'Gagal menghapus koleksi.'
         ]);
     }
 }
+
 
 
 
