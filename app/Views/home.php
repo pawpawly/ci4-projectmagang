@@ -121,8 +121,43 @@
     </div>
 </section>
 
+<!-- Saran Section -->
+<section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
+    <div class="container mx-auto px-8">
+        <div class="relative text-center mb-12">
+            <h2 class="event-overlay text-6xl font-extrabold text-gray-200 mb-2">SARAN</h2>
+            <h2 class="text-4xl font-bold text-[#2C1011] mb-4 hover:scale-105 transition-transform duration-300">SARAN</h2>
+        </div>
+        <p class="text-gray-800 text-center hover:text-[#4A2A2C] transition duration-300">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
+        <div class="max-w-3xl mx-auto p-10">
+            <form class="space-y-8" autocomplete="off">
+                <div>
+                    <label for="saran" class="block text-[#2C1011] text-lg font-semibold">Saran*</label>
+                    <textarea id="saran" name="saran" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
+                </div>
 
+                <div>
+                    <label for="nama" class="block text-[#2C1011] text-lg font-semibold">Nama*</label>
+                    <input type="text" id="nama" name="nama" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Nama Anda">
+                </div>
 
+                <div>
+                    <label for="email" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
+                    <input type="email" id="email" name="email" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <input id="privacy" name="privacy" type="checkbox" class="h-5 w-5 text-[#2C1011] border-gray-300 rounded">
+                    <label for="privacy" class="text-[#2C1011] text-sm">Dengan menggunakan formulir ini, Anda setuju bahwa data pribadi Anda akan diproses sesuai dengan <a href="#" class="text-[#2C1011] hover:underline">Kebijakan Privasi</a>.</label>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="px-8 py-3 bg-[#2C1011] text-white font-bold rounded-lg hover:bg-[#4A2A2C] hover:shadow-lg transition duration-300">Kirim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 
 
 <style>

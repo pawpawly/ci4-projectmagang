@@ -5,19 +5,19 @@
     <h1 class="text-2xl font-bold mb-6">Edit Kategori</h1>
 
     <form id="editCategoryForm" action="<?= site_url('superadmin/event/category/update') ?>" method="POST">
-        <input type="hidden" name="id_kevent" value="<?= $category['ID_KEVENT'] ?>">
+        <input type="hidden" autocomplete="off" name="id_kevent" value="<?= $category['ID_KEVENT'] ?>">
 
         <div class="mb-4">
             <label for="kategori_kevent" class="block text-sm font-medium text-gray-700">Nama Kategori</label>
-            <input type="text" id="kategori_kevent" name="kategori_kevent"
+            <input type="text" id="kategori_kevent" name="kategori_kevent" autocomplete="off"
                    value="<?= old('kategori_kevent', $category['KATEGORI_KEVENT']) ?>"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kevent" class="block text-sm font-medium text-gray-700">Deskripsi Kategori</label>
-            <textarea id="deskripsi_kevent" name="deskripsi_kevent" rows="4"
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kevent', $category['DESKRIPSI_KEVENT']) ?></textarea>
+            <textarea id="deskripsi_kevent" name="deskripsi_kevent" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kevent', $category['DESKRIPSI_KEVENT']) ?></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">

@@ -4,17 +4,17 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Tambah Kategori Event</h1>
 
-    <form id="categoryForm" action="<?= site_url('superadmin/event/category/save') ?>" method="POST">
+    <form id="categoryForm" autocomplete="off" action="<?= site_url('superadmin/event/category/save') ?>" method="POST">
         <div class="mb-4">
             <label for="kategori_kevent" class="block text-sm font-medium text-gray-700">Kategori Event</label>
-            <input type="text" id="kategori_kevent" name="kategori_kevent"
+            <input type="text" id="kategori_kevent" name="kategori_kevent" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kevent" class="block text-sm font-medium text-gray-700">Deskripsi Event</label>
-            <textarea id="deskripsi_kevent" name="deskripsi_kevent" rows="4"
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"></textarea>
+            <textarea id="deskripsi_kevent" name="deskripsi_kevent" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">

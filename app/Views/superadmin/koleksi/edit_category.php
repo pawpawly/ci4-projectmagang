@@ -4,20 +4,20 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Edit Kategori Koleksi</h1>
 
-    <form id="categoryForm" action="<?= site_url('superadmin/koleksi/category/update') ?>" method="POST">
+    <form id="categoryForm" action="<?= site_url('superadmin/koleksi/category/update') ?>" autocomplete="off" method="POST">
         <input type="hidden" name="id_kkoleksi" value="<?= $category['ID_KKOLEKSI'] ?>">
 
         <div class="mb-4">
             <label for="kategori_kkoleksi" class="block text-sm font-medium text-gray-700">Nama Kategori</label>
-            <input type="text" id="kategori_kkoleksi" name="kategori_kkoleksi"
+            <input type="text" id="kategori_kkoleksi" name="kategori_kkoleksi" autocomplete="off"
                    value="<?= old('kategori_kkoleksi', $category['KATEGORI_KKOLEKSI']) ?>"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kkoleksi" class="block text-sm font-medium text-gray-700">Deskripsi Kategori</label>
-            <textarea id="deskripsi_kkoleksi" name="deskripsi_kkoleksi" rows="4"
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kkoleksi', $category['DESKRIPSI_KKOLEKSI']) ?></textarea>
+            <textarea id="deskripsi_kkoleksi" name="deskripsi_kkoleksi" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kkoleksi', $category['DESKRIPSI_KKOLEKSI']) ?></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">

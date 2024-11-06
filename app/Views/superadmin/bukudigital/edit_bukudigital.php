@@ -10,34 +10,34 @@
         </div>
     <?php endif; ?>
 
-    <form id="editBukuDigitalForm" action="<?= site_url('superadmin/bukudigital/update') ?>" method="POST" enctype="multipart/form-data">
+    <form id="editBukuDigitalForm" action="<?= site_url('superadmin/bukudigital/update') ?>" method="POST" autocomplete="off" enctype="multipart/form-data">
         <input type="hidden" name="id_buku" value="<?= $bukudigital['ID_BUKU'] ?>">
 
         <div class="mb-4">
             <label for="judul_buku" class="block text-sm font-medium text-gray-700">Judul Buku</label>
-            <input type="text" id="judul_buku" name="judul_buku" 
+            <input type="text" id="judul_buku" name="judul_buku" autocomplete="off"
                    value="<?= esc($bukudigital['JUDUL_BUKU']) ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
 
         <div class="mb-4">
             <label for="penulis_buku" class="block text-sm font-medium text-gray-700">Penulis Buku</label>
-            <input type="text" id="penulis_buku" name="penulis_buku" 
+            <input type="text" id="penulis_buku" name="penulis_buku" autocomplete="off"
                    value="<?= esc($bukudigital['PENULIS_BUKU']) ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
 
         <div class="mb-4">
             <label for="tahun_buku" class="block text-sm font-medium text-gray-700">Tahun Terbit</label>
-            <input type="text" id="tahun_buku" name="tahun_buku" 
+            <input type="text" id="tahun_buku" name="tahun_buku" autocomplete="off"
                    value="<?= esc($bukudigital['TAHUN_BUKU']) ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
 
         <div class="mb-4">
             <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
-            <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" 
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"><?= esc($bukudigital['SINOPSIS_BUKU']) ?></textarea>
+            <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"><?= esc($bukudigital['SINOPSIS_BUKU']) ?></textarea>
         </div>
 
         <div class="mb-4">

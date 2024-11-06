@@ -54,37 +54,37 @@
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
         
-        <form id="reservationForm" action="/reservasi/store" method="post">
+        <form id="reservationForm" action="/reservasi/store" method="post" autocomplete="off">
     <input type="hidden" name="tanggal_reservasi" id="selectedDate">
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Nama</label>
-        <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2">
+        <input type="text" name="nama_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2">
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Instansi</label>
-        <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2">
+        <input type="text" name="instansi_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2">
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" >
+        <input type="email" name="email_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
-        <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" >
+        <input type="text" name="telepon_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
-        <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" >
+        <input type="text" name="kegiatan_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-        <input type="number" name="jmlpengunjung_reservasi" class="w-full border rounded px-3 py-2" >
+        <input type="number" name="jmlpengunjung_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
     </div>
 
     <div class="flex justify-end">

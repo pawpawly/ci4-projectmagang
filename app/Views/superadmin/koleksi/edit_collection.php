@@ -4,19 +4,19 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Edit Koleksi</h1>
 
-    <form id="koleksiForm" action="<?= site_url('superadmin/koleksi/update') ?>" method="POST" enctype="multipart/form-data">
+    <form id="koleksiForm" action="<?= site_url('superadmin/koleksi/update') ?>" method="POST" autocomplete="off" enctype="multipart/form-data">
         <input type="hidden" name="id_koleksi" value="<?= $koleksi['ID_KOLEKSI'] ?>">
 
         <div class="mb-4">
             <label for="nama_koleksi" class="block text-sm font-medium text-gray-700">Nama Koleksi</label>
-            <input type="text" id="nama_koleksi" name="nama_koleksi"
+            <input type="text" id="nama_koleksi" name="nama_koleksi" autocomplete="off"
                    value="<?= old('nama_koleksi', $koleksi['NAMA_KOLEKSI']) ?>"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
 
         <div class="mb-4">
             <label for="kategori_koleksi" class="block text-sm font-medium text-gray-700">Kategori Koleksi</label>
-            <select id="kategori_koleksi" name="kategori_koleksi"
+            <select id="kategori_koleksi" name="kategori_koleksi" 
                     class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
                 <option value="">Pilih Kategori</option>
                 <?php foreach ($categories as $category): ?>
@@ -30,8 +30,8 @@
 
         <div class="mb-4">
             <label for="deskripsi_koleksi" class="block text-sm font-medium text-gray-700">Deskripsi Koleksi</label>
-            <textarea id="deskripsi_koleksi" name="deskripsi_koleksi" rows="4"
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_koleksi', $koleksi['DESKRIPSI_KOLEKSI'] ?? '') ?></textarea>
+            <textarea id="deskripsi_koleksi" name="deskripsi_koleksi" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_koleksi', $koleksi['DESKRIPSI_KOLEKSI'] ?? '') ?></textarea>
         </div>
 
         <div class="mb-4">

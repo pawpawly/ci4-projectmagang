@@ -4,12 +4,12 @@
 <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Edit Event</h1>
 
-    <form id="eventForm" action="<?= site_url('superadmin/event/update') ?>" method="POST" enctype="multipart/form-data">
+    <form id="eventForm" action="<?= site_url('superadmin/event/update') ?>" method="POST" autocomplete="off" enctype="multipart/form-data">
         <input type="hidden" name="id_event" value="<?= $event['ID_EVENT']; ?>">
 
         <div class="mb-4">
             <label for="nama_event" class="block text-sm font-medium text-gray-700">Nama Event</label>
-            <input type="text" id="nama_event" name="nama_event"
+            <input type="text" id="nama_event" name="nama_event" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                    value="<?= old('nama_event', $event['NAMA_EVENT']); ?>">
         </div>
@@ -30,7 +30,7 @@
 
         <div class="mb-4">
     <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
-    <input type="date" id="tanggal_event" name="tanggal_event"
+    <input type="date" id="tanggal_event" name="tanggal_event" autocomplete="off"
            class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
            value="<?= date('Y-m-d', strtotime(old('tanggal_event', $event['TANGGAL_EVENT']))); ?>">
 </div>
@@ -38,20 +38,20 @@
 
         <div class="mb-4">
             <label for="jam_event" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
-            <input type="time" id="jam_event" name="jam_event"
+            <input type="time" id="jam_event" name="jam_event" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                    value="<?= old('jam_event', $event['JAM_EVENT']); ?>">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_event" class="block text-sm font-medium text-gray-700">Deskripsi Acara</label>
-            <textarea id="deskripsi_event" name="deskripsi_event" rows="4"
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_event', $event['DEKSRIPSI_EVENT']); ?></textarea>
+            <textarea id="deskripsi_event" name="deskripsi_event" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_event', $event['DEKSRIPSI_EVENT']); ?></textarea>
         </div>
 
         <div class="mb-4">
             <label for="foto_event" class="block text-sm font-medium text-gray-700">Poster Acara</label>
-            <input type="file" id="foto_event" name="foto_event"
+            <input type="file" id="foto_event" name="foto_event" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                    accept=".jpg,.jpeg,.png">
             <?php if (!empty($event['FOTO_EVENT'])): ?>

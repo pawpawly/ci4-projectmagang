@@ -5,7 +5,7 @@
     <h1 class="text-2xl font-bold mb-6">Tambah Buku Digital</h1>
 
     <form id="tambahBukuDigitalForm" action="<?= site_url('superadmin/bukudigital/save') ?>" 
-          method="POST" enctype="multipart/form-data" novalidate>
+          method="POST" autocomplete="off" enctype="multipart/form-data" novalidate>
         <div class="mb-4">
             <label for="judul_buku" class="block text-sm font-medium text-gray-700">Judul Buku</label>
             <input type="text" id="judul_buku" name="judul_buku" 
@@ -15,34 +15,34 @@
 
         <div class="mb-4">
             <label for="penulis_buku" class="block text-sm font-medium text-gray-700">Penulis Buku</label>
-            <input type="text" id="penulis_buku" name="penulis_buku" 
+            <input type="text" id="penulis_buku" name="penulis_buku" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    placeholder="Masukkan penulis buku" required>
         </div>
 
         <div class="mb-4">
             <label for="tahun_buku" class="block text-sm font-medium text-gray-700">Tahun Terbit</label>
-            <input type="text" id="tahun_buku" name="tahun_buku" 
+            <input type="text" id="tahun_buku" name="tahun_buku" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    placeholder="Masukkan tahun terbit" required>
         </div>
 
         <div class="mb-4">
             <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
-            <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" 
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+            <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full border resize-none rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                       placeholder="Masukkan sinopsis buku" required></textarea>
         </div>
 
         <div class="mb-4">
-            <label for="sampul_buku" class="block text-sm font-medium text-gray-700">Sampul Buku <i>Max 1MB</i></label>
+            <label for="sampul_buku" class="block text-sm font-medium text-gray-700">Sampul Buku <i>Max 2MB</i></label>
             <input type="file" id="sampul_buku" name="sampul_buku" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    accept=".jpg,.jpeg,.png" required>
         </div>
 
         <div class="mb-4">
-            <label for="produk_buku" class="block text-sm font-medium text-gray-700">File Buku (PDF) <i>Max 100MB</i></label>
+            <label for="produk_buku" class="block text-sm font-medium text-gray-700">File Buku (PDF) <i>Max 40MB</i></label>
             <input type="file" id="produk_buku" name="produk_buku" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    accept=".pdf" required>

@@ -4,25 +4,25 @@
 <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
     <h1 class="text-2xl font-bold mb-6">Tambah Berita</h1>
 
-    <form id="tambahBeritaForm" action="<?= site_url('superadmin/berita/save') ?>" 
+    <form id="tambahBeritaForm" autocomplete="off" action="<?= site_url('superadmin/berita/save') ?>" 
           method="POST" enctype="multipart/form-data" novalidate>
         <div class="mb-4">
             <label for="nama_berita" class="block text-sm font-medium text-gray-700">Nama Berita</label>
-            <input type="text" id="nama_berita" name="nama_berita" 
+            <input type="text" id="nama_berita" name="nama_berita" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    placeholder="Masukkan nama berita" required>
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_berita" class="block text-sm font-medium text-gray-700">Deskripsi Berita</label>
-            <textarea id="deskripsi_berita" name="deskripsi_berita" rows="4" 
-                      class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+            <textarea id="deskripsi_berita" name="deskripsi_berita" rows="4" autocomplete="off"
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                       placeholder="Masukkan deskripsi berita" required></textarea>
         </div>
 
         <div class="mb-4">
             <label for="sumber_berita" class="block text-sm font-medium text-gray-700">Sumber Berita</label>
-            <input type="text" id="sumber_berita" name="sumber_berita" 
+            <input type="text" id="sumber_berita" name="sumber_berita" autocomplete="off"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
                    placeholder="Masukkan sumber berita" required>
         </div>

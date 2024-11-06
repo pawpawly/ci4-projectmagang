@@ -23,9 +23,9 @@
             </div>
         <?php endif; ?>
 
-        <form action="<?= site_url('login/authenticate'); ?>" method="POST">
+        <form action="<?= site_url('login/authenticate'); ?>" method="POST" autocomplete="off">
         <div class="mb-4">
-    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+    <label for="username" autocomplete="off" class="block text-sm font-medium text-gray-700">Username</label>
     <input type="text" id="username" name="username" 
            class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
            focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" 
@@ -34,7 +34,7 @@
 
             <div class="mb-4">
                 <div class="flex justify-between">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <label for="password" autocomplete="off" class="block text-sm font-medium text-gray-700">Password</label>
                 </div>
                 <input type="password" id="password" name="password" 
                        class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 

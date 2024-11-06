@@ -2,16 +2,14 @@
 
 <?= $this->section('content') ?>
 
-<!-- Header dengan Latar Gambar dan Overlay -->
+<!-- Header dengan Latar Gambar -->
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="absolute inset-0 bg-black opacity-50"></div> <!-- Overlay -->
-    <div class="container mx-auto px-8 py-24 relative z-10">
-        <h1 class="text-5xl font-bold text-white text-center drop-shadow-md">
-            <?= esc($koleksi['NAMA_KOLEKSI']); ?>
-        </h1>
+    <div class="container mx-auto px-8 py-24">
+        <h1 class="text-5xl font-bold text-white text-center"><?= esc($koleksi['NAMA_KOLEKSI']); ?></h1>
     </div>
 </div>
+
 
 <!-- Detail Koleksi -->
 <div class="container mx-auto px-8 py-12">
