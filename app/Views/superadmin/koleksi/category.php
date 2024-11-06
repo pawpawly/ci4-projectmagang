@@ -48,21 +48,21 @@
     function confirmDelete(id_kkoleksi) {
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak bisa dikembalikan!",
+            text: "Kategori ini akan dihapus secara permanen!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
+            confirmButtonText: 'Hapus',
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                deleteKategoriKoleksi(id_kkoleksi);
+                deleteCategory(id_kkoleksi);
             }
         });
     }
 
-    function deleteKategoriKoleksi(id_kkoleksi) {
+    function deleteCategory(id_kkoleksi) {
         fetch(`<?= site_url('superadmin/koleksi/category/delete/') ?>${id_kkoleksi}`, {
             method: 'DELETE',
             headers: {
@@ -72,30 +72,27 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload(); // Refresh halaman setelah penghapusan berhasil
+                Swal.fire(
+                    'Terhapus!',
+                    data.message,
+                    'success'
+                ).then(() => {
+                    location.reload();
                 });
             } else {
-                Swal.fire({
-                    title: 'Gagal!',
-                    text: data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+                Swal.fire(
+                    'Gagal!',
+                    data.message,
+                    'error'
+                );
             }
         })
         .catch(error => {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Terjadi kesalahan pada server.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+            Swal.fire(
+                'Error!',
+                'Terjadi kesalahan pada server.',
+                'error'
+            );
             console.error('Error:', error);
         });
     }
