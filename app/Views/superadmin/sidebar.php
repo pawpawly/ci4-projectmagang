@@ -83,6 +83,14 @@
                 </li>
 
                 <li class="px-4 py-2 hover:bg-red-800">
+                <a href="<?= site_url('superadmin/saran/manage'); ?>" class="flex items-center space-x-4">
+                    <i class="fas fa-comments"></i>
+                    <span>Saran Pengunjung</span>
+                </a>
+            </li>
+
+
+                <li class="px-4 py-2 hover:bg-red-800">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('eventDropdown')">
                         <div class="flex items-center space-x-4">
                             <i class="fas fa-calendar-day"></i>

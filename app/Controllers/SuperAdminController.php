@@ -11,6 +11,7 @@ use App\Models\KategoriKoleksiModel;
 use App\Models\ReservasiModel;
 use App\Models\BukuTamuModel;
 use App\Models\BukuDigitalModel;    
+use App\Models\SaranModel;
 use CodeIgniter\Controller;
 use App\Validation\CustomValidation;
 
@@ -25,6 +26,7 @@ class SuperAdminController extends Controller
     protected $reservasiModel;
     protected $bukuTamuModel;
     protected $bukuDigitalModel;
+    protected $saranModel;
     protected $db;
 
     public function __construct()
@@ -38,6 +40,7 @@ class SuperAdminController extends Controller
         $this->reservasiModel = new ReservasiModel();
         $this->bukuTamuModel = new BukuTamuModel();
         $this->bukuDigitalModel = new BukuDigitalModel();
+        $this->saranModel = new SaranModel();
 
         $this->db = \Config\Database::connect();
 
@@ -1701,5 +1704,37 @@ public function deleteBukuDigital($id_buku)
     }
 }
 
-    
-}    
+// ==========================
+// FUNGSI UNTUK MANAJEMEN SARAN
+// ==========================
+
+
+public function manageSaran()
+{
+    // Fetch all suggestions from the database
+    $data['saranList'] = $this->saranModel->findAll();
+
+    // Load the view and pass the data
+    return view('superadmin/saran/manage', $data);
+}
+
+// Method to delete a suggestion
+public function deleteSaran($id)
+{
+    // Check if the suggestion exists
+    if ($this->saranModel->find($id)) {
+        // Delete the suggestion
+        $this->saranModel->delete($id);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Data berhasil dihapus.'
+        ]);
+    } else {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Data tidak ditemukan.'
+        ]);
+    }
+}
+}

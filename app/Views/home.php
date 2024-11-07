@@ -130,31 +130,29 @@
         </div>
         <p class="text-gray-800 text-center hover:text-[#4A2A2C] transition duration-300">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
         <div class="max-w-3xl mx-auto p-10">
-            <form class="space-y-8" autocomplete="off">
-                <div>
-                    <label for="saran" class="block text-[#2C1011] text-lg font-semibold">Saran*</label>
-                    <textarea id="saran" name="saran" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
-                </div>
+        <form id="saranForm" class="space-y-8" autocomplete="off">
 
-                <div>
-                    <label for="nama" class="block text-[#2C1011] text-lg font-semibold">Nama*</label>
-                    <input type="text" id="nama" name="nama" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Nama Anda">
-                </div>
 
-                <div>
-                    <label for="email" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
-                    <input type="email" id="email" name="email" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
-                </div>
+    <div>
+        <label for="NAMA_SARAN" class="block text-[#2C1011] text-lg font-semibold">Nama*</label>
+        <input type="text" id="NAMA_SARAN" name="NAMA_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Nama Anda">
+    </div>
 
-                <div class="flex items-start space-x-3">
-                    <input id="privacy" name="privacy" type="checkbox" class="h-5 w-5 text-[#2C1011] border-gray-300 rounded">
-                    <label for="privacy" class="text-[#2C1011] text-sm">Dengan menggunakan formulir ini, Anda setuju bahwa data pribadi Anda akan diproses sesuai dengan <a href="#" class="text-[#2C1011] hover:underline">Kebijakan Privasi</a>.</label>
-                </div>
+    <div>
+        <label for="EMAIL_SARAN" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
+        <input type="email" id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
+    </div>
 
-                <div class="text-center">
-                    <button type="submit" class="px-8 py-3 bg-[#2C1011] text-white font-bold rounded-lg hover:bg-[#4A2A2C] hover:shadow-lg transition duration-300">Kirim</button>
-                </div>
-            </form>
+    <div>
+        <label for="KOMENTAR_SARAN" class="block text-[#2C1011] text-lg font-semibold">Saran*</label>
+        <textarea id="KOMENTAR_SARAN" name="KOMENTAR_SARAN" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
+    </div>
+    <div class="text-center">
+        <button type="submit" id="submitBtn" class="px-8 py-3 bg-[#2C1011] text-white font-bold rounded-lg hover:bg-[#4A2A2C] hover:shadow-lg transition duration-300">Kirim</button>
+    </div>
+</form>
+
+
         </div>
     </div>
 </section>
@@ -289,8 +287,74 @@
 
 
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+document.getElementById('saranForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const nama = document.getElementById('NAMA_SARAN').value.trim();
+    const email = document.getElementById('EMAIL_SARAN').value.trim();
+    const saran = document.getElementById('KOMENTAR_SARAN').value.trim();
+
+    if (!nama || !email || !saran) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Semua field wajib diisi!',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Mengirim...";
+
+    fetch('<?= site_url("saran/saveSaran") ?>', {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response data:", data); // Debugging line
+
+        if (data.success) {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Saran berhasil dikirim!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                document.getElementById('saranForm').reset();
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Kirim";
+            });
+        } else {
+            Swal.fire({
+                title: 'Gagal!',
+                text: data.message || 'Gagal mengirim saran.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Kirim";
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error); // Debugging line
+        Swal.fire({
+            title: 'Error!',
+            text: 'Terjadi kesalahan pada server.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Kirim";
+    });
+});
     // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
     window.onbeforeunload = function () {
         window.scrollTo(0, 0);
