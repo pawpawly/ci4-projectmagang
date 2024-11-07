@@ -212,36 +212,36 @@ public function deleteUser($id)
     
     public function beritaManage()
     {
-        // Get search, month, and year filters from the request
+        // Mengambil filter dari request
         $search = $this->request->getGet('search');
         $month = $this->request->getGet('month');
         $year = $this->request->getGet('year');
+        
+        // Menghitung tahun saat ini dan tahun sebelumnya
+        $currentYear = date('Y');
+        $yearsRange = range($currentYear - 1, $currentYear);
     
-        // Query to fetch data from `berita` table only
+        // Query untuk data berita
         $beritaQuery = $this->beritaModel->select('berita.*');
-    
-        // Apply search filter if provided
+        
         if (!empty($search)) {
             $beritaQuery->like('NAMA_BERITA', $search);
         }
-    
-        // Apply month and year filters if provided
         if (!empty($month)) {
             $beritaQuery->where('MONTH(TANGGAL_BERITA)', $month);
         }
         if (!empty($year)) {
             $beritaQuery->where('YEAR(TANGGAL_BERITA)', $year);
         }
-    
-        // Execute the query
+        
         $berita = $beritaQuery->findAll();
     
-        // Pass search term, month, and year to the view for retaining filter values
         return view('superadmin/berita/manage', [
             'berita' => $berita,
             'search' => $search,
             'month' => $month,
-            'year' => $year
+            'year' => $year,
+            'yearsRange' => $yearsRange
         ]);
     }
     
@@ -258,6 +258,7 @@ public function deleteUser($id)
         // Render view detail_berita
         return view('superadmin/berita/detail_berita', ['berita' => $berita]);
     }
+    
     
     
 
@@ -606,28 +607,27 @@ public function deleteUser($id)
 
     public function eventManage()
     {
-        // Get search, category, month, and year filters from the request
+        // Mengambil filter dari request
         $search = $this->request->getGet('search');
         $category = $this->request->getGet('category');
         $month = $this->request->getGet('month');
         $year = $this->request->getGet('year');
+        
+        // Menghitung tahun saat ini dan tahun sebelumnya
+        $currentYear = date('Y');
+        $yearsRange = range($currentYear - 1, $currentYear);
     
-        // Query to fetch events, joined with category names
+        // Query untuk data event
         $eventsQuery = $this->eventModel
             ->select('event.*, kategori_event.KATEGORI_KEVENT as NAMA_KATEGORI')
             ->join('kategori_event', 'kategori_event.ID_KEVENT = event.ID_KEVENT', 'left');
-    
-        // Apply search filter if provided
+        
         if (!empty($search)) {
             $eventsQuery->like('NAMA_EVENT', $search);
         }
-    
-        // Apply category filter if provided
         if (!empty($category)) {
             $eventsQuery->where('event.ID_KEVENT', $category);
         }
-    
-        // Apply month and year filters if provided
         if (!empty($month)) {
             $eventsQuery->where('MONTH(TANGGAL_EVENT)', $month);
         }
@@ -635,18 +635,17 @@ public function deleteUser($id)
             $eventsQuery->where('YEAR(TANGGAL_EVENT)', $year);
         }
     
-        // Execute the query
         $events = $eventsQuery->findAll();
-        $categories = $this->kategoriEventModel->findAll(); // Fetch all categories for dropdown
+        $categories = $this->kategoriEventModel->findAll();
     
-        // Pass filters, events, and categories to the view
         return view('superadmin/event/manage', [
             'events' => $events,
             'search' => $search,
             'category' => $category,
             'categories' => $categories,
             'month' => $month,
-            'year' => $year
+            'year' => $year,
+            'yearsRange' => $yearsRange
         ]);
     }
     
@@ -665,9 +664,6 @@ public function deleteUser($id)
         return view('superadmin/event/detail_event', ['event' => $event]);
     }
     
-    
-    
-
 
 
     public function addEventForm()
@@ -1285,53 +1281,45 @@ public function deleteKoleksi($id_koleksi)
 
 public function reservationManage()
 {
-    $reservasiModel = new \App\Models\ReservasiModel();
-
-    // Dapatkan parameter pencarian dan filter dari request
+    // Mengambil filter dari request
     $search = $this->request->getGet('search');
     $status = $this->request->getGet('status');
     $bulan = $this->request->getGet('bulan');
     $tahun = $this->request->getGet('tahun');
+    
+    // Menghitung tahun saat ini dan satu tahun ke depan
+    $currentYear = date('Y');
+    $yearsRange = range($currentYear, $currentYear + 1);
 
-    // Query dasar untuk mendapatkan data reservasi
-    $reservasiQuery = $reservasiModel;
-
-    // Filter pencarian berdasarkan nama atau instansi
+    // Query untuk data reservasi
+    $reservasiQuery = $this->reservasiModel;
+    
     if ($search) {
-        $reservasiQuery = $reservasiQuery->like('NAMA_RESERVASI', $search)
-                                         ->orLike('INSTANSI_RESERVASI', $search);
+        $reservasiQuery->like('NAMA_RESERVASI', $search)
+                       ->orLike('INSTANSI_RESERVASI', $search);
     }
-
-    // Filter berdasarkan status reservasi
     if ($status) {
-        $reservasiQuery = $reservasiQuery->where('STATUS_RESERVASI', $status);
+        $reservasiQuery->where('STATUS_RESERVASI', $status);
     }
-
-    // Filter berdasarkan bulan dan tahun
     if ($bulan) {
-        $reservasiQuery = $reservasiQuery->where('MONTH(TANGGAL_RESERVASI)', $bulan);
+        $reservasiQuery->where('MONTH(TANGGAL_RESERVASI)', $bulan);
     }
     if ($tahun) {
-        $reservasiQuery = $reservasiQuery->where('YEAR(TANGGAL_RESERVASI)', $tahun);
+        $reservasiQuery->where('YEAR(TANGGAL_RESERVASI)', $tahun);
     }
 
-    // Menghitung rentang tahun
-    $currentYear = date('Y');
-    $yearsRange = range($currentYear - 5, $currentYear + 5);
-
-    // Dapatkan hasil query
     $reservasi = $reservasiQuery->findAll();
 
-    // Load data ke view dengan variabel untuk filter
     return view('superadmin/reservasi/manage', [
         'reservasi' => $reservasi,
         'search' => $search,
         'status' => $status,
         'bulan' => $bulan,
         'tahun' => $tahun,
-        'yearsRange' => $yearsRange, // Kirim rentang tahun ke view
+        'yearsRange' => $yearsRange
     ]);
 }
+
 
 
 
@@ -1401,34 +1389,32 @@ public function deleteReservation($id_reservasi)
 
 public function manageBukuTamu()
 {
-    // Ambil nilai pencarian dan filter dari request GET
+    // Mengambil filter dari request
     $search = $this->request->getGet('search');
     $tipeTamu = $this->request->getGet('tipe_tamu');
     $bulan = $this->request->getGet('bulan');
     $tahun = $this->request->getGet('tahun');
+    
+    // Menghitung tahun saat ini dan tahun sebelumnya
+    $currentYear = date('Y');
+    $yearsRange = range($currentYear - 1, $currentYear);
 
-    // Query dasar untuk mengambil data buku tamu
+    // Query untuk data buku tamu
     $bukuTamuQuery = $this->bukuTamuModel;
-
-    // Jika ada input pencarian, filter berdasarkan nama tamu
+    
     if ($search) {
-        $bukuTamuQuery = $bukuTamuQuery->like('NAMA_TAMU', $search);
+        $bukuTamuQuery->like('NAMA_TAMU', $search);
     }
-
-    // Filter berdasarkan tipe tamu jika ada
     if ($tipeTamu) {
-        $bukuTamuQuery = $bukuTamuQuery->where('TIPE_TAMU', $tipeTamu);
+        $bukuTamuQuery->where('TIPE_TAMU', $tipeTamu);
+    }
+    if ($bulan) {
+        $bukuTamuQuery->where('MONTH(TGLKUNJUNGAN_TAMU)', $bulan);
+    }
+    if ($tahun) {
+        $bukuTamuQuery->where('YEAR(TGLKUNJUNGAN_TAMU)', $tahun);
     }
 
-    // Filter berdasarkan bulan dan tahun jika ada
-    if ($bulan && $tahun) {
-        $bukuTamuQuery = $bukuTamuQuery->where('MONTH(TGLKUNJUNGAN_TAMU)', $bulan)
-                                       ->where('YEAR(TGLKUNJUNGAN_TAMU)', $tahun);
-    } elseif ($tahun) {
-        $bukuTamuQuery = $bukuTamuQuery->where('YEAR(TGLKUNJUNGAN_TAMU)', $tahun);
-    }
-
-    // Dapatkan hasil query
     $bukutamu = $bukuTamuQuery->findAll();
 
     return view('superadmin/bukutamu/manage', [
@@ -1437,8 +1423,10 @@ public function manageBukuTamu()
         'tipeTamu' => $tipeTamu,
         'bulan' => $bulan,
         'tahun' => $tahun,
+        'yearsRange' => $yearsRange
     ]);
 }
+
 
 
     // Hapus data buku tamu
@@ -1753,12 +1741,40 @@ public function deleteBukuDigital($id_buku)
 
 public function manageSaran()
 {
-    // Fetch all suggestions from the database
-    $data['saranList'] = $this->saranModel->findAll();
+    // Mengambil filter dari request
+    $search = $this->request->getGet('search');
+    $bulan = $this->request->getGet('bulan');
+    $tahun = $this->request->getGet('tahun');
+    
+    // Menghitung tahun saat ini dan tahun sebelumnya
+    $currentYear = date('Y');
+    $yearsRange = range($currentYear - 1, $currentYear);
 
-    // Load the view and pass the data
-    return view('superadmin/saran/manage', $data);
+    // Query untuk data saran
+    $saranQuery = $this->saranModel;
+    
+    if ($search) {
+        $saranQuery->like('NAMA_SARAN', $search);
+    }
+    if ($bulan) {
+        $saranQuery->where('MONTH(TANGGAL_SARAN)', $bulan);
+    }
+    if ($tahun) {
+        $saranQuery->where('YEAR(TANGGAL_SARAN)', $tahun);
+    }
+
+    $saranList = $saranQuery->findAll();
+
+    return view('superadmin/saran/manage', [
+        'saranList' => $saranList,
+        'search' => $search,
+        'bulan' => $bulan,
+        'tahun' => $tahun,
+        'yearsRange' => $yearsRange
+    ]);
 }
+
+
 
 // Method to delete a suggestion
 public function deleteSaran($id)

@@ -50,13 +50,14 @@
             <?php endfor; ?>
         </select>
 
-        <!-- Filter Tahun -->
-        <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-            <option value="">Semua Tahun</option>
-            <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
-                <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
-            <?php endfor; ?>
-        </select>
+<!-- Filter Tahun -->
+<select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+    <option value="">Semua Tahun</option>
+    <?php foreach ($yearsRange as $y): ?>
+        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
+    <?php endforeach; ?>
+</select>
+
 
         <!-- Tombol Cari -->
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
