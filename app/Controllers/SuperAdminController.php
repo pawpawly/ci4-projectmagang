@@ -245,6 +245,20 @@ public function deleteUser($id)
         ]);
     }
     
+    public function detailBerita($id)
+    {
+        // Ambil data berita berdasarkan ID
+        $beritaModel = new BeritaModel();
+        $berita = $beritaModel->find($id);
+    
+        if (!$berita) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Berita dengan ID $id tidak ditemukan.");
+        }
+    
+        // Render view detail_berita
+        return view('superadmin/berita/detail_berita', ['berita' => $berita]);
+    }
+    
     
 
     public function addBeritaForm()
@@ -636,7 +650,24 @@ public function deleteUser($id)
         ]);
     }
     
+    public function eventDetail($id)
+    {
+        $eventModel = new \App\Models\EventModel();
+        $event = $eventModel->select('event.*, kategori_event.KATEGORI_KEVENT as NAMA_KATEGORI')
+                            ->join('kategori_event', 'kategori_event.ID_KEVENT = event.ID_KEVENT', 'left')
+                            ->where('event.ID_EVENT', $id)
+                            ->first();
     
+        if (!$event) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Event with ID $id not found");
+        }
+    
+        return view('superadmin/event/detail_event', ['event' => $event]);
+    }
+    
+    
+    
+
 
 
     public function addEventForm()
@@ -1060,11 +1091,22 @@ public function koleksiManage()
     ]);
 }
 
+public function koleksiDetail($id)
+{
+    $koleksiModel = new \App\Models\KoleksiModel();
 
+    // Ensure correct join with kategori_koleksi to get the KATEGORI_KKOLEKSI
+    $collection = $koleksiModel->select('koleksi.*, kategori_koleksi.KATEGORI_KKOLEKSI')
+                               ->join('kategori_koleksi', 'kategori_koleksi.ID_KKOLEKSI = koleksi.ID_KKOLEKSI', 'left')
+                               ->where('koleksi.ID_KOLEKSI', $id)
+                               ->first();
 
+    if (!$collection) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Koleksi dengan ID $id tidak ditemukan.");
+    }
 
-
-
+    return view('superadmin/koleksi/detail_collection', ['collection' => $collection]);
+}
 
 public function addKoleksiForm()
 {

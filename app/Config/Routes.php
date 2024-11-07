@@ -76,6 +76,7 @@ $routes->group('superadmin/event', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'SuperAdminController::editEvent/$1');
     $routes->post('update', 'SuperAdminController::updateEvent');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteEvent/$1');
+    $routes->get('detail/(:num)', 'SuperAdminController::eventDetail/$1');
 
 });
 
@@ -87,6 +88,7 @@ $routes->group('superadmin/berita', ['filter' => 'auth'], function ($routes) {
     $routes->post('update', 'SuperAdminController::updateBerita');  // Update Berita
     $routes->get('edit/(:num)', 'SuperAdminController::editBerita/$1');  // Edit Berita
     $routes->post('delete/(:num)', 'SuperAdminController::deleteBerita/$1');
+    $routes->get('detail/(:num)', 'SuperAdminController::detailBerita/$1');
 
 });
 
@@ -104,6 +106,7 @@ $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'SuperAdminController::editKoleksi/$1');
     $routes->post('update', 'SuperAdminController::updateKoleksi');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteKoleksi/$1');
+    $routes->get('detail/(:num)', 'SuperAdminController::koleksiDetail/$1');
 });
 
 $routes->group('superadmin/reservasi', ['filter' => 'auth'], function ($routes) {

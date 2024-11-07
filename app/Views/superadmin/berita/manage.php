@@ -23,7 +23,7 @@
             </button>
         </div>
 
-        <!-- Month Filter Dropdown -->
+        <!-- Month and Year Filters -->
         <select name="month" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
             <option value="">Semua Bulan</option>
             <?php for ($m = 1; $m <= 12; $m++): ?>
@@ -33,7 +33,6 @@
             <?php endfor; ?>
         </select>
 
-        <!-- Year Filter Dropdown -->
         <select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
             <option value="">Semua Tahun</option>
             <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
@@ -43,7 +42,6 @@
             <?php endfor; ?>
         </select>
 
-        <!-- Search Button -->
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
     </form>
 
@@ -71,6 +69,8 @@
                             <td class="py-2 px-4"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></td>
                             <td class="py-2 px-4 text-right">
                                 <div class="flex justify-end items-center space-x-4">
+                                    <a href="<?= site_url('superadmin/berita/detail/' . $item['ID_BERITA']) ?>" 
+                                       class="text-blue-500 font-semibold hover:underline hover:text-blue-700">Lihat Detail</a>
                                     <a href="<?= site_url('superadmin/berita/edit/' . $item['ID_BERITA']) ?>" 
                                        class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">Edit</a>
                                     <button onclick="confirmDelete('<?= $item['ID_BERITA'] ?>')" 
@@ -146,3 +146,4 @@
 </script>
 
 <?= $this->endSection() ?>
+    

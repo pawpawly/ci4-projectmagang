@@ -5,6 +5,12 @@
     <h1 class="text-2xl font-bold mb-6">Detail Buku Digital</h1>
 
     <div class="mb-4">
+        <h2 class="text-lg font-semibold">Sampul Buku:</h2>
+        <img src="<?= base_url('uploads/bukudigital/sampul/' . $book['SAMPUL_BUKU']); ?>" 
+             alt="Sampul Buku" class="w-48 h-72 object-cover rounded-md shadow-md">
+    </div>
+    
+    <div class="mb-4">
         <h2 class="text-lg font-semibold">Judul Buku:</h2>
         <p><?= esc($book['JUDUL_BUKU']); ?></p>
     </div>
@@ -22,12 +28,6 @@
     <div class="mb-4">
         <h2 class="text-lg font-semibold">Sinopsis:</h2>
         <p><?= esc($book['SINOPSIS_BUKU']); ?></p>
-    </div>
-
-    <div class="mb-4">
-        <h2 class="text-lg font-semibold">Sampul Buku:</h2>
-        <img src="<?= base_url('uploads/bukudigital/sampul/' . $book['SAMPUL_BUKU']); ?>" 
-             alt="Sampul Buku" class="w-48 h-72 object-cover rounded-md shadow-md">
     </div>
 
     <div class="mb-4">
