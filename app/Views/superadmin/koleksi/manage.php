@@ -50,33 +50,32 @@
                 <th class="text-left py-2 px-4">Foto Koleksi</th>
                 <th class="text-left py-2 px-4">Nama Koleksi</th>
                 <th class="text-left py-2 px-4">Kategori Koleksi</th>
-                <th class="text-left py-2 px-4">Deskripsi Koleksi</th>
                 <th class="text-right py-2 px-4">Aksi</th>
             </tr>
         </thead>
         <tbody class="text-gray-800">
-            <?php foreach ($koleksi as $item): ?>
-            <tr class="border-b">
-                <td class="py-2 px-4">
-                    <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
-                         alt="Foto Koleksi" class="w-24 h-24 object-cover rounded-md">
-                </td>
-                <td class="py-2 px-4"><?= esc($item['NAMA_KOLEKSI']); ?></td>
-                <td class="py-2 px-4"><?= esc($item['NAMA_KATEGORI']); ?></td>
-                <td class="py-2 px-4">
-                    <?= !empty($item['DESKRIPSI_KOLEKSI']) ? esc($item['DESKRIPSI_KOLEKSI']) : 'Deskripsi Tidak Tersedia'; ?>
-                </td>
-                <td class="py-2 px-4 text-right">
-                    <div class="flex justify-end items-center space-x-4">
-                        <a href="<?= site_url('superadmin/koleksi/edit/' . $item['ID_KOLEKSI']) ?>" 
-                           class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">Edit</a>
-                        <button onclick="confirmDelete('<?= $item['ID_KOLEKSI'] ?>')" 
-                           class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</button>
-                    </div>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
+    <?php foreach ($koleksi as $item): ?>
+    <tr class="border-b">
+        <td class="py-2 px-4">
+            <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
+                 alt="Foto Koleksi" class="w-24 h-24 object-cover rounded-md">
+        </td>
+        <td class="py-2 px-4"><?= esc($item['NAMA_KOLEKSI']); ?></td>
+        <td class="py-2 px-4"><?= esc($item['NAMA_KATEGORI']); ?></td>
+        <td class="py-2 px-4 text-right">
+            <div class="flex justify-end items-center space-x-4">
+                <a href="<?= site_url('superadmin/koleksi/detail/' . $item['ID_KOLEKSI']) ?>" 
+                   class="text-blue-500 font-semibold hover:underline hover:text-blue-700">Lihat Detail</a>
+                <a href="<?= site_url('superadmin/koleksi/edit/' . $item['ID_KOLEKSI']) ?>" 
+                   class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">Edit</a>
+                <button onclick="confirmDelete('<?= $item['ID_KOLEKSI'] ?>')" 
+                   class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</button>
+            </div>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</tbody>
+
     </table>
 </div>
 
