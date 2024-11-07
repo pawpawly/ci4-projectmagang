@@ -13,6 +13,7 @@
             <thead class="bg-yellow-400">
                 <tr>
                     <th class="text-left py-2 px-4">Nama Pengirim</th>
+                    <th class="text-left py-2 px-4">Email</th>
                     <th class="text-left py-2 px-4">Tanggal</th>
                     <th class="text-right py-2 px-4">Aksi</th>
                 </tr>
@@ -22,18 +23,21 @@
                     <?php foreach ($saranList as $saran): ?>
                         <tr class="border-b">
                             <td class="py-2 px-4"><?= esc($saran['NAMA_SARAN']); ?></td>
-                            <td class="py-2 px-4"><?= formatTanggalIndonesia($saran['TANGGAL_SARAN']); ?></td>
+                            <td class="py-2 px-4"><?= esc($saran['EMAIL_SARAN']); ?></td>
+                            <td class="py-2 px-4">
+                                <?= formatTanggalIndonesia($saran['TANGGAL_SARAN']) . ' ' . date('H:i:s', strtotime($saran['TANGGAL_SARAN'])) . ' WITA'; ?>
+                            </td>
                             <td class="py-2 px-4 text-right">
                                 <a href="#" onclick="showDetail(<?= htmlspecialchars(json_encode($saran), ENT_QUOTES, 'UTF-8') ?>)" 
-                                   class="text-green-500 font-semibold hover:underline hover:text-green-700 mr-4">Lihat Saran</a>
+                                class="text-green-500 font-semibold hover:underline hover:text-green-700">Lihat Saran</a>
                                 <a href="#" onclick="confirmDelete('<?= $saran['ID_SARAN'] ?>')" 
-                                   class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</a>
+                                class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="3" class="text-center py-4">Tidak ada data saran</td>
+                        <td colspan="4" class="text-center py-4">Tidak ada data saran</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -46,6 +50,7 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-xl font-bold mb-4">Detail Saran</h2>
         <p><strong>Nama Pengirim:</strong> <span id="detailNama"></span></p>
+        <p><strong>Email:</strong> <span id="detailEmail"></span></p>
         <p><strong>Tanggal:</strong> <span id="detailTanggal"></span></p>
         <p><strong>Isi Saran:</strong> <span id="detailSaran"></span></p>
         <div class="mt-6 flex justify-end space-x-4">
@@ -61,28 +66,28 @@
     let currentSaranId;
 
     function showDetail(saran) {
-    currentSaranId = saran.ID_SARAN;
-    document.getElementById('detailNama').textContent = saran.NAMA_SARAN;
+        currentSaranId = saran.ID_SARAN;
+        document.getElementById('detailNama').textContent = saran.NAMA_SARAN;
+        document.getElementById('detailEmail').textContent = saran.EMAIL_SARAN;
 
-    // Format TANGGAL_SARAN untuk modal
-    const date = new Date(saran.TANGGAL_SARAN);
-    const formattedDate = new Intl.DateTimeFormat('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        timeZone: 'Asia/Makassar'
-    }).format(date) + ' WITA';
+        // Format TANGGAL_SARAN untuk modal
+        const date = new Date(saran.TANGGAL_SARAN);
+        const formattedDate = new Intl.DateTimeFormat('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            timeZone: 'Asia/Makassar'
+        }).format(date) + ' WITA';
 
-    document.getElementById('detailTanggal').textContent = formattedDate;
-    document.getElementById('detailSaran').textContent = saran.KOMENTAR_SARAN;
+        document.getElementById('detailTanggal').textContent = formattedDate;
+        document.getElementById('detailSaran').textContent = saran.KOMENTAR_SARAN;
 
-    const modal = document.getElementById('detailModal');
-    modal.classList.remove('hidden');
-}
-
+        const modal = document.getElementById('detailModal');
+        modal.classList.remove('hidden');
+    }
 
     function closeDetail() {
         const modal = document.getElementById('detailModal');
