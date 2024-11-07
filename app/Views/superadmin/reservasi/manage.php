@@ -8,6 +8,53 @@
         </div>
         <p class="mb-4 text-gray-800">Daftar semua reservasi di Website Anda</p>
 
+    <!-- Form Pencarian dan Filter -->
+    <div class="flex items-center mb-4 space-x-4">
+        <form method="get" action="<?= site_url('superadmin/reservasi/manage') ?>" class="flex items-center space-x-4">
+            <!-- Input Pencarian -->
+            <div class="relative">
+                <input type="text" name="search" placeholder="Cari Nama atau Instansi..." autocomplete="off"
+                       class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                       value="<?= esc($search) ?>" id="searchInput" oninput="toggleClearButton()">
+                
+                <!-- Tombol X untuk menghapus input -->
+                <button type="button" id="clearButton" onclick="clearSearch()" 
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                        style="display: none;">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Filter Status Reservasi -->
+            <select name="status" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option value="">Semua Status</option>
+                <option value="setuju" <?= $status == 'setuju' ? 'selected' : '' ?>>Setuju</option>
+                <option value="tolak" <?= $status == 'tolak' ? 'selected' : '' ?>>Tolak</option>
+                <option value="pending" <?= $status == 'pending' ? 'selected' : '' ?>>Pending</option>
+            </select>
+
+            <!-- Filter Bulan -->
+            <select name="bulan" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option value="">Semua Bulan</option>
+                <?php for ($i = 1; $i <= 12; $i++): ?>
+                    <option value="<?= $i ?>" <?= $bulan == $i ? 'selected' : '' ?>><?= date('F', mktime(0, 0, 0, $i, 10)) ?></option>
+                <?php endfor; ?>
+            </select>
+
+            <!-- Filter Tahun dengan rentang dinamis -->
+            <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option value="">Semua Tahun</option>
+                <?php foreach ($yearsRange as $y): ?>
+                    <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <!-- Tombol Cari -->
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
+        </form>
+    </div>
+
+
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white shadow-md rounded-lg">
                 <thead class="bg-yellow-400">
@@ -92,6 +139,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+
+    // Toggle Clear Button (X) for Search Input
+    function toggleClearButton() {
+        const searchInput = document.getElementById('searchInput');
+        const clearButton = document.getElementById('clearButton');
+        clearButton.style.display = searchInput.value ? 'inline' : 'none';
+    }
+
+    // Clear Search Input
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        toggleClearButton();
+        document.getElementById('searchInput').focus(); // Focus back to search input
+    }
+
+    // Call toggleClearButton on page load to set initial state
+    document.addEventListener("DOMContentLoaded", toggleClearButton);
+
+
         let currentReservasiId;
 
         function showDetail(item) {

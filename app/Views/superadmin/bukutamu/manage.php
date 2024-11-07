@@ -16,6 +16,54 @@
     <div class="flex justify-between items-center mb-4">
     </div>
     <p class="mb-4 text-gray-800">Daftar semua tamu yang berkunjung ke museum</p>
+    <div class="flex items-center justify-between mb-6">
+    <form method="get" action="<?= site_url('superadmin/bukutamu/manage') ?>" class="flex items-center space-x-4 relative">
+        <!-- Input Pencarian -->
+        <div class="relative">
+    <input type="text" name="search" placeholder="Cari Nama Tamu..." autocomplete="off" 
+           class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
+           id="searchInput">
+    
+    <!-- Tombol X untuk menghapus input -->
+    <button type="button" id="clearButton" onclick="clearSearch()" 
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+            style="display: none;">
+        ✕
+    </button>
+</div>
+
+
+        <!-- Filter Tipe Tamu -->
+        <select name="tipe_tamu" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Tipe Tamu</option>
+            <option value="1" <?= $tipeTamu === '1' ? 'selected' : '' ?>>Individual</option>
+            <option value="2" <?= $tipeTamu === '2' ? 'selected' : '' ?>>Instansi</option>
+        </select>
+
+        <!-- Filter Bulan -->
+        <select name="bulan" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Bulan</option>
+            <?php for ($m = 1; $m <= 12; $m++): ?>
+                <option value="<?= $m ?>" <?= $bulan == $m ? 'selected' : '' ?>>
+                    <?= date('F', mktime(0, 0, 0, $m, 10)) ?>
+                </option>
+            <?php endfor; ?>
+        </select>
+
+        <!-- Filter Tahun -->
+        <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Tahun</option>
+            <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
+                <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
+            <?php endfor; ?>
+        </select>
+
+        <!-- Tombol Cari -->
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
+    </form>
+</div>
+
+
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
             <thead class="bg-yellow-400">
@@ -82,6 +130,27 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
+// Toggle Clear Button (X) for Search Input
+function toggleClearButton() {
+    const searchInput = document.getElementById('searchInput');
+    const clearButton = document.getElementById('clearButton');
+    clearButton.style.display = searchInput.value ? 'inline' : 'none';
+}
+
+// Kosongkan input pencarian saat tombol X diklik
+function clearSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
+    toggleClearButton();
+    searchInput.focus();
+}
+
+// Panggil toggleClearButton saat halaman dimuat dan saat ada input pada kotak pencarian
+document.addEventListener("DOMContentLoaded", toggleClearButton);
+document.getElementById('searchInput').addEventListener('input', toggleClearButton);
+
+    
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
         history.go(1);
