@@ -10,7 +10,42 @@
         </a>
     </div>
 
-    <p class="mb-4 text-gray-800">Daftar semua berita di Website Anda</p>
+    <form method="get" action="<?= site_url('superadmin/berita/manage') ?>" class="flex items-center space-x-4 mb-6">
+        <!-- Search Input with Clear Button -->
+        <div class="relative">
+            <input type="text" name="search" placeholder="Cari Berita..." autocomplete="off"
+                   class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
+                   value="<?= esc($search) ?>" id="searchInput" oninput="toggleClearButton()">
+            <button type="button" id="clearButton" onclick="clearSearch()" 
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                    style="display: none;">
+                ✕
+            </button>
+        </div>
+
+        <!-- Month Filter Dropdown -->
+        <select name="month" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Bulan</option>
+            <?php for ($m = 1; $m <= 12; $m++): ?>
+                <option value="<?= $m ?>" <?= ($month == $m) ? 'selected' : '' ?>>
+                    <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                </option>
+            <?php endfor; ?>
+        </select>
+
+        <!-- Year Filter Dropdown -->
+        <select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Tahun</option>
+            <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
+                <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>>
+                    <?= $y ?>
+                </option>
+            <?php endfor; ?>
+        </select>
+
+        <!-- Search Button -->
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
+    </form>
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
@@ -20,7 +55,6 @@
                     <th class="text-left py-2 px-4">Nama Berita</th>
                     <th class="text-left py-2 px-4">Sumber Berita</th>
                     <th class="text-left py-2 px-4">Tanggal Berita</th>
-                    <th class="text-left py-2 px-4">Penyiar</th>
                     <th class="text-right py-2 px-4">Aksi</th>
                 </tr>
             </thead>
@@ -35,28 +69,19 @@
                             <td class="py-2 px-4"><?= esc($item['NAMA_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= esc($item['SUMBER_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></td>
-                            <td class="py-2 px-4">
-                                <?= esc($item['PENYIAR_BERITA'] ?? 'Pengguna tidak diketahui'); ?>
-                            </td>
                             <td class="py-2 px-4 text-right">
                                 <div class="flex justify-end items-center space-x-4">
                                     <a href="<?= site_url('superadmin/berita/edit/' . $item['ID_BERITA']) ?>" 
-                                       class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">
-                                       Edit
-                                    </a>
+                                       class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">Edit</a>
                                     <button onclick="confirmDelete('<?= $item['ID_BERITA'] ?>')" 
-                                            class="text-red-500 font-semibold hover:underline hover:text-red-700">
-                                        Delete
-                                    </button>
+                                            class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</button>
                                 </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-gray-500">
-                            Tidak ada berita yang ditemukan.
-                        </td>
+                        <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada berita yang ditemukan.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -65,71 +90,59 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-function confirmDelete(id_berita) {
-    Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Anda tidak akan dapat mengembalikan data ini!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            deleteBerita(id_berita);
-        }
-    });
-}
+    function toggleClearButton() {
+        const searchInput = document.getElementById('searchInput');
+        const clearButton = document.getElementById('clearButton');
+        clearButton.style.display = searchInput.value ? 'inline' : 'none';
+    }
 
-function deleteBerita(id_berita) {
-    fetch(`<?= site_url('superadmin/berita/delete/') ?>${id_berita}`, {
-        method: 'POST',  // Ubah menjadi POST
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            Swal.fire(
-                'Terhapus!',
-                data.message,
-                'success'
-            ).then(() => {
-                location.reload(); // Reload halaman setelah penghapusan berhasil
-            });
-        } else {
-            Swal.fire(
-                'Gagal!',
-                data.message,
-                'error'
-            );
-        }
-    })
-    .catch(error => {
-        Swal.fire(
-            'Error!',
-            'Terjadi kesalahan saat menghapus berita.',
-            'error'
-        );
-        console.error('Error:', error);
-    });
-}
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        toggleClearButton();
+        document.getElementById('searchInput').focus();
+    }
 
-    </script>
+    document.addEventListener("DOMContentLoaded", toggleClearButton);
 
-    <style>
-        tbody tr:hover {
-            background-color: #FFEBB5; /* Warna latar saat hover */
-        }
+    function confirmDelete(id_berita) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan dapat mengembalikan data ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteBerita(id_berita);
+            }
+        });
+    }
 
-        tbody tr:hover td {
-            transition: background-color 0.2s ease-in-out;
-        }
-    </style>
+    function deleteBerita(id_berita) {
+        fetch(`<?= site_url('superadmin/berita/delete/') ?>${id_berita}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire('Terhapus!', data.message, 'success').then(() => location.reload());
+            } else {
+                Swal.fire('Gagal!', data.message, 'error');
+            }
+        })
+        .catch(error => {
+            Swal.fire('Error!', 'Terjadi kesalahan saat menghapus berita.', 'error');
+            console.error('Error:', error);
+        });
+    }
+</script>
 
 <?= $this->endSection() ?>

@@ -10,47 +10,132 @@
             Tambah Koleksi
         </a>
     </div>
-    <p class="mb-4 text-gray-800">Daftar semua koleksi di Website Anda</p>
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white shadow-md rounded-lg">
-            <thead class="bg-yellow-400">
-                <tr>
-                    <th class="text-left py-2 px-4">Foto Koleksi</th>
-                    <th class="text-left py-2 px-4">Nama Koleksi</th>
-                    <th class="text-left py-2 px-4">Kategori Koleksi</th>
-                    <th class="text-left py-2 px-4">Deskripsi Koleksi</th>
-                    <th class="text-right py-2 px-4">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="text-gray-800">
-                <?php foreach ($koleksi as $item): ?>
-                <tr class="border-b">
-                    <td class="py-2 px-4">
-                        <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
-                             alt="Foto Koleksi" class="w-24 h-24 object-cover rounded-md">
-                    </td>
-                    <td class="py-2 px-4"><?= esc($item['NAMA_KOLEKSI']); ?></td>
-                    <td class="py-2 px-4"><?= esc($item['NAMA_KATEGORI']); ?></td>
-                    <td class="py-2 px-4">
-                        <?= !empty($item['DESKRIPSI_KOLEKSI']) ? esc($item['DESKRIPSI_KOLEKSI']) : 'Deskripsi Tidak Tersedia'; ?>
-                    </td>
-                    <td class="py-2 px-4 text-right">
-                        <div class="flex justify-end items-center space-x-4">
-                            <a href="<?= site_url('superadmin/koleksi/edit/' . $item['ID_KOLEKSI']) ?>" 
-                               class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">Edit</a>
-                            <button onclick="confirmDelete('<?= $item['ID_KOLEKSI'] ?>')" 
-                               class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+    <p class="mb-4 text-gray-800">Daftar semua event di Website Anda</p>
+
+    <div class="flex items-center justify-between mb-6">
+    <form method="get" action="<?= site_url('superadmin/koleksi/manage') ?>" class="flex items-center space-x-4 relative">
+        <!-- Input Pencarian dengan Tombol X di dalamnya -->
+        <div class="relative">
+            <input type="text" name="search" placeholder="Cari Koleksi..." autocomplete="off"
+                   class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
+                   value="<?= esc(service('request')->getGet('search')) ?>" id="searchInput" oninput="toggleClearButton()">
+            
+            <!-- Tombol X untuk menghapus input, berada di dalam kotak input -->
+            <button type="button" id="clearButton" onclick="clearSearch()" 
+                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                    style="display: none;">
+                ✕
+            </button>
+        </div>
+
+        <select name="category" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Kategori</option>
+            <?php foreach ($categories as $cat): ?>
+                <option value="<?= esc($cat['ID_KKOLEKSI']) ?>" <?= service('request')->getGet('category') == $cat['ID_KKOLEKSI'] ? 'selected' : '' ?>>
+                    <?= esc($cat['KATEGORI_KKOLEKSI']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <!-- Tombol Cari -->
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
+    </form>
 </div>
+
+
+<div class="overflow-x-auto">
+    <table class="min-w-full bg-white shadow-md rounded-lg">
+        <thead class="bg-yellow-400">
+            <tr>
+                <th class="text-left py-2 px-4">Foto Koleksi</th>
+                <th class="text-left py-2 px-4">Nama Koleksi</th>
+                <th class="text-left py-2 px-4">Kategori Koleksi</th>
+                <th class="text-left py-2 px-4">Deskripsi Koleksi</th>
+                <th class="text-right py-2 px-4">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-800">
+            <?php foreach ($koleksi as $item): ?>
+            <tr class="border-b">
+                <td class="py-2 px-4">
+                    <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
+                         alt="Foto Koleksi" class="w-24 h-24 object-cover rounded-md">
+                </td>
+                <td class="py-2 px-4"><?= esc($item['NAMA_KOLEKSI']); ?></td>
+                <td class="py-2 px-4"><?= esc($item['NAMA_KATEGORI']); ?></td>
+                <td class="py-2 px-4">
+                    <?= !empty($item['DESKRIPSI_KOLEKSI']) ? esc($item['DESKRIPSI_KOLEKSI']) : 'Deskripsi Tidak Tersedia'; ?>
+                </td>
+                <td class="py-2 px-4 text-right">
+                    <div class="flex justify-end items-center space-x-4">
+                        <a href="<?= site_url('superadmin/koleksi/edit/' . $item['ID_KOLEKSI']) ?>" 
+                           class="text-yellow-500 font-semibold hover:underline hover:text-yellow-700">Edit</a>
+                        <button onclick="confirmDelete('<?= $item['ID_KOLEKSI'] ?>')" 
+                           class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</button>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+    // Tampilkan atau sembunyikan tombol X
+    function toggleClearButton() {
+        const searchInput = document.getElementById('searchInput');
+        const clearButton = document.getElementById('clearButton');
+        clearButton.style.display = searchInput.value ? 'inline' : 'none';
+    }
+
+    // Kosongkan input pencarian saat tombol X diklik
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        toggleClearButton();
+        document.getElementById('searchInput').focus(); // Fokus kembali ke input pencarian
+    }
+
+    // Panggil toggleClearButton saat halaman dimuat, untuk memeriksa jika ada nilai default
+    document.addEventListener("DOMContentLoaded", toggleClearButton);
+
+    // Fungsi Filter
+    function filterTable() {
+        const searchInput = document.getElementById('search').value.toLowerCase();
+        const categoryFilter = document.getElementById('categoryFilter').value.toLowerCase();
+        const rows = document.querySelectorAll('#koleksiTable tbody tr');
+
+        rows.forEach(row => {
+            const namaKoleksi = row.querySelector('.nama-koleksi').textContent.toLowerCase();
+            const kategoriKoleksi = row.querySelector('.kategori-koleksi').textContent.toLowerCase();
+
+            const matchesSearch = namaKoleksi.includes(searchInput);
+            const matchesCategory = categoryFilter === "" || kategoriKoleksi === categoryFilter;
+
+            if (matchesSearch && matchesCategory) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // Fungsi Urutkan Berdasarkan Nama
+    function sortTable() {
+        const table = document.getElementById('koleksiTable');
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        const sortedRows = rows.sort((a, b) => {
+            const nameA = a.querySelector('.nama-koleksi').textContent.toLowerCase();
+            const nameB = b.querySelector('.nama-koleksi').textContent.toLowerCase();
+            return nameA.localeCompare(nameB);
+        });
+
+        sortedRows.forEach(row => table.querySelector('tbody').appendChild(row));
+    }
+
     function confirmDelete(id_koleksi) {
         Swal.fire({
             title: 'Apakah Anda yakin?',
