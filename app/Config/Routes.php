@@ -10,6 +10,9 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
 $routes->get('/schedule', 'ReservationController::index');
+$routes->post('saran/saveSaran', 'SaranController::saveSaran');
+
+
 // Login Routes
 $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');
@@ -26,8 +29,6 @@ $routes->group('koleksi', function ($routes) {
     $routes->get('/', 'Koleksi::index');  // Route untuk halaman daftar koleksi
     $routes->get('detail/(:num)', 'Koleksi::detail/$1');  // Route untuk halaman detail koleksi
 });
-
-
 
 // Route untuk Detail Event dan Daftar Event
 $routes->group('event', function ($routes) {
@@ -89,7 +90,6 @@ $routes->group('superadmin/berita', ['filter' => 'auth'], function ($routes) {
 
 });
 
-
 // Route untuk Manajemen Koleksi
 $routes->group('superadmin/koleksi', ['filter' => 'auth'], function ($routes) {
     $routes->get('category', 'SuperAdminController::kategoriKoleksi');  
@@ -135,10 +135,10 @@ $routes->group('superadmin/bukudigital', ['filter' => 'auth'], function ($routes
     $routes->get('edit/(:num)', 'SuperAdminController::editBukuDigital/$1');
     $routes->post('update', 'SuperAdminController::updateBukuDigital');
     $routes->post('delete/(:num)', 'SuperAdminController::deleteBukuDigital/$1');
-
-    
-
-
 });
 
+$routes->group('superadmin/saran', ['filter' => 'auth'], function ($routes) {
+    $routes->get('manage', 'SuperAdminController::manageSaran');
+    $routes->delete('delete/(:num)', 'SuperAdminController::deleteSaran/$1');
+});
 
