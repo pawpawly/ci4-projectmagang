@@ -37,8 +37,7 @@ $routes->group('event', function ($routes) {
 });
 
 $routes->group('reservasi', function ($routes) {
-    $routes->post('store', 'ReservationController::store'); 
-    $routes->get('/update-status/(:num)/(:alpha)', 'ReservasiController::updateStatus/$1/$2');
+    $routes->post('store', 'ReservationController::storeReservasi'); 
 });
 
 // Grouping Logout dengan Middleware Auth
@@ -113,11 +112,12 @@ $routes->group('superadmin/reservasi', ['filter' => 'auth'], function ($routes) 
     $routes->get('manage', 'SuperAdminController::reservationManage');
     $routes->post('status/(:num)', 'SuperAdminController::reservationStatus/$1');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteReservation/$1');
-});
-// Routes.php
+    $routes->get('detail/(:num)', 'SuperAdminController::detail_reservasi/$1');
+    $routes->post('update-status/(:num)', 'SuperAdminController::updateStatus/$1');
 
-// Routes.php
-// Route group for Superadmin access
+
+});
+
 $routes->group('superadmin/bukutamu', ['filter' => 'auth'], function ($routes) {
     $routes->get('manage', 'SuperAdminController::manageBukuTamu');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteBukuTamu/$1');

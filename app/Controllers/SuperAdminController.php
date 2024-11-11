@@ -1320,53 +1320,81 @@ public function reservationManage()
     ]);
 }
 
-
-
-
-public function reservationStatus($id_reservasi)
+public function detail_reservasi($id)
 {
-    try {
-        // Ambil data status dari request JSON
-        $request = $this->request->getJSON(true); // Mengembalikan sebagai array
+    // Mengambil data reservasi berdasarkan ID
+    $reservasi = $this->reservasiModel->find($id);
 
-        // Debugging: Pastikan ID dan data JSON diterima
-        log_message('debug', 'Request JSON: ' . json_encode($request));
-        log_message('debug', 'ID Reservasi: ' . $id_reservasi);
+    // Jika data reservasi tidak ditemukan, tampilkan halaman 404
+    if (!$reservasi) {
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Reservasi dengan ID $id tidak ditemukan.");
+    }
 
-        // Validasi apakah status_reservasi tersedia
-        if (isset($request['status_reservasi'])) {
-            $status = $request['status_reservasi'];
+    // Mengirim data ke view detail_reservasi.php
+    return view('superadmin/reservasi/detail_reservasi', [
+        'reservasi' => $reservasi
+    ]);
+}
 
-            // Update status di database
-            $updated = $this->reservasiModel->update($id_reservasi, ['STATUS_RESERVASI' => $status]);
+public function updateStatus($id_reservasi)
+{
+    $status = $this->request->getVar('status_reservasi');
 
-            // Periksa apakah update berhasil
-            if ($updated) {
-                return $this->response->setJSON(['success' => true]);
-            } else {
-                return $this->response->setJSON(['success' => false, 'message' => 'Gagal memperbarui status.']);
-            }
-        } else {
-            return $this->response->setJSON(['success' => false, 'message' => 'Status tidak ditemukan dalam request.']);
-        }
-    } catch (\Exception $e) {
-        // Tangani jika terjadi kesalahan
-        log_message('error', 'Error: ' . $e->getMessage());
+    if (!in_array($status, ['setuju', 'tolak', 'pending'])) {
         return $this->response->setJSON([
             'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            'message' => 'Status tidak valid.'
         ]);
     }
+
+    $reservasi = $this->reservasiModel->find($id_reservasi);
+
+    if (!$reservasi) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Data reservasi tidak ditemukan.'
+        ]);
+    }
+
+    // Update status reservasi
+    $this->reservasiModel->update($id_reservasi, ['STATUS_RESERVASI' => $status]);
+
+    return $this->response->setJSON([
+        'success' => true,
+        'message' => 'Status reservasi berhasil diperbarui.',
+        'status' => $status
+    ]);
 }
+
 
 
 public function deleteReservation($id_reservasi)
 {
     try {
+        // Ambil data reservasi untuk mendapatkan path file sebelum menghapus
+        $reservasi = $this->reservasiModel->find($id_reservasi);
+
+        // Periksa apakah data reservasi ditemukan
+        if (!$reservasi) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Data reservasi tidak ditemukan.'
+            ]);
+        }
+
+        // Hapus file terkait jika ada
+        if (!empty($reservasi['SURAT_RESERVASI'])) {
+            $filePath = FCPATH . 'uploads/surat_kunjungan/' . $reservasi['SURAT_RESERVASI'];
+            if (is_file($filePath)) {
+                unlink($filePath); // Hapus file dari server
+            }
+        }
+
+        // Hapus data dari database
         $deleted = $this->reservasiModel->delete($id_reservasi);
 
         if ($deleted) {
-            return $this->response->setJSON(['success' => true]);
+            return $this->response->setJSON(['success' => true, 'message' => 'Reservasi berhasil dihapus.']);
         } else {
             return $this->response->setJSON([
                 'success' => false,
@@ -1380,6 +1408,8 @@ public function deleteReservation($id_reservasi)
         ]);
     }
 }
+
+
 
 
 // ==========================

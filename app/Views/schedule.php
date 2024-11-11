@@ -54,58 +54,138 @@
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
         
-        <form id="reservationForm" action="/reservasi/store" method="post" autocomplete="off">
-    <input type="hidden" name="tanggal_reservasi" id="selectedDate">
+        <form id="reservationForm" action="/reservasi/store" method="post" enctype="multipart/form-data" autocomplete="off">
+            <input type="hidden" name="tanggal_reservasi" id="selectedDate">
 
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Nama</label>
-        <input type="text" name="nama_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2">
-    </div>
+            <!-- Field Nama -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Nama</label>
+                <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+            </div>
 
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Instansi</label>
-        <input type="text" name="instansi_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2">
-    </div>
+            <!-- Field Instansi -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
+                <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+            </div>
 
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" name="email_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
-    </div>
+            <!-- Field Email -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+            </div>
 
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
-        <input type="text" name="telepon_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
-    </div>
+            <!-- Field No Whatsapp -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
+                <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" placeholder="Contoh: 08123456789" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off">
+            </div>
 
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
-        <input type="text" name="kegiatan_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
-    </div>
+            <!-- Field Kegiatan -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
+                <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+            </div>
 
-    <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-        <input type="number" name="jmlpengunjung_reservasi" autocomplete="off" class="w-full border rounded px-3 py-2" >
-    </div>
+            <!-- Field Jumlah Anggota -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
+                <input type="number" name="jmlpengunjung_reservasi" min="0" class="w-full border rounded px-3 py-2" autocomplete="off">
+            </div>
 
-    <div class="flex justify-end">
-        <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
-        <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded">Simpan</button>
-    </div>
-</form>
+            <!-- Field Surat Kunjungan -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Surat Kunjungan (Foto/PDF) <i>Max 2MB</i> </label>
+                <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="w-full border rounded px-3 py-2">
+            </div>
 
+            <div class="flex justify-end">
+                <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
+                <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded">Simpan</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <!-- Tambahkan SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
 
+<script>
     // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
     window.onbeforeunload = function () {
         window.scrollTo(0, 0);
     };
-    
+
+    document.querySelector('input[name="jmlpengunjung_reservasi"]').addEventListener('input', function () {
+        if (this.value < 0) {
+            this.value = 0;
+        }
+    });
+
+    document.getElementById('reservationForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Cegah form dikirim langsung
+
+        const fileInput = document.getElementById('suratReservasi');
+        const file = fileInput.files[0];
+        const submitButton = document.querySelector('#reservationForm button[type="submit"]');
+
+        // Cek apakah file diunggah dan ukurannya lebih dari 2MB
+        if (file && file.size > 2 * 1024 * 1024) { // 2MB dalam byte
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Tidak Boleh Lebih dari 2MB',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.'
+            });
+            return; // Hentikan eksekusi jika ukuran file terlalu besar
+        }
+
+        // Disable tombol "Simpan" dan ubah teks menjadi "Menyimpan..."
+        submitButton.disabled = true;
+        submitButton.textContent = 'Menyimpan...';
+
+        // Jika file valid, lanjutkan ke proses pengiriman data
+        const formData = new FormData(this); // Ambil data dari form
+
+        fetch('/reservasi/store', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                // Jika validasi gagal di server, tampilkan pesan error SweetAlert2
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Semua field wajib diisi!',
+                });
+                submitButton.disabled = false; // Aktifkan kembali tombol
+                submitButton.textContent = 'Simpan'; // Kembalikan teks tombol
+            } else {
+                // Jika berhasil, tampilkan pesan sukses
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Reservasi berhasil disimpan!',
+                    confirmButtonText: 'Lanjutkan ke WhatsApp'
+                }).then(() => {
+                    window.location.href = 'https://wa.me/6281231231231';
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Terjadi kesalahan, silakan coba lagi.',
+            });
+            submitButton.disabled = false; // Aktifkan kembali tombol
+            submitButton.textContent = 'Simpan'; // Kembalikan teks tombol
+        });
+    });
+
     const calendar = document.getElementById('calendar');
     const monthYear = document.getElementById('monthYear');
     const todayButton = document.getElementById('today');
@@ -118,57 +198,6 @@
     const reservationForm = document.getElementById('reservationForm');
 
     let currentDate = new Date();
-
-    reservationForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Cegah form dikirim langsung
-
-        const formData = new FormData(reservationForm); // Ambil data dari form
-
-        fetch('/reservasi/store', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                // Jika validasi gagal, tampilkan pesan error SweetAlert2
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Semua field wajib diisi!',
-                });
-            } else {
-                // Jika validasi berhasil, tampilkan konfirmasi SweetAlert2
-                Swal.fire({
-                    icon: 'question',
-                    title: 'Konfirmasi Reservasi',
-                    text: 'Apakah data yang Anda isi sudah benar?',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Simpan',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Reservasi berhasil diajukan!',
-                            confirmButtonText: 'Lanjutkan ke WhatsApp'
-                        }).then(() => {
-                            window.location.href = 'https://wa.me/6281231231231';
-                        });
-                    }
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Terjadi kesalahan, silakan coba lagi.',
-            });
-        });
-    });
 
     function renderCalendar(date) {
         calendar.innerHTML = ''; // Kosongkan kalender
@@ -247,15 +276,13 @@
         icon: 'success',
         title: 'Berhasil',
         text: 'Reservasi berhasil diajukan, silahkan melanjutkan konfirmasi ke WhatsApp.',
-        showCancelButton: true,
         confirmButtonText: 'Lanjutkan ke WhatsApp',
-        cancelButtonText: 'Tutup',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = 'https://wa.me/6281231231231';
-        }
+    }).then(() => {
+        window.location.href = 'https://wa.me/6281231231231';
     });
     <?php endif; ?>
 </script>
+
+        
 
 <?= $this->endSection() ?>
