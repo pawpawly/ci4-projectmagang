@@ -32,8 +32,9 @@
 
     <div class="mb-4">
         <h2 class="text-lg font-semibold">Deskripsi:</h2>
-        <p><?= esc($berita['DESKRIPSI_BERITA']); ?></p>
+        <p><?= nl2br(esc($berita['DESKRIPSI_BERITA'])); ?></p>
     </div>
+
 
     <div class="mt-6">
         <a href="<?= site_url('superadmin/berita/manage'); ?>" 
