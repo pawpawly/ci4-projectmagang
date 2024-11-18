@@ -100,7 +100,7 @@
 <div class="mb-6">
     <label class="block text-sm font-medium text-gray-700 mb-2">Surat Kunjungan (Foto/PDF) <i>Max 2MB</i></label>
     <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative">
-        <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden">
+        <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden" required>
         <div id="dropzoneContent" class="flex flex-col justify-center items-center space-y-2">
             <!-- Ikon upload -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

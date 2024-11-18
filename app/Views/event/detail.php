@@ -22,7 +22,7 @@
                 <img 
                     src="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 
                     alt="<?= esc($event['NAMA_EVENT']); ?>" 
-                    class="object-contain w-full max-h-[500px] bg-gray-100 p-2 rounded-lg">
+                    class="object-contain w-full max-h-[500px] bg-white p-2 rounded-lg">
             </a>
         </div>
 
