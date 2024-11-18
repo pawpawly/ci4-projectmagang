@@ -34,7 +34,7 @@
 </section>
 
 <!-- New Carousel Section -->
-<section class="py-12 bg-white">
+<section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
     <div class="container mx-auto">
         <div id="carouselExample" class="relative overflow-hidden" style="max-width: 900px; margin: 0 auto;">
             <!-- Carousel Wrapper -->
@@ -60,13 +60,13 @@
 
         <!-- Text Below Carousel -->
         <div class="text-center mt-4">
-            <p id="carouselText" class="text-gray-500 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p id="carouselText" class="text-white font-semibold text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
     </div>
 </section>
 
 <!-- Event Section -->
-<section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
+<section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
     <div class="container mx-auto px-8 relative">
         <div class="relative text-center">
             <h2 class="event-overlay">EVENT</h2>
@@ -106,7 +106,7 @@
 </section>
 
 <!-- Forum Section -->
-<section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
+<section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
     <div class="container mx-auto px-8">
         <div class="relative text-center">
             <h2 class="event-overlay">FORUM</h2> <!-- Overlay -->
@@ -150,6 +150,60 @@
         <?php endif; ?>
     </div>
 </section>
+
+
+<!-- Section Kayuh Baimbai TV -->
+<section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
+    <div class="container mx-auto max-w-7xl px-4">
+        <!-- Judul Section -->
+        <div class="relative text-center mb-8">
+            <h2 class="event-overlay">KAYUH BAIMBAI TV</h2>
+            <h2 class="text-4xl font-bold text-[#2C1011] mb-4 hover:scale-105 transition-transform duration-300">
+                KAYUH BAIMBAI TV
+            </h2>
+        </div>
+
+        <!-- Video Besar -->
+        <div class="mb-8 flex justify-center">
+            <iframe width="60%" height="350" src="https://www.youtube.com/embed/9pRIoZr-jZ0" 
+                    title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen class="rounded-xl shadow-lg"></iframe>
+        </div>
+
+        <!-- Grid Video Kecil -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Video Kecil 1 -->
+            <div>
+                <iframe width="100%" height="200" src="https://www.youtube.com/embed/w4jypfkkOXw" 
+                        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen class="rounded-xl shadow-lg"></iframe>
+            </div>
+            <!-- Video Kecil 2 -->
+            <div>
+                <iframe width="100%" height="200" src="https://www.youtube.com/embed/m_oAtvIruqg" 
+                        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen class="rounded-xl shadow-lg"></iframe>
+            </div>
+            <!-- Video Kecil 3 -->
+            <div>
+                <iframe width="100%" height="200" src="https://www.youtube.com/embed/yRjmuzSq4h4" 
+                        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen class="rounded-xl shadow-lg"></iframe>
+            </div>
+        </div>
+
+        <!-- Tombol Lihat Lainnya -->
+        <div class="text-center mt-8">
+            <a href="https://www.youtube.com/@EwingHDTV" target="_blank" 
+               class="bg-[#2C1011] text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-[#4A2A2C] transition-transform duration-300">
+                Lihat Lainnya...
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
 
 <!-- Saran Section -->
 <section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
