@@ -16,7 +16,7 @@
             <?php foreach ($events as $event): ?>
                 <div class="flex flex-col md:flex-row items-center border border-[#2C1011] rounded-lg shadow-lg overflow-hidden bg-white">
                     <!-- Bagian Poster -->
-                    <div class="w-full md:w-1/3 bg-gray-100" 
+                    <div class="w-full md:w-1/3 bg-white" 
                          style="background-image: url('<?= base_url('pict/dotted-pattern.png'); ?>'); background-size: cover;">
                         <img 
                             src="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 

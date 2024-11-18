@@ -27,12 +27,20 @@
                    placeholder="Masukkan sumber berita" required>
         </div>
 
-        <div class="mb-4">
-            <label for="foto_berita" class="block text-sm font-medium text-gray-700">Foto Berita</label>
-            <input type="file" id="foto_berita" name="foto_berita" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
-                   accept=".jpg,.jpeg,.png" required>
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Berita</label>
+            <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzone">
+                <input type="file" name="foto_berita" id="fotoBerita" accept=".jpg,.jpeg,.png" class="hidden" required>
+                <div id="dropzoneContent" class="flex flex-col justify-center items-center space-y-2">
+                    <!-- Ikon upload -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+                    </svg>
+                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+                </div>
+            </div>
         </div>
+
 
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/berita/manage') ?>" 
@@ -121,6 +129,45 @@
 
         return true;
     }
+
+    // Ambil elemen dropzone dan input file
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fotoBerita');
+const dropzoneContent = document.getElementById('dropzoneContent');
+
+// Fungsi untuk menampilkan file yang diunggah
+function handleFiles(files) {
+    if (files.length > 0) {
+        dropzoneContent.innerHTML = `<p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>`;
+    } else {
+        dropzoneContent.innerHTML = '<p class="text-sm text-gray-500">Drop files here to upload</p>';
+    }
+}
+
+// Klik pada dropzone membuka file input
+dropzone.addEventListener('click', () => fileInput.click());
+
+// Update file yang dipilih melalui file input
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+// Tangani event drag-and-drop
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover
+});
+
+dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover
+});
+
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover
+    const files = e.dataTransfer.files; // Ambil file dari drop
+    fileInput.files = files; // Set file input
+    handleFiles(files); // Update tampilan
+});
+
 </script>
 
 <?= $this->endSection() ?>
