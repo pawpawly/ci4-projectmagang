@@ -30,6 +30,12 @@ $routes->group('koleksi', function ($routes) {
     $routes->get('detail/(:num)', 'Koleksi::detail/$1');  // Route untuk halaman detail koleksi
 });
 
+// Route untuk Buku Digital
+$routes->group('bukudigital', function ($routes) {
+    $routes->get('/', 'BukuDigitalController::index'); // Daftar buku digital
+    $routes->get('detail/(:num)', 'BukuDigitalController::detail/$1'); // Detail buku digital berdasarkan ID
+});
+
 // Route untuk Detail Event dan Daftar Event
 $routes->group('event', function ($routes) {
     $routes->get('index', 'Event::index');  // Daftar event
