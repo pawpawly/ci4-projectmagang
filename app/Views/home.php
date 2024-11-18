@@ -3,9 +3,7 @@
 <?= $this->section('content') ?>
 <section class="relative">
     <div class="relative w-full h-[500px] overflow-hidden">
-        <img src="<?= base_url('pict/museum.png'); ?>" alt="Museum 1" class="carousel-image absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000">
-        <img src="<?= base_url('pict/isimuseum2.png'); ?>" alt="Museum 2" class="carousel-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
-        <img src="<?= base_url('pict/isimuseum3.png'); ?>" alt="Museum 3" class="carousel-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+        <img src="<?= base_url('pict/museum.png'); ?>" alt="Museum Kayuh Baimbai" class="absolute inset-0 w-full h-full object-cover">
     </div>
     <div class="absolute inset-x-0 bottom-0 text-center bg-gradient-to-t from-gray-900/80 to-transparent py-20">
         <div class="container mx-auto">
@@ -31,6 +29,38 @@
             <div class="group flex justify-center">
                 <img src="<?= base_url('pict/pesonaindonesia.png'); ?>" alt="Icon 4" class="w-auto h-9 md:h-9 transition-all transform grayscale hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- New Carousel Section -->
+<section class="py-12 bg-white">
+    <div class="container mx-auto">
+        <div id="carouselExample" class="relative overflow-hidden" style="max-width: 900px; margin: 0 auto;">
+            <!-- Carousel Wrapper -->
+            <div id="carouselInner" class="flex transition-transform duration-700">
+                <div class="carousel-item flex-shrink-0 w-full">
+                    <img src="<?= base_url('pict/museum.png'); ?>" alt="Carousel Image 1" class="w-full h-[400px] object-cover rounded-lg">
+                </div>
+                <div class="carousel-item flex-shrink-0 w-full">
+                    <img src="<?= base_url('pict/isimuseum2.png'); ?>" alt="Carousel Image 2" class="w-full h-[400px] object-cover rounded-lg">
+                </div>
+                <div class="carousel-item flex-shrink-0 w-full">
+                    <img src="<?= base_url('pict/isimuseum3.png'); ?>" alt="Carousel Image 3" class="w-full h-[400px] object-cover rounded-lg">
+                </div>
+            </div>
+
+            <!-- Indicators -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3">
+                <button class="indicator h-[4px] w-[40px] bg-gray-300 rounded-full transition-all duration-300" data-index="0"></button>
+                <button class="indicator h-[4px] w-[40px] bg-gray-300 rounded-full transition-all duration-300" data-index="1"></button>
+                <button class="indicator h-[4px] w-[40px] bg-gray-300 rounded-full transition-all duration-300" data-index="2"></button>
+            </div>
+        </div>
+
+        <!-- Text Below Carousel -->
+        <div class="text-center mt-4">
+            <p id="carouselText" class="text-gray-500 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
     </div>
 </section>
@@ -360,26 +390,6 @@ document.getElementById('saranForm').addEventListener('submit', function(event) 
         window.scrollTo(0, 0);
     };
 
-    // Ambil semua elemen gambar dengan kelas carousel-image
-    const carouselImages = document.querySelectorAll('.carousel-image');
-    let currentImageIndex = 0; // Indeks gambar aktif
-
-    // Fungsi untuk menampilkan gambar berikutnya
-    function showNextImage() {
-        // Sembunyikan gambar saat ini
-        carouselImages[currentImageIndex].classList.remove('opacity-100');
-        carouselImages[currentImageIndex].classList.add('opacity-0');
-
-        // Pindah ke gambar berikutnya
-        currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
-
-        // Tampilkan gambar baru
-        carouselImages[currentImageIndex].classList.remove('opacity-0');
-        carouselImages[currentImageIndex].classList.add('opacity-100');
-    }
-    setInterval(showNextImage, 3500);
-
-
     const eventCarousel = document.getElementById('eventCarousel');
     const leftArrow = document.getElementById('leftArrow');
     const rightArrow = document.getElementById('rightArrow');
@@ -458,6 +468,103 @@ forumCarousel.addEventListener('mousemove', (e) => {
 
 
 }
+
+const carouselInner = document.getElementById('carouselInner');
+const indicators = document.querySelectorAll('.indicator');
+const carouselText = document.getElementById('carouselText'); // Ambil elemen teks di bawah carousel
+const slideCount = indicators.length;
+let currentIndex = 0;
+
+// Variabel untuk drag
+let isDragging = false;
+let startPos = 0;
+let currentTranslate = 0;
+let prevTranslate = 0;
+
+// Text untuk setiap slide
+const slideTexts = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+];
+
+// Prevent default untuk drag
+carouselInner.addEventListener('mousedown', (e) => {
+    e.preventDefault(); // Mencegah default behavior
+    startDrag(e);
+});
+carouselInner.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Mencegah default behavior
+    startDrag(e);
+});
+
+carouselInner.addEventListener('mousemove', drag);
+carouselInner.addEventListener('touchmove', drag);
+
+carouselInner.addEventListener('mouseup', endDrag);
+carouselInner.addEventListener('touchend', endDrag);
+
+carouselInner.addEventListener('mouseleave', () => {
+    if (isDragging) endDrag();
+});
+
+function startDrag(event) {
+    isDragging = true;
+    startPos = getPositionX(event);
+    carouselInner.style.transition = 'none'; // Matikan transisi saat drag
+}
+
+function drag(event) {
+    if (isDragging) {
+        const currentPosition = getPositionX(event);
+        currentTranslate = prevTranslate + currentPosition - startPos;
+        carouselInner.style.transform = `translateX(${currentTranslate}px)`;
+    }
+}
+
+function endDrag() {
+    isDragging = false;
+    const movedBy = currentTranslate - prevTranslate;
+
+    if (movedBy < -100 && currentIndex < slideCount - 1) currentIndex++;
+    if (movedBy > 100 && currentIndex > 0) currentIndex--;
+
+    setPositionByIndex();
+}
+
+function setPositionByIndex() {
+    const slideWidth = carouselInner.offsetWidth;
+    currentTranslate = currentIndex * -slideWidth;
+    prevTranslate = currentTranslate;
+    carouselInner.style.transition = 'transform 0.5s ease';
+    carouselInner.style.transform = `translateX(${currentTranslate}px)`;
+    updateCarousel(currentIndex);
+}
+
+function getPositionX(event) {
+    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+}
+
+function updateCarousel(index) {
+    // Update indikator
+    indicators.forEach((indicator, i) => {
+        indicator.classList.toggle('bg-gray-800', i === index);
+        indicator.classList.toggle('bg-gray-300', i !== index);
+    });
+
+    // Update teks di bawah carousel
+    carouselText.textContent = slideTexts[index];
+}
+
+// Auto Slide
+setInterval(() => {
+    currentIndex = (currentIndex + 1) % slideCount;
+    setPositionByIndex();
+}, 5000);
+
+// Inisialisasi awal
+updateCarousel(currentIndex);
+
 
 </script>
 
