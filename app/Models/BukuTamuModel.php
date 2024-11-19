@@ -6,19 +6,19 @@ use CodeIgniter\Model;
 
 class BukuTamuModel extends Model
 {
-    protected $table = 'bukutamu'; // Nama tabel
-    protected $primaryKey = 'ID_TAMU'; // Primary Key
+    protected $table = 'bukutamu';  
+    protected $primaryKey = 'ID_TAMU';
 
-    // Kolom yang diizinkan untuk diisi secara massal
     protected $allowedFields = [
         'NAMA_TAMU', 
         'TIPE_TAMU', 
         'ALAMAT_TAMU', 
         'NOHP_TAMU', 
         'TGLKUNJUNGAN_TAMU', 
+        'FOTO_TAMU',
         'JKL_TAMU', 
-        'JKP_TAMU', 
+        'JKP_TAMU',
     ];
 
-    protected $useTimestamps = false; // Nonaktifkan fitur timestamps
+    protected $useTimestamps = false;
 }

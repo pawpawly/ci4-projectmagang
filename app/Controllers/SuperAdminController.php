@@ -1463,30 +1463,61 @@ public function manageBukuTamu()
     public function deleteBukuTamu($id_tamu)
     {
         try {
+            // Find the guest data
             $tamu = $this->bukuTamuModel->find($id_tamu);
-
+    
             if (!$tamu) {
                 return $this->response->setJSON([
                     'success' => false,
                     'message' => 'Data tamu tidak ditemukan.'
                 ]);
             }
-
+    
+            // Check if the photo is not the default photo and delete it
+            $fotoTamu = $tamu['FOTO_TAMU']; // Assuming 'FOTO_TAMU' contains the photo path
+            
+            // Do not delete if the photo is the default one
+            if ($fotoTamu !== 'uploads/foto_tamu/default.png' && file_exists(FCPATH . $fotoTamu)) {
+                // Delete the photo file
+                unlink(FCPATH . $fotoTamu);
+            }
+    
+            // Delete the guest data
             $this->bukuTamuModel->delete($id_tamu);
-
+    
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'Data tamu berhasil dihapus.'
             ]);
         } catch (\Exception $e) {
             log_message('error', $e->getMessage());
-
+    
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Terjadi kesalahan pada server.'
             ]);
         }
     }
+    
+    public function detailGuestBook($id_tamu)
+    {
+        // Load model
+        $bukuTamuModel = new BukuTamuModel();
+    
+        // Find guest by ID
+        $tamu = $bukuTamuModel->find($id_tamu);
+    
+        if (!$tamu) {
+            return redirect()->to('/superadmin/bukutamu/manage')->with('error', 'Data tamu tidak ditemukan.');
+        }
+    
+        // Pass the data to the view
+        return view('superadmin/bukutamu/detail_guestbook', [
+            'tamu' => $tamu
+        ]);
+    }
+    
+
 
 public function grantGuestbookAccess()
 {
@@ -1499,8 +1530,6 @@ public function grantGuestbookAccess()
     // Redirect langsung ke form buku tamu
     return redirect()->to('/bukutamu/form');
 }
-
-
 
 
 public function form()

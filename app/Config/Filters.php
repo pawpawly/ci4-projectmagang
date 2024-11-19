@@ -109,6 +109,7 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
+        'guestbookAuth' => ['before' => ['bukutamu/*']],
         'adminAuth' => ['before' => ['admin/*']],
         'superadminAuth' => ['before' => ['superadmin']],
         'superadmin' => ['before' => ['superadmin/event', 'superadmin/berita']],
