@@ -9,19 +9,18 @@ class GuestbookAuth implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Disable caching to prevent accessing through the back button
-        $request->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-        $request->setHeader('Pragma', 'no-cache');
-        
         // Validate that `guestbook_auth` session exists
         if (!session()->get('guestbook_auth')) {
             session()->setFlashdata('error', 'Anda tidak memiliki akses untuk halaman ini.');
-            return redirect()->to('/');
+            return redirect()->to('/'); // Redirect to the login or homepage
         }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // No action needed after request
+        // Set headers to prevent caching after the response
+        $response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->setHeader('Pragma', 'no-cache');
+        $response->setHeader('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT');
     }
 }

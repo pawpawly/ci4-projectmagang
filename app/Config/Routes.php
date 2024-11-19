@@ -128,12 +128,19 @@ $routes->group('superadmin/bukutamu', ['filter' => 'auth'], function ($routes) {
     $routes->get('manage', 'SuperAdminController::manageBukuTamu');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteBukuTamu/$1');
     $routes->get('form', 'SuperAdminController::grantGuestbookAccess');
+    $routes->get('detailGuestBook/(:num)', 'SuperAdminController::detailGuestBook/$1');
+
+
 });
 
 $routes->group('bukutamu', ['filter' => 'guestbookAuth'], function ($routes) {
     $routes->get('form', 'BukuTamuController::form');
-    $routes->post('submit', 'BukuTamuController::storeIndividual');
+    $routes->post('storeIndividual', 'BukuTamuController::storeIndividual');
     $routes->post('storeInstansi', 'BukuTamuController::storeInstansi');
+    $routes->get('individual', 'BukuTamuController::individual');
+    $routes->get('agency', 'BukuTamuController::agency');
+    $routes->post('storeAgency', 'BukutamuController::storeAgency');
+    $routes->get('foto_tamu/(:any)', 'BukuTamuController::getFoto/$1');
 });
 
 $routes->group('superadmin/bukudigital', ['filter' => 'auth'], function ($routes) {

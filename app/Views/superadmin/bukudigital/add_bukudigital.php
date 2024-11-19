@@ -70,12 +70,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('tambahBukuDigitalForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
         const formData = new FormData(this);
 
         if (!formData.get('judul_buku') || !formData.get('penulis_buku') || !formData.get('tahun_buku') ||
