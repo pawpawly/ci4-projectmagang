@@ -53,51 +53,64 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
-        
+
         <form id="reservationForm" action="/reservasi/store" method="post" enctype="multipart/form-data" autocomplete="off">
             <input type="hidden" name="tanggal_reservasi" id="selectedDate">
 
-            <!-- Field Nama -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Nama</label>
-                <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+            <!-- Grid untuk Form -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Nama -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Nama</label>
+                    <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                </div>
+
+                <!-- Nama Instansi -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
+                    <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                </div>
+
+                <!-- Email -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                </div>
+
+                <!-- No Whatsapp -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
+                    <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" placeholder="Contoh: 08123456789" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off">
+                </div>
+
+                <!-- Kegiatan -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
+                    <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                </div>
+
+                <!-- Jumlah Anggota -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
+                    <input type="number" name="jmlpengunjung_reservasi" min="1" class="w-full border rounded px-3 py-2" autocomplete="off">
+                </div>
             </div>
 
-            <!-- Field Instansi -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
-                <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
-            </div>
+<!-- Dropzone Surat Kunjungan -->
+<div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">Surat Kunjungan (Foto/PDF) <i>Max 2MB</i></label>
+    <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative">
+        <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden" required>
+        <div id="dropzoneContent" class="flex flex-col justify-center items-center space-y-2">
+            <!-- Ikon upload -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+            </svg>
+            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+        </div>
+    </div>
+</div>
 
-            <!-- Field Email -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
-            </div>
-
-            <!-- Field No Whatsapp -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
-                <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" placeholder="Contoh: 08123456789" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off">
-            </div>
-
-            <!-- Field Kegiatan -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
-                <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
-            </div>
-
-            <!-- Field Jumlah Anggota -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-                <input type="number" name="jmlpengunjung_reservasi" min="0" class="w-full border rounded px-3 py-2" autocomplete="off">
-            </div>
-
-            <!-- Field Surat Kunjungan -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Surat Kunjungan (Foto/PDF) <i>Max 2MB</i> </label>
-                <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="w-full border rounded px-3 py-2">
-            </div>
 
             <div class="flex justify-end">
                 <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
@@ -106,6 +119,7 @@
         </form>
     </div>
 </div>
+
 
 <!-- Tambahkan SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -281,6 +295,46 @@
         window.location.href = 'https://wa.me/6281231231231';
     });
     <?php endif; ?>
+
+    // Tambahkan Event Listener untuk Dropzone
+// Ambil elemen dropzone dan input file
+const dropzone = document.querySelector('.border-dashed');
+const fileInput = document.getElementById('suratReservasi');
+const dropzoneContent = document.getElementById('dropzoneContent');
+
+// Fungsi untuk menampilkan file yang diunggah
+function handleFiles(files) {
+    if (files.length > 0) {
+        dropzoneContent.innerHTML = `<p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>`;
+    } else {
+        dropzoneContent.innerHTML = '<p class="text-sm text-gray-500">Drop files here to upload</p>';
+    }
+}
+
+// Klik pada dropzone membuka file input
+dropzone.addEventListener('click', () => fileInput.click());
+
+// Update file yang dipilih melalui file input
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+// Tangani event drag-and-drop
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover
+});
+
+dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover
+});
+
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover
+    const files = e.dataTransfer.files; // Ambil file dari drop
+    fileInput.files = files; // Set file input
+    handleFiles(files); // Update tampilan
+});
+
 </script>
 
         

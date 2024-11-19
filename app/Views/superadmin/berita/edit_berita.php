@@ -33,15 +33,24 @@
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
 
-        <div class="mb-4">
-            <label for="foto_berita" class="block text-sm font-medium text-gray-700">Foto Berita</label>
-            <input type="file" id="foto_berita" name="foto_berita" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" accept=".jpg,.jpeg,.png">
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Foto Berita</label>
+            <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneEdit">
+                <input type="file" name="foto_berita" id="fotoBeritaEdit" accept=".jpg,.jpeg,.png" class="hidden" required>
+                <div id="dropzoneContentEdit" class="flex flex-col justify-center items-center space-y-2">
+                    <!-- Ikon upload -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+                    </svg>
+                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+                </div>
+            </div>
             <?php if ($berita['FOTO_BERITA']): ?>
                 <img src="<?= base_url('uploads/berita/' . $berita['FOTO_BERITA']) ?>" 
                      alt="Foto Berita" class="w-24 h-24 mt-2 object-cover rounded-md">
             <?php endif; ?>
         </div>
+
 
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/berita/manage') ?>" 
@@ -122,6 +131,46 @@
 
         return true;
     }
+
+
+    // Ambil elemen dropzone dan input file
+const dropzoneEdit = document.getElementById('dropzoneEdit');
+const fileInputEdit = document.getElementById('fotoBeritaEdit');
+const dropzoneContentEdit = document.getElementById('dropzoneContentEdit');
+
+// Fungsi untuk menampilkan file yang diunggah
+function handleFilesEdit(files) {
+    if (files.length > 0) {
+        dropzoneContentEdit.innerHTML = `<p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>`;
+    } else {
+        dropzoneContentEdit.innerHTML = '<p class="text-sm text-gray-500">Drop files here to upload</p>';
+    }
+}
+
+// Klik pada dropzone membuka file input
+dropzoneEdit.addEventListener('click', () => fileInputEdit.click());
+
+// Update file yang dipilih melalui file input
+fileInputEdit.addEventListener('change', () => handleFilesEdit(fileInputEdit.files));
+
+// Tangani event drag-and-drop
+dropzoneEdit.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzoneEdit.classList.add('bg-gray-100'); // Tambahkan efek hover
+});
+
+dropzoneEdit.addEventListener('dragleave', () => {
+    dropzoneEdit.classList.remove('bg-gray-100'); // Hapus efek hover
+});
+
+dropzoneEdit.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzoneEdit.classList.remove('bg-gray-100'); // Hapus efek hover
+    const files = e.dataTransfer.files; // Ambil file dari drop
+    fileInputEdit.files = files; // Set file input
+    handleFilesEdit(files); // Update tampilan
+});
+
 </script>
 
 <?= $this->endSection() ?>

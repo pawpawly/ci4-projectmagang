@@ -22,7 +22,7 @@
             <h1 class="text-3xl font-bold mb-2"><?= esc($berita['NAMA_BERITA']); ?></h1>
             <p class="text-gray-600"><?= formatTanggalIndonesia($berita['TANGGAL_BERITA']); ?> | Sumber: <?= esc($berita['SUMBER_BERITA']); ?></p>
             <div class="mt-4 text-lg text-gray-800">
-                <?= esc($berita['DESKRIPSI_BERITA']); ?>
+                <?= nl2br(esc($berita['DESKRIPSI_BERITA'])); ?>
             </div>
         </div>
 
