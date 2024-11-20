@@ -22,7 +22,7 @@
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
                         style="display: none;">✕</button>
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-blue-700">Cari</button>
+            <button type="submit" style="background-color: #2C1011;" class=" text-white px-5 py-3 rounded-lg shadow-md hover:bg-yellow-900">Cari</button>
         </form>
     </div>
 </div>
@@ -31,7 +31,7 @@
 <div class="container mx-auto px-8 py-12">
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
         <?php foreach ($bukudigital as $buku): ?>
-            <div>
+            <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-2">
                 <img src="<?= base_url('uploads/bukudigital/sampul/' . $buku['SAMPUL_BUKU']); ?>" 
                      alt="<?= esc($buku['JUDUL_BUKU']); ?>" 
                      class="w-full h-56 object-cover rounded-lg shadow-lg">

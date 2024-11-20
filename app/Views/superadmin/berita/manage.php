@@ -1,6 +1,9 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
+
+<?php helper('month'); ?>
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Berita</h1>
@@ -23,28 +26,36 @@
             </button>
         </div>
 
-        <!-- Month and Year Filters -->
+        <!-- Filter Bulan -->
         <select name="month" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
             <option value="">Semua Bulan</option>
             <?php for ($m = 1; $m <= 12; $m++): ?>
                 <option value="<?= $m ?>" <?= ($month == $m) ? 'selected' : '' ?>>
-                    <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                    <?= getBulanIndo($m) ?> <!-- Menggunakan fungsi helper untuk bulan -->
                 </option>
             <?php endfor; ?>
         </select>
 
-        <!-- Year Filter Dropdown -->
+        <!-- Filter Tahun -->
         <select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-    <option value="">Semua Tahun</option>
-    <?php
-        $currentYear = date('Y');
-        $startYear = $currentYear - 1; // Only show the last 10 years
-        for ($y = $currentYear; $y >= $startYear; $y--): ?>
-            <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>>
-                <?= $y ?>
-            </option>
-    <?php endfor; ?>
-</select>   
+            <option value="">Semua Tahun</option>
+            <?php
+                // Ambil tahun unik dari data berita
+                $uniqueYears = array_unique(array_map(function($item) {
+                    return date('Y', strtotime($item['TANGGAL_BERITA'])); // Mengambil tahun dari TANGGAL_BERITA
+                }, $berita));
+            
+                // Sort tahun secara ascending
+                sort($uniqueYears);
+            
+                // Menampilkan pilihan tahun pada dropdown
+                foreach ($uniqueYears as $y): ?>
+                    <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>>
+                        <?= $y ?>
+                    </option>
+            <?php endforeach; ?>
+        </select>
+
 
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
     </form>

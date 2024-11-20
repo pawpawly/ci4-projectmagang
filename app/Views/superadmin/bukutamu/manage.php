@@ -2,6 +2,9 @@
 
 <?= $this->section('content') ?>
 
+<?php helper('month'); ?>
+
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Buku Tamu</h1>
@@ -42,7 +45,7 @@
                     <option value="">Semua Bulan</option>
                     <?php for ($m = 1; $m <= 12; $m++): ?>
                         <option value="<?= $m ?>" <?= $bulan == $m ? 'selected' : '' ?>>
-                            <?= date('F', mktime(0, 0, 0, $m, 10)) ?>
+                            <?= getBulanIndo($m) ?> <!-- Menggunakan fungsi helper untuk bulan -->
                         </option>
                     <?php endfor; ?>
                 </select>
@@ -50,8 +53,20 @@
                 <!-- Filter Tahun -->
                 <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
                     <option value="">Semua Tahun</option>
-                    <?php foreach ($yearsRange as $y): ?>
-                        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
+                    <?php 
+                    // Ambil tahun unik dari data buku tamu
+                    $uniqueYears = array_unique(array_map(function($tamu) {
+                        return date('Y', strtotime($tamu['TGLKUNJUNGAN_TAMU'])); // Menampilkan tahun dari TGLKUNJUNGAN_TAMU
+                    }, $bukutamu));
+
+                    // Sort tahun secara ascending
+                    sort($uniqueYears);
+                
+                    // Menampilkan pilihan tahun pada dropdown
+                    foreach ($uniqueYears as $y): ?>
+                        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>>
+                            <?= $y ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
 

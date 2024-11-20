@@ -1,6 +1,9 @@
 <?= $this->extend('superadmin/sidebar') ?>
 
 <?= $this->section('content') ?>
+
+<?php helper('month'); ?>
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Event</h1>
@@ -33,26 +36,29 @@
             <?php endforeach; ?>
         </select>
 
-        <!-- Month Filter Dropdown -->
+        <!-- Filter Bulan -->
         <select name="month" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
             <option value="">Semua Bulan</option>
             <?php for ($m = 1; $m <= 12; $m++): ?>
                 <option value="<?= $m ?>" <?= ($month == $m) ? 'selected' : '' ?>>
-                    <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                    <?= getBulanIndo($m) ?>
                 </option>
             <?php endfor; ?>
         </select>
 
-<!-- Year Filter Dropdown -->
-<select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-    <option value="">Semua Tahun</option>
-    <?php foreach ($yearsRange as $y): ?>
-        <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>>
-            <?= $y ?>
-        </option>
-    <?php endforeach; ?>
-</select>
-
+        <!-- Filter Tahun -->
+        <select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+            <option value="">Semua Tahun</option>
+            <?php 
+                $uniqueYears = array_unique(array_map(function($event) {
+                    return date('Y', strtotime($event['TANGGAL_EVENT']));
+                }, $events));
+            
+                sort($uniqueYears);
+                foreach ($uniqueYears as $y): ?>
+                    <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>><?= $y ?></option>
+            <?php endforeach; ?>
+        </select>
 
         <!-- Search Button -->
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
