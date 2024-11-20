@@ -2,6 +2,9 @@
 
 <?= $this->section('content') ?>
 
+<?php helper('month'); ?>
+
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Reservasi</h1>
@@ -36,18 +39,23 @@
             <!-- Filter Bulan -->
             <select name="bulan" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 <option value="">Semua Bulan</option>
-                <?php for ($i = 1; $i <= 12; $i++): ?>
-                    <option value="<?= $i ?>" <?= $bulan == $i ? 'selected' : '' ?>><?= date('F', mktime(0, 0, 0, $i, 10)) ?></option>
+                <?php 
+                for ($i = 1; $i <= 12; $i++): ?>
+                    <option value="<?= $i ?>" <?= $bulan == $i ? 'selected' : '' ?>>
+                        <?= getBulanIndo($i) ?> <!-- Menggunakan helper untuk bulan -->
+                    </option>
                 <?php endfor; ?>
             </select>
 
-            <!-- Filter Tahun dengan rentang dinamis -->
+
+            <!-- Filter Tahun -->
             <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 <option value="">Semua Tahun</option>
                 <?php foreach ($yearsRange as $y): ?>
                     <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
                 <?php endforeach; ?>
             </select>
+
 
             <!-- Tombol Cari -->
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>

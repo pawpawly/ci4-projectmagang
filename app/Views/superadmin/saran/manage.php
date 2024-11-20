@@ -2,6 +2,8 @@
 
 <?= $this->section('content') ?>
 
+<?php helper('month'); ?>
+
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Saran Pengunjung</h1>
@@ -29,20 +31,27 @@
             <select name="bulan" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 <option value="">Semua Bulan</option>
                 <?php for ($i = 1; $i <= 12; $i++): ?>
-                    <option value="<?= $i ?>" <?= $bulan == $i ? 'selected' : '' ?>><?= date('F', mktime(0, 0, 0, $i, 10)) ?></option>
+                    <option value="<?= $i ?>" <?= $bulan == $i ? 'selected' : '' ?>><?= getBulanIndo($i) ?></option>
                 <?php endfor; ?>
             </select>
-
-<!-- Filter Tahun -->
-<select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-    <option value="">Semua Tahun</option>
-    <?php foreach ($yearsRange as $y): ?>
-        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
-    <?php endforeach; ?>
-</select>
-
-
-
+                
+            <!-- Filter Tahun -->
+            <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option value="">Semua Tahun</option>
+                <?php
+                    // Ambil tahun unik dari data saran
+                    $uniqueYears = array_unique(array_map(function($saran) {
+                        return date('Y', strtotime($saran['TANGGAL_SARAN'])); // Ambil tahun dari TANGGAL_SARAN
+                    }, $saranList));
+                
+                    // Sort tahun secara ascending
+                    sort($uniqueYears);
+                
+                    foreach ($uniqueYears as $y): ?>
+                        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
+                <?php endforeach; ?>
+            </select>
+                    
             <!-- Tombol Cari -->
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
         </form>
