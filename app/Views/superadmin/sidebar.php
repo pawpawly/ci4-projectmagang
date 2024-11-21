@@ -9,23 +9,67 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <style>
-        /* Styling untuk sidebar agar sticky saat scroll */
-        .sidebar {
-            position: sticky;
-            top: 0;
-            height: 100vh; /* Menutupi seluruh tinggi layar */
-            overflow-y: auto; /* Scroll jika konten terlalu panjang */
-        }
-    </style>
+<style>
+    /* Default: Menu dan Submenu */
+    .sidebar a {
+        color: white; /* Warna default */
+        transition: color 0.3s; /* Animasi halus */
+    }
 
-    <script>
-        // JavaScript untuk toggle dropdown menu
-        function toggleDropdown(id) {
-            const dropdown = document.getElementById(id);
-            dropdown.classList.toggle('hidden');
+    /* Hover: Semua menu dan submenu */
+    .sidebar a:hover {
+        color: #FFD700; /* Warna kuning saat hover */
+    }
+
+    /* Aktif: Menu dan submenu yang terbuka */
+    .sidebar a.active {
+        color: #FFD700; /* Warna kuning saat aktif */
+    }
+    
+</style>
+
+
+
+<script>
+    // JavaScript untuk toggle dropdown menu
+    function toggleDropdown(id) {
+        const dropdown = document.getElementById(id);
+        dropdown.classList.toggle('hidden');
+    }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const currentUrl = window.location.href;
+
+    // Loop untuk semua menu di sidebar
+    document.querySelectorAll('.sidebar a').forEach(link => {
+        const linkHref = link.getAttribute('href');
+        // Jika URL saat ini cocok dengan href, tambahkan class 'active'
+        if (currentUrl.includes(linkHref)) {
+            link.classList.add('active');
         }
-    </script>
+    });
+
+    // Dropdown Event
+    if (currentUrl.includes('superadmin/event/')) {
+        const eventDropdown = document.getElementById('eventDropdown');
+        const eventDropdownIcon = document.getElementById('eventDropdownIcon');
+        eventDropdown.classList.remove('hidden');
+        eventDropdownIcon.classList.add('rotate-180');
+    }
+
+    // Dropdown Koleksi
+    if (currentUrl.includes('superadmin/koleksi/')) {
+        const koleksiDropdown = document.getElementById('koleksiDropdown');
+        const koleksiDropdownIcon = document.getElementById('koleksiDropdownIcon');
+        koleksiDropdown.classList.remove('hidden');
+        koleksiDropdownIcon.classList.add('rotate-180');
+    }
+});
+
+
+
+</script>
+
 </head>
 
 <body class="bg-gray-100">
@@ -90,6 +134,7 @@
             </li>
 
 
+                <!-- Item Menu Event -->
                 <li class="px-4 py-2 hover:bg-red-800">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('eventDropdown')">
                         <div class="flex items-center space-x-4">
@@ -107,6 +152,7 @@
                         </li>
                     </ul>
                 </li>
+                
 
                 <li class="px-4 py-2 hover:bg-red-800">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('koleksiDropdown')">
