@@ -53,8 +53,8 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
-
         <form id="reservationForm" action="/reservasi/store" method="post" enctype="multipart/form-data" autocomplete="off">
+        <?= csrf_field(); ?> 
             <input type="hidden" name="tanggal_reservasi" id="selectedDate">
 
             <!-- Grid untuk Form -->
@@ -62,59 +62,75 @@
                 <!-- Nama -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Nama</label>
-                    <input type="text" name="nama_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                    <input type="text" name="nama_reservasi" 
+                    placeholder="Masukkan Nama "
+                    class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
 
                 <!-- Nama Instansi -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
-                    <input type="text" name="instansi_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                    <input type="text" name="instansi_reservasi"
+                    placeholder="Masukkan Nama Instansi"
+                    class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
 
                 <!-- Email -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="email_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
-                </div>
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="text" name="email_reservasi"
+                    placeholder="Masukkan Email"
+                    class="w-full border rounded px-3 py-2" autocomplete="off">
+            </div>
+
 
                 <!-- No Whatsapp -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
-                    <input type="text" name="telepon_reservasi" class="w-full border rounded px-3 py-2" placeholder="Contoh: 08123456789" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off">
+                    <input type="text" name="telepon_reservasi" 
+                    class="w-full border rounded px-3 py-2" placeholder="Masukkan No Whatsapp" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off">
                 </div>
 
                 <!-- Kegiatan -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
-                    <input type="text" name="kegiatan_reservasi" class="w-full border rounded px-3 py-2" autocomplete="off">
+                    <input type="text" name="kegiatan_reservasi"
+                    placeholder="Masukkan Nama Kegiatan"
+                     class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
 
                 <!-- Jumlah Anggota -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-                    <input type="number" name="jmlpengunjung_reservasi" min="1" class="w-full border rounded px-3 py-2" autocomplete="off">
-                </div>
+    <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
+    <input type="text" name="jmlpengunjung_reservasi"
+           placeholder="Masukkan Jumlah Anggota"
+           class="w-full border rounded px-3 py-2"
+           oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+           autocomplete="off">
+</div>
+
             </div>
 
 <!-- Dropzone Surat Kunjungan -->
 <div class="mb-6">
     <label class="block text-sm font-medium text-gray-700 mb-2">Surat Kunjungan (Foto/PDF) <i>Max 2MB</i></label>
-    <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative">
-        <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden" required>
+    <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzone">
+        <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden" />
         <div id="dropzoneContent" class="flex flex-col justify-center items-center space-y-2">
             <!-- Ikon upload -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload</p>
         </div>
     </div>
 </div>
-
-
             <div class="flex justify-end">
                 <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded">Simpan</button>
+                <button type="submit" id="submitBtn" class="px-4 py-2 bg-yellow-500 text-white rounded flex items-center justify-center">
+                <span id="btnText">Simpan</span>
+                <span id="spinnerContainer" class="ml-2 hidden"></span>
+            </button>
             </div>
         </form>
     </div>
@@ -138,54 +154,111 @@
     });
 
     document.getElementById('reservationForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Cegah form dikirim langsung
+    event.preventDefault(); // Cegah form dikirim langsung
 
-        const fileInput = document.getElementById('suratReservasi');
-        const file = fileInput.files[0];
-        const submitButton = document.querySelector('#reservationForm button[type="submit"]');
+    const nama = document.querySelector('input[name="nama_reservasi"]').value.trim();
+    const email = document.querySelector('input[name="email_reservasi"]').value.trim();
+    const noWhatsapp = document.querySelector('input[name="telepon_reservasi"]').value.trim();
+    const kegiatan = document.querySelector('input[name="kegiatan_reservasi"]').value.trim();
+    const jumlahAnggota = document.querySelector('input[name="jmlpengunjung_reservasi"]').value.trim();
+    const fileInput = document.getElementById('suratReservasi');
+    const file = fileInput.files[0];
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const spinnerContainer = document.getElementById('spinnerContainer');
 
-        // Cek apakah file diunggah dan ukurannya lebih dari 2MB
-        if (file && file.size > 2 * 1024 * 1024) { // 2MB dalam byte
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran File Tidak Boleh Lebih dari 2MB',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.'
-            });
-            return; // Hentikan eksekusi jika ukuran file terlalu besar
-        }
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>`;
 
-        // Disable tombol "Simpan" dan ubah teks menjadi "Menyimpan..."
-        submitButton.disabled = true;
-        submitButton.textContent = 'Menyimpan...';
+    // Validasi field kosong
+    if (!nama || !email || !noWhatsapp || !kegiatan || !jumlahAnggota || !file) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Semua field wajib diisi!',
+        });
+        return;
+    }
 
-        // Jika file valid, lanjutkan ke proses pengiriman data
-        const formData = new FormData(this); // Ambil data dari form
+    // Validasi format email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Format Email Tidak Valid',
+        });
+        return;
+    }
 
-        fetch('/reservasi/store', {
-            method: 'POST',
-            body: formData
-        })
+    // Validasi nomor WhatsApp (minimal 10 digit)
+    if (noWhatsapp.length < 10) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Nomor HP harus terdiri dari minimal 10 digit',
+        });
+        return;
+    }
+
+    // Validasi jumlah anggota
+    if (!/^\d+$/.test(jumlahAnggota) || parseInt(jumlahAnggota) < 1) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Jumlah anggota harus minimal 1!',
+        });
+        return;
+    }
+
+    // Validasi ukuran file
+    if (file && file.size > 2 * 1024 * 1024) { // 2MB dalam byte
+        Swal.fire({
+            icon: 'error',
+            title: 'Ukuran file yang Anda unggah melebihi 2MB.',
+            text: 'Silakan unggah file dengan ukuran maksimal 2MB.'
+        });
+        return;
+    }
+
+    // Disable tombol dan tampilkan spinner
+    submitBtn.disabled = true;
+    btnText.textContent = "Menyimpan...";
+    spinnerContainer.innerHTML = spinner;
+    spinnerContainer.classList.remove('hidden');
+
+    // Kirim data
+    const formData = new FormData(this);
+
+    fetch('/reservasi/store', {
+        method: 'POST',
+        body: formData
+    })
         .then(response => response.json())
         .then(data => {
-            if (!data.success) {
-                // Jika validasi gagal di server, tampilkan pesan error SweetAlert2
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Semua field wajib diisi!',
-                });
-                submitButton.disabled = false; // Aktifkan kembali tombol
-                submitButton.textContent = 'Simpan'; // Kembalikan teks tombol
-            } else {
-                // Jika berhasil, tampilkan pesan sukses
+            if (data.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
                     text: 'Reservasi berhasil disimpan!',
-                    confirmButtonText: 'Lanjutkan ke WhatsApp'
+                    confirmButtonText: 'OK'
                 }).then(() => {
-                    window.location.href = 'https://wa.me/6281231231231';
+                    document.getElementById('reservationForm').reset(); // Reset form
+                    btnText.textContent = "Simpan"; // Reset teks tombol
+                    spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
+                    submitBtn.disabled = false;
                 });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message || 'Gagal menyimpan data.',
+                });
+                submitBtn.disabled = false;
+                btnText.textContent = "Simpan"; // Reset teks tombol
+                spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
             }
         })
         .catch(error => {
@@ -195,10 +268,16 @@
                 title: 'Oops...',
                 text: 'Terjadi kesalahan, silakan coba lagi.',
             });
-            submitButton.disabled = false; // Aktifkan kembali tombol
-            submitButton.textContent = 'Simpan'; // Kembalikan teks tombol
+            submitBtn.disabled = false;
+            btnText.textContent = "Simpan"; // Reset teks tombol
+            spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
         });
-    });
+});
+
+
+
+
+
 
     const calendar = document.getElementById('calendar');
     const monthYear = document.getElementById('monthYear');
@@ -296,44 +375,55 @@
     });
     <?php endif; ?>
 
-    // Tambahkan Event Listener untuk Dropzone
-// Ambil elemen dropzone dan input file
-const dropzone = document.querySelector('.border-dashed');
-const fileInput = document.getElementById('suratReservasi');
-const dropzoneContent = document.getElementById('dropzoneContent');
+    
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('suratReservasi');
+    const dropzoneContent = document.getElementById('dropzoneContent');
+    const dropzoneText = document.getElementById('dropzoneText');
 
-// Fungsi untuk menampilkan file yang diunggah
-function handleFiles(files) {
-    if (files.length > 0) {
-        dropzoneContent.innerHTML = `<p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>`;
-    } else {
-        dropzoneContent.innerHTML = '<p class="text-sm text-gray-500">Drop files here to upload</p>';
+    // Fungsi untuk menampilkan file yang diunggah
+    function handleFiles(files) {
+        if (files.length > 0) {
+            // Menampilkan nama file yang dipilih
+            dropzoneText.textContent = `File Terpilih: ${files[0].name}`;
+        } else {
+            // Mengembalikan teks awal jika tidak ada file yang dipilih
+            dropzoneText.textContent = 'Drop files here or click to upload';
+        }
     }
-}
 
-// Klik pada dropzone membuka file input
-dropzone.addEventListener('click', () => fileInput.click());
+    // Fungsi untuk memanggil file input ketika dropzone diklik
+    dropzone.addEventListener('click', () => {
+        fileInput.click(); // Membuka dialog file
+    });
 
-// Update file yang dipilih melalui file input
-fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+    // Update file yang dipilih melalui file input
+    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
-// Tangani event drag-and-drop
-dropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover
-});
+    // Tangani event drag-and-drop
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Menghindari aksi default
+        dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover saat dragover
+    });
 
-dropzone.addEventListener('dragleave', () => {
-    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover
-});
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('bg-gray-100'); // Hapus efek hover saat dragleave
+    });
 
-dropzone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover
-    const files = e.dataTransfer.files; // Ambil file dari drop
-    fileInput.files = files; // Set file input
-    handleFiles(files); // Update tampilan
-});
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault(); // Menghindari aksi default
+        dropzone.classList.remove('bg-gray-100'); // Hapus efek hover setelah drop
+        const files = e.dataTransfer.files; // Ambil file dari drop
+        fileInput.files = files; // Set file input
+        handleFiles(files); // Update tampilan
+    });
+
+    // Reset ketika file input dibatalkan
+    fileInput.addEventListener('click', function() {
+        if (!fileInput.files.length) {
+            dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks saat Cancel
+        }
+    });
 
 </script>
 

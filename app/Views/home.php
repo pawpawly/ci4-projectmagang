@@ -215,6 +215,7 @@
         <p class="text-gray-800 text-center hover:text-[#4A2A2C] transition duration-300">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
         <div class="max-w-3xl mx-auto p-10">
         <form id="saranForm" class="space-y-8" autocomplete="off">
+        <?= csrf_field(); ?> 
 
 
     <div>
@@ -223,16 +224,21 @@
     </div>
 
     <div>
-        <label for="EMAIL_SARAN" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
-        <input type="email" id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
-    </div>
+    <label for="EMAIL_SARAN" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
+    <input id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
+</div>
+
 
     <div>
         <label for="KOMENTAR_SARAN" class="block text-[#2C1011] text-lg font-semibold">Saran*</label>
         <textarea id="KOMENTAR_SARAN" name="KOMENTAR_SARAN" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
     </div>
-    <div class="text-center">
-        <button type="submit" id="submitBtn" class="px-8 py-3 bg-[#2C1011] text-white font-bold rounded-lg hover:bg-[#4A2A2C] hover:shadow-lg transition duration-300">Kirim</button>
+
+    <div class="text-center flex justify-center">
+        <button type="submit" id="submitBtn" class="px-10 py-3 bg-[#2C1011] text-white font-bold rounded-lg hover:bg-[#4A2A2C] hover:shadow-lg transition duration-300">
+            <span id="btnText">Kirim</span>
+            <span id="spinnerContainer" class="hidden ml-2"></span> <!-- Spinner container -->
+        </button>
     </div>
 </form>
 
@@ -243,6 +249,13 @@
 
 
 <style>
+#submitBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Add some space between text and spinner */
+}
+
 .event-overlay {
     position: absolute;
     top: 50%;
@@ -374,12 +387,21 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.getElementById('saranForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent form from submitting directly
 
     const nama = document.getElementById('NAMA_SARAN').value.trim();
     const email = document.getElementById('EMAIL_SARAN').value.trim();
     const saran = document.getElementById('KOMENTAR_SARAN').value.trim();
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const spinnerContainer = document.getElementById('spinnerContainer');
 
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>`;
+
+    // Check if any field is empty
     if (!nama || !email || !saran) {
         Swal.fire({
             title: 'Oops!',
@@ -390,10 +412,25 @@ document.getElementById('saranForm').addEventListener('submit', function(event) 
         return;
     }
 
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Mengirim...";
+    // If email is filled, validate its format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Format email tidak valid!',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
 
+    // Disable button and show spinner
+    submitBtn.disabled = true;
+    btnText.textContent = "Mengirim..."; // Update button text
+    spinnerContainer.innerHTML = spinner; // Add spinner
+    spinnerContainer.classList.remove('hidden'); // Show spinner
+
+    // Send data to the server
     fetch('<?= site_url("saran/saveSaran") ?>', {
         method: 'POST',
         body: new FormData(this),
@@ -403,7 +440,7 @@ document.getElementById('saranForm').addEventListener('submit', function(event) 
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Response data:", data); // Debugging line
+        console.log("Response data:", data); // Debugging
 
         if (data.success) {
             Swal.fire({
@@ -412,9 +449,10 @@ document.getElementById('saranForm').addEventListener('submit', function(event) 
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                document.getElementById('saranForm').reset();
+                document.getElementById('saranForm').reset(); // Reset form
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Kirim";
+                btnText.textContent = "Kirim"; // Reset button text
+                spinnerContainer.classList.add('hidden'); // Hide spinner
             });
         } else {
             Swal.fire({
@@ -424,11 +462,12 @@ document.getElementById('saranForm').addEventListener('submit', function(event) 
                 confirmButtonText: 'OK'
             });
             submitBtn.disabled = false;
-            submitBtn.innerText = "Kirim";
+            btnText.textContent = "Kirim"; // Reset button text
+            spinnerContainer.classList.add('hidden'); // Hide spinner
         }
     })
     .catch(error => {
-        console.error('Error:', error); // Debugging line
+        console.error('Error:', error); // Debugging
         Swal.fire({
             title: 'Error!',
             text: 'Terjadi kesalahan pada server.',
@@ -436,9 +475,14 @@ document.getElementById('saranForm').addEventListener('submit', function(event) 
             confirmButtonText: 'OK'
         });
         submitBtn.disabled = false;
-        submitBtn.innerText = "Kirim";
+        btnText.textContent = "Kirim"; // Reset button text
+        spinnerContainer.classList.add('hidden'); // Hide spinner
     });
 });
+
+
+
+
     // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
     window.onbeforeunload = function () {
         window.scrollTo(0, 0);
