@@ -188,21 +188,43 @@ public function updateUser()
 }    
 
 
-public function deleteUser($id)
+public function deleteUser($username)
 {
-    try {
-        // Hapus user berdasarkan ID
-        $result = $this->userModel->delete($id);
+    $session = session(); // Inisialisasi session
+    $userModel = new \App\Models\UserModel(); // Pastikan ini model yang benar untuk tabel user Anda
 
-        if ($result) {
-            return $this->response->setJSON(['success' => true, 'message' => 'User berhasil dihapus.']);
-        } else {
-            return $this->response->setJSON(['success' => false, 'message' => 'Gagal menghapus user.']);
+    try {
+        // Hapus pengguna berdasarkan username
+        if ($userModel->where('username', $username)->delete()) {
+            // Jika username yang dihapus adalah pengguna yang sedang login
+            if ($session->get('username') === $username) {
+                $session->destroy(); // Hapus session
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Akun Anda telah dihapus. Anda akan diarahkan ke halaman login.',
+                    'redirect' => site_url('/login')
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Pengguna berhasil dihapus.'
+            ]);
         }
+
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Gagal menghapus pengguna.'
+        ]);
     } catch (\Exception $e) {
-        return $this->response->setJSON(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ]);
     }
 }
+
+
 
     
     
@@ -423,6 +445,7 @@ public function deleteUser($id)
             ]);
         }
     }
+    
     
     
 
@@ -1626,8 +1649,8 @@ public function manageBukuDigital()
             'penulis_buku' => 'required|max_length[64]',
             'tahun_buku'   => 'required|valid_date[Y]',
             'sinopsis_buku'=> 'required',
-            'sampul_buku'  => 'uploaded[sampul_buku]|max_size[sampul_buku,2024]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
-            'produk_buku'  => 'uploaded[produk_buku]|max_size[produk_buku,42400]|mime_in[produk_buku,application/pdf]'
+            'sampul_buku'  => 'uploaded[sampul_buku]|max_size[sampul_buku,2048]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
+            'produk_buku'  => 'uploaded[produk_buku]|max_size[produk_buku,20480]|mime_in[produk_buku,application/pdf]'
         ]);
     
         if (!$validation->withRequest($this->request)->run()) {
@@ -1727,8 +1750,8 @@ public function updateBukuDigital()
         'penulis_buku' => 'required|max_length[64]',
         'tahun_buku' => 'required|valid_date[Y]',
         'sinopsis_buku' => 'required',
-        'sampul_buku' => 'permit_empty|is_image[sampul_buku]|mime_in[sampul_buku,image/jpg,image/jpeg,image/png]|max_size[sampul_buku,2024]',
-        'produk_buku' => 'permit_empty|mime_in[produk_buku,application/pdf]|max_size[produk_buku,42400]'
+        'sampul_buku' => 'permit_empty||max_size[sampul_buku,2048]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
+        'produk_buku' => 'permit_empty|mime_in[produk_buku,application/pdf]|max_size[produk_buku,20480]'
     ]);
 
     // Check validation

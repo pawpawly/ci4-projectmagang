@@ -18,32 +18,55 @@ class Login extends BaseController
 
     public function authenticate()
     {
-        $username = $this->request->getPost('username');
-        $password = $this->request->getPost('password'); 
+        $session = session();
+        $request = $this->request;
+
+        // Ambil data input
+        $username = $request->getPost('username');
+        $password = $request->getPost('password');
+
+        // Validasi input kosong
+        if (empty($username) || empty($password)) {
+            $session->setFlashdata('error', 'Username dan Password tidak boleh kosong');
+            return redirect()->to('/login');
+        }
+
+        // Ambil user dari database
         $userModel = new UserModel();
-        $user = $userModel->where('USERNAME', $username)->first(); 
+        $user = $userModel->where('USERNAME', $username)->first();
 
+        if (!$user) {
+            // Username tidak ditemukan
+            $session->setFlashdata('error', 'Username atau Password Salah');
+            return redirect()->to('/login');
+        }
 
-        if ($user) {
-            if (password_verify($password, $user['PASSWORD_USER'])) {
-                session()->set([
-                    'username' => $username,
-                    'NAMA_USER' => $user['NAMA_USER'],
-                    'isLoggedIn' => true,
-                    'LEVEL_USER' => $user['LEVEL_USER']
-                ]);
-                if ($user['LEVEL_USER'] === '1') {
-                    return redirect()->to(site_url('admin/dashboard'));
-                } elseif ($user['LEVEL_USER'] === '2') {
-                    return redirect()->to(site_url('superadmin/dashboard'));
-                }
+        if (isset($user['PASSWORD_USER']) && password_verify($password, $user['PASSWORD_USER'])) {
+            // Login berhasil
+            $session->set([
+                'username' => $user['USERNAME'],
+                'NAMA_USER' => $user['NAMA_USER'],
+                'LEVEL_USER' => $user['LEVEL_USER'], // Set level user
+                'isLoggedIn' => true,
+            ]);
+
+            // Redirect berdasarkan LEVEL_USER
+            if ($user['LEVEL_USER'] == '2') {
+                return redirect()->to('/superadmin/dashboard'); // Superadmin
+            } elseif ($user['LEVEL_USER'] == '1') {
+                return redirect()->to('/admin/dashboard'); // Admin
             } else {
-                return redirect()->back()->with('error', 'Password salah!');
+                $session->setFlashdata('error', 'Role pengguna tidak dikenali');
+                return redirect()->to('/login');
             }
         } else {
-            return redirect()->back()->with('error', 'Username tidak ditemukan!');
+            // Password salah
+            $session->setFlashdata('error', 'Username atau Password Salah');
+            return redirect()->to('/login');
         }
     }
+    
+
 
     public function logout()
     {

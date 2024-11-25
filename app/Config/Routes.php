@@ -17,6 +17,7 @@ $routes->post('saran/saveSaran', 'SaranController::saveSaran');
 $routes->get('/login', 'Login::index');
 $routes->post('/login/authenticate', 'Login::authenticate');
 $routes->get('/logout', 'Login::logout');
+$routes->get('restricted', 'LoginController::restricted'); // Halaman akses paksa
 
 // Route untuk Detail Berita dan Daftar Berita
 $routes->group('berita', function ($routes) {
