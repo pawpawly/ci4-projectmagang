@@ -19,23 +19,24 @@
     <?php endif; ?>
 
     <form id="addUserForm" action="<?= site_url('superadmin/user/save') ?>" method="POST" autocomplete="off">
+    <?= csrf_field(); ?> 
     <div class="mb-4">
         <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-        <input type="text" id="nama_lengkap" name="nama_lengkap" autocomplete="off" 
+        <input type="text" maxlength="30" id="nama_lengkap"  name="nama_lengkap" autocomplete="off" 
                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                placeholder="Masukkan nama lengkap">
     </div>
 
     <div class="mb-4">
         <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input type="text" id="username" name="username" autocomplete="off"
+        <input type="text" maxlength="30" id="username" name="username" autocomplete="off"
                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                placeholder="Masukkan username">
     </div>
 
     <div class="mb-4">
         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" id="password" name="password" autocomplete="off"
+        <input type="password" maxlength="30" id="password" name="password" autocomplete="off"
                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
                placeholder="Masukkan password">
     </div>
@@ -57,99 +58,126 @@
            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
             Batal
         </a>
-        <button type="submit" 
-                class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-            Tambah Pengguna
-        </button>
+        <button id="addUserButton" type="submit" 
+        class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center justify-center">
+    Tambah Pengguna
+</button>
+
     </div>
 </form>
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Tangkap form dan tambahkan event listener submit
-    document.getElementById('addUserForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Mencegah submit default
+document.getElementById('addUserForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah submit default
 
-        // Panggil fungsi validasi
-        if (!validateForm()) {
-            return; // Jika tidak valid, hentikan eksekusi
+    const addUserButton = document.getElementById('addUserButton');
+
+    // Spinner SVG
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>`;
+
+    // Validasi Form
+    if (!validateForm()) {
+        return; // Jika validasi gagal, hentikan proses
+    }
+
+    // Ubah tombol menjadi disabled, tambahkan spinner dan teks "Menyimpan..."
+    addUserButton.disabled = true;
+    addUserButton.classList.add('opacity-50', 'cursor-not-allowed');
+    addUserButton.innerHTML = `Menyimpan... ${spinner}`;
+
+    const formData = new FormData(this);
+
+    // Kirim data menggunakan fetch
+    fetch('<?= site_url('superadmin/user/save') ?>', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
-
-        const formData = new FormData(this);
-
-        // Mengirim data dengan fetch
-        fetch('<?= site_url('superadmin/user/save') ?>', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'Pengguna berhasil ditambahkan.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = '<?= site_url('superadmin/user/manage'); ?>';
-                });
-            } else {
-                Swal.fire({
-                    title: 'Gagal!',
-                    text: data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
             Swal.fire({
-                title: 'Error!',
-                text: 'Terjadi kesalahan pada server.',
+                title: 'Berhasil!',
+                text: 'Pengguna berhasil ditambahkan.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = '<?= site_url('superadmin/user/manage'); ?>';
+            });
+        } else {
+            Swal.fire({
+                title: 'Gagal!',
+                text: data.message,
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
-            console.error('Error:', error);
+
+            // Reset tombol jika gagal
+            resetButton(addUserButton);
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Terjadi kesalahan pada server.',
+            icon: 'error',
+            confirmButtonText: 'OK'
         });
+
+        console.error('Error:', error);
+
+        // Reset tombol jika ada error
+        resetButton(addUserButton);
     });
+});
 
-    // Fungsi validasi form
-    function validateForm() {
-        const namaLengkap = document.getElementById('nama_lengkap').value.trim();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const levelUser = document.querySelector('input[name="level_user"]:checked');
+// Fungsi untuk mereset tombol
+function resetButton(button) {
+    button.disabled = false;
+    button.classList.remove('opacity-50', 'cursor-not-allowed');
+    button.innerHTML = 'Tambah Pengguna'; // Kembalikan teks tombol
+}
 
-        // Periksa apakah semua field terisi
-        if (!namaLengkap || !username || !password || !levelUser) {
-            Swal.fire({
-                title: 'Oops!',
-                text: 'Semua field wajib diisi!',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-            return false;
-        }
+// Fungsi validasi form
+function validateForm() {
+    const namaLengkap = document.getElementById('nama_lengkap').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const levelUser = document.querySelector('input[name="level_user"]:checked');
 
-        // Validasi panjang password minimal 8 karakter
-        if (password.length < 8) {
-            Swal.fire({
-                title: 'Oops!',
-                text: 'Password harus lebih dari 8 karakter!',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-            return false;
-        }
-
-        return true;
+    // Periksa apakah semua field terisi
+    if (!namaLengkap || !username || !password || !levelUser) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Semua field wajib diisi!',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return false;
     }
+
+    // Validasi panjang password minimal 8 karakter
+    if (password.length < 8) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Password harus lebih dari 8 karakter!',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return false;
+    }
+
+    return true;
+}
+
 </script>
 
 

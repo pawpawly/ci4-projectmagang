@@ -14,6 +14,7 @@
     </div>
 
     <form method="get" action="<?= site_url('superadmin/berita/manage') ?>" class="flex items-center space-x-4 mb-6">
+    <?= csrf_field(); ?> 
         <!-- Search Input with Clear Button -->
         <div class="relative">
             <input type="text" name="search" placeholder="Cari Berita..." autocomplete="off"

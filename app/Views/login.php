@@ -23,7 +23,7 @@
             
             <div class="mb-4">
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" id="username" name="username" 
+                <input type="text" maxlength="30"id="username" name="username" 
                 placeholder="Masukkan Username "
                        class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
                        focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" 
@@ -34,7 +34,7 @@
                 <div class="flex justify-between">
                     <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 </div>
-                <input type="password" id="password" name="password" 
+                <input type="password" maxlength="30" id="password" name="password" 
                 placeholder="Masukkan Password"
                        class="mt-1 px-4 py-2 w-full bg-gray-50 border border-gray-300 rounded 
                        focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
@@ -67,44 +67,46 @@
     </footer>
     
     <!-- SweetAlert2 untuk Validasi -->
-    <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        const loginButton = document.getElementById('loginButton');
-        const buttonText = document.getElementById('buttonText');
-        const spinner = document.getElementById('spinner');
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
 
-        // Cek apakah username atau password kosong
-        if (!username || !password) {
-            event.preventDefault(); // Mencegah form terkirim
-            Swal.fire({
-                icon: 'warning',
-                title: 'Peringatan',
-                text: 'Mohon Username dan Password diisi terlebih dahulu!',
-                confirmButtonColor: '#f59e0b',
-            });
-            return; // Hentikan eksekusi lebih lanjut
-        }
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    const loginButton = document.getElementById('loginButton');
+    const buttonText = document.getElementById('buttonText');
+    const spinner = document.getElementById('spinner');
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-        // Ubah tombol login menjadi "Logging in...", tampilkan spinner, dan disable tombol
-        spinner.classList.remove('hidden'); // Tampilkan spinner
-        buttonText.textContent = 'Logging in...';
-        loginButton.disabled = true;
-        loginButton.classList.add('opacity-50', 'cursor-not-allowed');
-    });
+    // Cek apakah username atau password kosong
+    if (!username || !password) {
+        event.preventDefault(); // Mencegah form terkirim
+        Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon Username dan Password diisi terlebih dahulu!',
+            confirmButtonColor: '#f59e0b',
+        });
+        return; // Hentikan eksekusi lebih lanjut
+    }
 
-    window.onload = function() {
-        <?php if (session()->getFlashdata('error')): ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Username atau Password Salah',
-                confirmButtonColor: '#f59e0b',
-            });
-        <?php endif; ?>
-    };
+    // Ubah tombol login menjadi "Logging in...", tampilkan spinner, dan disable tombol
+    spinner.classList.remove('hidden'); // Tampilkan spinner
+    buttonText.textContent = 'Logging in...';
+    loginButton.disabled = true;
+    loginButton.classList.add('opacity-50', 'cursor-not-allowed');
+});
+
+window.onload = function() {
+    <?php if (session()->getFlashdata('error')): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<?= session()->getFlashdata('error') ?>',
+            confirmButtonColor: '#f59e0b',
+        });
+    <?php endif; ?>
+};
 </script>
+
 
 </body>
 </html>

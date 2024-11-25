@@ -62,7 +62,7 @@
                 <!-- Nama -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Nama</label>
-                    <input type="text" name="nama_reservasi" 
+                    <input type="text" maxlength="60" name="nama_reservasi" 
                     placeholder="Masukkan Nama "
                     class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
@@ -70,7 +70,7 @@
                 <!-- Nama Instansi -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
-                    <input type="text" name="instansi_reservasi"
+                    <input type="text" maxlength="60" name="instansi_reservasi"
                     placeholder="Masukkan Nama Instansi"
                     class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
@@ -78,7 +78,7 @@
                 <!-- Email -->
                 <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="text" name="email_reservasi"
+                <input type="text" maxlength="60" name="email_reservasi"
                     placeholder="Masukkan Email"
                     class="w-full border rounded px-3 py-2" autocomplete="off">
             </div>
@@ -87,14 +87,14 @@
                 <!-- No Whatsapp -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">No Whatsapp</label>
-                    <input type="text" name="telepon_reservasi" 
+                    <input type="text" maxlength="15" name="telepon_reservasi" 
                     class="w-full border rounded px-3 py-2" placeholder="Masukkan No Whatsapp" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="off">
                 </div>
 
                 <!-- Kegiatan -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Kegiatan</label>
-                    <input type="text" name="kegiatan_reservasi"
+                    <input type="text" maxlength="255" name="kegiatan_reservasi"
                     placeholder="Masukkan Nama Kegiatan"
                      class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
@@ -102,7 +102,7 @@
                 <!-- Jumlah Anggota -->
                 <div class="mb-4">
     <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-    <input type="text" name="jmlpengunjung_reservasi"
+    <input type="text" maxlength="3" name="jmlpengunjung_reservasi"
            placeholder="Masukkan Jumlah Anggota"
            class="w-full border rounded px-3 py-2"
            oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
@@ -382,48 +382,50 @@
     const dropzoneText = document.getElementById('dropzoneText');
 
     // Fungsi untuk menampilkan file yang diunggah
-    function handleFiles(files) {
-        if (files.length > 0) {
-            // Menampilkan nama file yang dipilih
-            dropzoneText.textContent = `File Terpilih: ${files[0].name}`;
-        } else {
-            // Mengembalikan teks awal jika tidak ada file yang dipilih
-            dropzoneText.textContent = 'Drop files here or click to upload';
-        }
+// Fungsi untuk menampilkan file yang diunggah
+function handleFiles(files) {
+    if (files.length > 0) {
+        // Menampilkan nama file yang dipilih dengan warna hijau
+        dropzoneText.innerHTML = `<span class="text-green-500">File Terpilih: ${files[0].name}</span>`;
+    } else {
+        // Mengembalikan teks awal jika tidak ada file yang dipilih
+        dropzoneText.textContent = 'Drop files here or click to upload';
     }
+}
 
-    // Fungsi untuk memanggil file input ketika dropzone diklik
-    dropzone.addEventListener('click', () => {
-        fileInput.click(); // Membuka dialog file
-    });
+// Fungsi untuk memanggil file input ketika dropzone diklik
+dropzone.addEventListener('click', () => {
+    fileInput.click(); // Membuka dialog file
+});
 
-    // Update file yang dipilih melalui file input
-    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+// Update file yang dipilih melalui file input
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
-    // Tangani event drag-and-drop
-    dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault(); // Menghindari aksi default
-        dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover saat dragover
-    });
+// Tangani event drag-and-drop
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault(); // Menghindari aksi default
+    dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover saat dragover
+});
 
-    dropzone.addEventListener('dragleave', () => {
-        dropzone.classList.remove('bg-gray-100'); // Hapus efek hover saat dragleave
-    });
+dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover saat dragleave
+});
 
-    dropzone.addEventListener('drop', (e) => {
-        e.preventDefault(); // Menghindari aksi default
-        dropzone.classList.remove('bg-gray-100'); // Hapus efek hover setelah drop
-        const files = e.dataTransfer.files; // Ambil file dari drop
-        fileInput.files = files; // Set file input
-        handleFiles(files); // Update tampilan
-    });
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault(); // Menghindari aksi default
+    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover setelah drop
+    const files = e.dataTransfer.files; // Ambil file dari drop
+    fileInput.files = files; // Set file input
+    handleFiles(files); // Update tampilan
+});
 
-    // Reset ketika file input dibatalkan
-    fileInput.addEventListener('click', function() {
-        if (!fileInput.files.length) {
-            dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks saat Cancel
-        }
-    });
+// Reset ketika file input dibatalkan
+fileInput.addEventListener('click', function() {
+    if (!fileInput.files.length) {
+        dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks saat Cancel
+    }
+});
+
 
 </script>
 
