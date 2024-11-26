@@ -49,4 +49,30 @@ class BukuDigitalController extends BaseController
             ]);
             
     }
+    public function flipbook($id)
+    {
+        // Cari buku berdasarkan ID
+        $buku = $this->bukuDigitalModel->find($id);
+    
+        if (!$buku || !isset($buku['PRODUK_BUKU'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('File PDF tidak ditemukan.');
+        }
+    
+        // Validasi apakah file benar-benar ada
+        $pathToFile = FCPATH . 'uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU']; // Lokasi fisik file
+        if (!file_exists($pathToFile)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('File PDF tidak ditemukan di server.');
+        }
+    
+        // Kirim data ke view flipbook
+        return view('bukudigital/flipbook', [
+            'pdf_file' => base_url('uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU']),
+            'title' => $buku['JUDUL_BUKU']
+        ]);
+    }
+    
+    
+    
+    
+
 }

@@ -54,15 +54,70 @@ class SuperAdminController extends Controller
     // Manajemen Pengguna (CRUD)
     // ============================
     public function dashboard()
-    {
-        // Pastikan hanya pengguna dengan level superadmin yang bisa mengakses
-        if (!session()->get('isLoggedIn') || session()->get('LEVEL_USER') !== '2') {
-            return redirect()->to(site_url('login'))->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
-        }
-
-        // Load view dashboard
-        return view('superadmin/dashboard');
+{
+    // Pastikan hanya pengguna dengan level superadmin yang bisa mengakses
+    if (!session()->get('isLoggedIn') || session()->get('LEVEL_USER') !== '2') {
+        return redirect()->to(site_url('login'))->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
     }
+
+    // Tangkap data statistik bulanan dan harian
+    $year = $this->request->getGet('year') ?? date('Y');
+    $date = $this->request->getGet('date') ?? date('Y-m-d');
+
+    // Statistik Bulanan
+    $resultBulanan = $this->db->query("
+        SELECT 
+            MONTH(TGLKUNJUNGAN_TAMU) AS bulan, 
+            SUM(JKL_TAMU) AS laki, 
+            SUM(JKP_TAMU) AS perempuan, 
+            YEAR(TGLKUNJUNGAN_TAMU) AS tahun
+        FROM bukutamu 
+        WHERE YEAR(TGLKUNJUNGAN_TAMU) IN (SELECT DISTINCT YEAR(TGLKUNJUNGAN_TAMU) FROM bukutamu)
+        GROUP BY YEAR(TGLKUNJUNGAN_TAMU), MONTH(TGLKUNJUNGAN_TAMU)
+    ")->getResultArray();
+
+    // Ambil tahun yang ada pada data
+    $years = array_unique(array_column($resultBulanan, 'tahun'));
+    sort($years);
+
+    // Statistik Bulanan
+    $dataBulanan = [
+        'laki' => array_fill(0, 12, 0),
+        'perempuan' => array_fill(0, 12, 0),
+    ];
+
+    foreach ($resultBulanan as $row) {
+        $dataBulanan['laki'][$row['bulan'] - 1] = (int) $row['laki'];
+        $dataBulanan['perempuan'][$row['bulan'] - 1] = (int) $row['perempuan'];
+    }
+
+    // Statistik Harian
+    $resultHarian = $this->db->query("
+        SELECT 
+            SUM(JKL_TAMU) AS laki, 
+            SUM(JKP_TAMU) AS perempuan 
+        FROM bukutamu 
+        WHERE DATE(TGLKUNJUNGAN_TAMU) = ?
+    ", [$date])->getRowArray();
+
+    $dataHarian = [
+        'laki' => (int) ($resultHarian['laki'] ?? 0),
+        'perempuan' => (int) ($resultHarian['perempuan'] ?? 0),
+    ];
+
+    // Kirim data ke view dashboard
+    return view('superadmin/dashboard', [
+        'dataBulanan' => $dataBulanan,
+        'dataHarian' => $dataHarian,
+        'year' => $year,
+        'date' => $date,
+        'years' => $years,  // Mengirimkan data tahun yang tersedia ke view
+    ]);
+}
+
+    
+    
+    
     public function userManage()
     {
         $users = $this->userModel->findAll();

@@ -26,10 +26,11 @@
                 <?= esc($buku['SINOPSIS_BUKU']); ?>
             </p>
             <div class="mt-6 flex gap-4">
-                <a href="<?= base_url('uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU']); ?>" 
-                   class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                   Baca / Download Buku
-                </a>
+            <a href="<?= site_url('bukudigital/flipbook/' . $buku['ID_BUKU']); ?>" class="bg-blue-500 text-white px-4 py-2 rounded">
+    Baca / Download Buku
+</a>
+
+
                 <a href="<?= site_url('bukudigital'); ?>" 
                    class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
                    Kembali
