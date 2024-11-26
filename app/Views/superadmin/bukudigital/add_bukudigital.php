@@ -98,36 +98,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropzoneFile = document.getElementById('dropzoneFile');
     const dropzoneContentFile = document.getElementById('dropzoneContentFile');
 
-    // **Handle Sampul Dropzone**
+    // Handle Sampul Dropzone
     dropzoneSampul.addEventListener('click', () => sampulInput.click());
-    sampulInput.addEventListener('change', () => handleFileSelection(sampulInput, dropzoneContentSampul, 2));
-
-    // **Handle File Dropzone**
-    dropzoneFile.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', () => handleFileSelection(fileInput, dropzoneContentFile, 40));
-
-    // **File Selection Handling**
-    function handleFileSelection(input, content, maxSizeMB) {
-        const file = input.files[0];
-        const textElement = content.querySelector('p'); // Text element in dropzone
-        if (file) {
-            if (file.size > maxSizeMB * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: `Ukuran file melebihi ${maxSizeMB}MB`,
-                    text: `Silakan unggah file dengan ukuran maksimal ${maxSizeMB}MB.`,
-                });
-                input.value = ''; // Reset file input
-                resetDropzoneContent(textElement);
-            } else {
-                textElement.textContent = `File Terpilih: ${file.name}`;
-                textElement.classList.remove('text-gray-500');
-                textElement.classList.add('text-green-500');
-            }
-        } else {
+    sampulInput.addEventListener('change', () => {
+        const file = sampulInput.files[0];
+        const textElement = dropzoneContentSampul.querySelector('p');
+        if (!file) {
             resetDropzoneContent(textElement);
+        } else if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file Sampul Buku melebihi 2MB',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            sampulInput.value = ''; // Reset file input
+            resetDropzoneContent(textElement);
+        } else {
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
         }
-    }
+    });
+
+    // Handle File Dropzone
+    dropzoneFile.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        const textElement = dropzoneContentFile.querySelector('p');
+        if (!file) {
+            resetDropzoneContent(textElement);
+        } else if (file.size > 40 * 1024 * 1024) { // 40MB limit
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file Produk Buku melebihi 40MB',
+                text: 'Silakan unggah file dengan ukuran maksimal 40MB.',
+            });
+            fileInput.value = ''; // Reset file input
+            resetDropzoneContent(textElement);
+        } else {
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
+        }
+    });
 
     function resetDropzoneContent(textElement) {
         textElement.textContent = 'Drop files here or click to upload';
@@ -135,16 +148,15 @@ document.addEventListener('DOMContentLoaded', () => {
         textElement.classList.remove('text-green-500');
     }
 
-    // **Allow only numbers for Tahun Terbit**
+    // Allow only numbers for Tahun Terbit
     document.getElementById('tahun_buku').addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]/g, ''); // Hanya izinkan angka
     });
 
-    // **Form Submission Validation**
+    // Form Submission Validation
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Simple front-end validation
         const judulBuku = document.getElementById('judul_buku').value.trim();
         const penulisBuku = document.getElementById('penulis_buku').value.trim();
         const tahunBuku = document.getElementById('tahun_buku').value.trim();
@@ -200,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
 
 
 
