@@ -1704,8 +1704,8 @@ public function manageBukuDigital()
             'penulis_buku' => 'required|max_length[64]',
             'tahun_buku'   => 'required|valid_date[Y]',
             'sinopsis_buku'=> 'required',
-            'sampul_buku'  => 'uploaded[sampul_buku]|max_size[sampul_buku,2048]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
-            'produk_buku'  => 'uploaded[produk_buku]|max_size[produk_buku,20480]|mime_in[produk_buku,application/pdf]'
+            'sampul_buku'  => 'uploaded[sampul_buku]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
+            'produk_buku'  => 'uploaded[produk_buku]|mime_in[produk_buku,application/pdf]'
         ]);
     
         if (!$validation->withRequest($this->request)->run()) {
@@ -1805,8 +1805,8 @@ public function updateBukuDigital()
         'penulis_buku' => 'required|max_length[64]',
         'tahun_buku' => 'required|valid_date[Y]',
         'sinopsis_buku' => 'required',
-        'sampul_buku' => 'permit_empty||max_size[sampul_buku,2048]|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
-        'produk_buku' => 'permit_empty|mime_in[produk_buku,application/pdf]|max_size[produk_buku,20480]'
+        'sampul_buku' => 'permit_empty|is_image[sampul_buku]|mime_in[sampul_buku,image/png,image/jpeg,image/jpg]',
+        'produk_buku' => 'permit_empty|mime_in[produk_buku,application/pdf]'
     ]);
 
     // Check validation
