@@ -56,7 +56,9 @@ $routes->group('logout', ['filter' => 'auth'], function ($routes) {
 
 // Grouping untuk SuperAdmin dengan Middleware Auth
 $routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
+    $routes->get('superadmin/dashboard/getDashboardCounts', 'SuperAdminController::getDashboardCounts');
     $routes->get('dashboard', 'SuperAdminController::dashboard');  // Dashboard SuperAdmin
+    
 });
 
 // Route untuk Manajemen User
