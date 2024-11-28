@@ -43,14 +43,11 @@
                                    Edit
                                 </a>
 
-                                <?php if ($user['USERNAME'] !== $loggedInUsername): ?>
-                                    <button onclick="confirmDelete('<?= esc($user['USERNAME']) ?>')" 
-                                            class="text-red-500 font-semibold hover:underline hover:text-red-700">
-                                        Delete
-                                    </button>
-                                <?php else: ?>
-                                    <span class="text-transparent">Delete</span>
-                                <?php endif; ?>
+                                <button onclick="confirmDelete('<?= esc($user['USERNAME']) ?>')" 
+                                class="text-red-500 font-semibold hover:underline hover:text-red-700">
+                            Delete
+                        </button>
+
                             </div>
                         </td>
                     </tr>
@@ -83,7 +80,6 @@ function confirmDelete(username) {
     });
 }
 
-// Fungsi untuk delete user melalui AJAX
 function deleteUser(username) {
     fetch(`<?= site_url('superadmin/user/delete/') ?>${encodeURIComponent(username)}`, {
         method: 'DELETE',
@@ -97,18 +93,22 @@ function deleteUser(username) {
         if (data.success) {
             Swal.fire({
                 title: 'Berhasil!',
-                text: 'Pengguna berhasil dihapus.',
+                text: data.message,
                 icon: 'success',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
             }).then(() => {
-                document.getElementById(`user-${username}`).remove(); // Hapus baris user dari tabel
+                if (data.redirect) {
+                    window.location.href = data.redirect; // Redirect ke halaman login
+                } else {
+                    document.getElementById(`user-${username}`).remove(); // Hapus baris user dari tabel
+                }
             });
         } else {
             Swal.fire({
                 title: 'Gagal!',
                 text: data.message,
                 icon: 'error',
-                confirmButtonText: 'OK'
+                confirmButtonText: 'OK',
             });
         }
     })
@@ -117,11 +117,13 @@ function deleteUser(username) {
             title: 'Error!',
             text: 'Terjadi kesalahan pada server.',
             icon: 'error',
-            confirmButtonText: 'OK'
+            confirmButtonText: 'OK',
         });
         console.error('Error:', error);
     });
 }
+
+
 </script>
 
 <style>
