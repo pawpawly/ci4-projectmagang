@@ -46,7 +46,6 @@
             </div>
         </div>
 
-
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/berita/manage') ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
@@ -54,7 +53,6 @@
         class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center justify-center">
             Simpan
         </button>
-
         </div>
     </form>
 </div>
@@ -62,144 +60,38 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.getElementById('tambahBeritaForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Mencegah submit form secara default
-
-    const submitButton = document.getElementById('submitButton');
-
-    // Spinner SVG
-    const spinner = `<svg class="animate-spin h-5 w-5 text-white ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-    </svg>`;
-
-    // Validasi Form
-    if (!validateForm()) {
-        return; // Jika validasi gagal, hentikan proses
-    }
-
-    // Ubah tombol menjadi disabled, tambahkan spinner dan teks "Menyimpan..."
-    submitButton.disabled = true;
-    submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-    submitButton.innerHTML = `Menyimpan... ${spinner}`;
-
-    const formData = new FormData(this);
-
-    fetch('<?= site_url('superadmin/berita/save') ?>', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                title: 'Berhasil!',
-                text: 'Berita berhasil ditambahkan.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                window.location.href = '<?= site_url('superadmin/berita/manage'); ?>';
-            });
-        } else {
-            Swal.fire({
-                title: 'Gagal!',
-                text: data.message || 'Gagal menyimpan berita.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-
-            // Reset tombol jika gagal
-            resetButton(submitButton);
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: 'Error!',
-            text: 'Terjadi kesalahan pada server.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-
-        console.error('Error:', error);
-
-        // Reset tombol jika ada error
-        resetButton(submitButton);
-    });
-});
-
-// Fungsi untuk mereset tombol
-function resetButton(button) {
-    button.disabled = false;
-    button.classList.remove('opacity-50', 'cursor-not-allowed');
-    button.innerHTML = 'Simpan'; // Kembalikan teks tombol
-}
-
-// Fungsi validasi form
-// Fungsi validasi form
-function validateForm() {
-    const inputs = document.querySelectorAll('#tambahBeritaForm input, #tambahBeritaForm textarea');
-
-    for (let input of inputs) {
-        if (!input.checkValidity()) {
-            Swal.fire({
-                title: 'Oops!',
-                text: 'Semua field wajib diisi!',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-            return false;
-        }
-    }
-
-    const fotoBerita = document.getElementById('fotoBerita').files[0];
-    if (!fotoBerita) {
-        Swal.fire({
-            title: 'Oops!',
-            text: 'Foto berita wajib diunggah!',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-        });
-        return false;
-    }
-
-    // Validasi ukuran file
-    if (fotoBerita && fotoBerita.size > 2 * 1024 * 1024) { // 2MB dalam byte
-        Swal.fire({
-            icon: 'error',
-            title: 'Ukuran file yang Anda unggah melebihi 2MB.',
-            text: 'Silakan unggah file dengan ukuran maksimal 2MB.'
-        });
-        return false;
-    }
-
-    return true;
-}
-
-
-
-
-    // Ambil elemen dropzone dan input file
+// Ambil elemen dropzone dan input file
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fotoBerita');
 const dropzoneContent = document.getElementById('dropzoneContent');
 
 // Fungsi untuk menampilkan file yang diunggah
-// Fungsi untuk menampilkan file yang diunggah
-// Fungsi untuk menampilkan file yang diunggah
 function handleFiles(files) {
     if (files.length > 0) {
-        // Tampilkan nama file dengan teks "File Terpilih" berwarna hijau
-        dropzoneContent.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
-            </svg>
-            <p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>
-        `;
+        const file = files[0];
+
+        if (file.size > 2 * 1024 * 1024) { // Jika file lebih besar dari 2MB
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file melebihi 2MB',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            fileInput.value = ''; // Reset file input
+            dropzoneContent.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+                </svg>
+                <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            `;
+        } else {
+            dropzoneContent.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+                </svg>
+                <p class="text-sm text-green-500">File Terpilih: ${file.name}</p>
+            `;
+        }
     } else {
-        // Kembalikan ke teks default jika file tidak ada
         dropzoneContent.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
@@ -233,7 +125,78 @@ dropzone.addEventListener('drop', (e) => {
     handleFiles(files); // Update tampilan
 });
 
+// Submit form
+// Submit form
+document.getElementById('tambahBeritaForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah submit form secara default
 
+    const submitButton = document.getElementById('submitButton');
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>`;
+
+    // Validasi Form
+    if (!validateForm()) {
+        return; // Jika validasi gagal, hentikan proses
+    }
+
+    // Ubah tombol menjadi disabled, tambahkan spinner dan teks "Menyimpan..."
+    submitButton.disabled = true;
+    submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+    submitButton.innerHTML = `Menyimpan... ${spinner}`;
+
+    const formData = new FormData(this);
+
+    fetch('<?= site_url('superadmin/berita/save') ?>', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berita berhasil ditambahkan',
+                text: 'Berita baru telah berhasil disimpan.',
+            }).then(() => {
+                // Arahkan ke halaman "manage" setelah SweetAlert ditutup
+                window.location.href = '<?= site_url('superadmin/berita/manage') ?>';
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal menambahkan berita',
+                text: 'Terjadi kesalahan saat menambahkan berita. Silakan coba lagi.',
+            });
+        }
+    })
+    .catch(error => {
+        submitButton.disabled = false;
+        submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        submitButton.innerHTML = 'Simpan'; // Kembali ke "Simpan" jika terjadi error jaringan
+        Swal.fire({
+            icon: 'error',
+            title: 'Terjadi kesalahan',
+            text: 'Terjadi kesalahan jaringan. Silakan coba lagi.',
+        });
+    });
+});
+
+function validateForm() {
+    const nameInput = document.getElementById('nama_berita');
+    const descInput = document.getElementById('deskripsi_berita');
+    const sourceInput = document.getElementById('sumber_berita');
+    const fileInput = document.getElementById('fotoBerita');
+
+    // Validasi
+    if (!nameInput.value || !descInput.value || !sourceInput.value || !fileInput.files[0]) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops!',
+            text: 'Semua field wajib diisi!',
+        });
+        return false;
+    }
+    return true;
+}
 </script>
 
 <?= $this->endSection() ?>
