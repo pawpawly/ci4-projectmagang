@@ -36,7 +36,6 @@
         required>
 </div>
 
-
     <div class="mb-4">
         <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
         <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" 
@@ -74,8 +73,6 @@
     </div>
 </div>
 
-
-
     <div class="mt-6 flex justify-end space-x-4">
         <a href="<?= site_url('superadmin/bukudigital/manage') ?>" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
         <button type="submit" id="submitButton" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
@@ -92,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sampulInput = document.getElementById('sampulBukuInput');
     const fileInput = document.getElementById('fileBukuInput');
     const submitButton = document.getElementById('submitButton');
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>`;
 
     const dropzoneSampul = document.getElementById('dropzoneSampul');
     const dropzoneContentSampul = document.getElementById('dropzoneContentSampul');
@@ -142,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Reset Dropzone Content
     function resetDropzoneContent(textElement) {
         textElement.textContent = 'Drop files here or click to upload';
         textElement.classList.add('text-gray-500');
@@ -173,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         submitButton.disabled = true;
-        submitButton.innerHTML = 'Menyimpan...';
+        submitButton.innerHTML = `Menyimpan... ${spinner}`;
 
         const formData = new FormData(form);
         fetch('<?= site_url('superadmin/bukudigital/save') ?>', {
@@ -212,9 +214,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-
-
-
 </script>
 <?= $this->endSection() ?>

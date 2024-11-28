@@ -15,6 +15,7 @@
     <!-- Search Form with Clear Button -->
     <div class="flex items-center justify-between mb-6">
     <form method="get" action="<?= site_url('superadmin/bukudigital/manage') ?>" class="flex items-center space-x-4 relative">
+    <?= csrf_field(); ?>
         <!-- Input Pencarian -->
         <div class="relative">
             <input type="text" name="search" placeholder="Cari Judul atau Penulis..." autocomplete="off"

@@ -117,7 +117,6 @@
     <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzone">
         <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden" />
         <div id="dropzoneContent" class="flex flex-col justify-center items-center space-y-2">
-            <!-- Ikon upload -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
@@ -125,6 +124,7 @@
         </div>
     </div>
 </div>
+
             <div class="flex justify-end">
                 <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
                 <button type="submit" id="submitBtn" class="px-4 py-2 bg-yellow-500 text-white rounded flex items-center justify-center">
@@ -233,51 +233,48 @@
     const formData = new FormData(this);
 
     fetch('/reservasi/store', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Reservasi berhasil disimpan!',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    document.getElementById('reservationForm').reset(); // Reset form
-                    btnText.textContent = "Simpan"; // Reset teks tombol
-                    spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
-                    submitBtn.disabled = false;
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: data.message || 'Gagal menyimpan data.',
-                });
-                submitBtn.disabled = false;
-                btnText.textContent = "Simpan"; // Reset teks tombol
-                spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    method: 'POST',
+    body: formData
+})
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Reservasi berhasil diajukan, silahkan melanjutkan konfirmasi ke WhatsApp.',
+                confirmButtonText: 'Lanjutkan ke WhatsApp',
+            }).then(() => {
+                window.location.href = 'https://wa.me/6281231231231'; // Ganti dengan nomor WhatsApp yang sesuai
+            });
+
+            // Reset form setelah sukses
+            document.getElementById('reservationForm').reset(); // Reset form
+            btnText.textContent = "Simpan"; // Reset teks tombol
+            spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
+            submitBtn.disabled = false;
+        } else {
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Terjadi kesalahan, silakan coba lagi.',
+                title: 'Gagal',
+                text: data.message || 'Gagal menyimpan data.',
             });
             submitBtn.disabled = false;
             btnText.textContent = "Simpan"; // Reset teks tombol
             spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Terjadi kesalahan saat mengirim data, silakan coba lagi.',
         });
+        submitBtn.disabled = false;
+        btnText.textContent = "Simpan"; // Reset teks tombol
+        spinnerContainer.classList.add('hidden'); // Sembunyikan spinner
+    });
 });
-
-
-
-
-
 
     const calendar = document.getElementById('calendar');
     const monthYear = document.getElementById('monthYear');
@@ -334,7 +331,7 @@
                 title: 'Oops...',
                 text: 'Anda tidak dapat memilih tanggal dari masa lalu!',
             });
-            return; // Jangan buka modal
+            return; 
         }
 
         openModal(selectedDate);
@@ -381,19 +378,31 @@
     const dropzoneContent = document.getElementById('dropzoneContent');
     const dropzoneText = document.getElementById('dropzoneText');
 
-    // Fungsi untuk menampilkan file yang diunggah
-// Fungsi untuk menampilkan file yang diunggah
+// Fungsi untuk memproses file yang diunggah
 function handleFiles(files) {
-    if (files.length > 0) {
-        // Menampilkan nama file yang dipilih dengan warna hijau
-        dropzoneText.innerHTML = `<span class="text-green-500">File Terpilih: ${files[0].name}</span>`;
+    const file = files[0];
+
+    if (file) {
+        // Cek ukuran file (maksimal 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file yang Anda unggah melebihi 2MB.',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.'
+            });
+            fileInput.value = ''; // Reset input file
+            dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks
+        } else {
+            // Menampilkan nama file yang dipilih
+            dropzoneText.innerHTML = `<span class="text-green-500">File Terpilih: ${file.name}</span>`;
+        }
     } else {
-        // Mengembalikan teks awal jika tidak ada file yang dipilih
+        // Reset jika tidak ada file
         dropzoneText.textContent = 'Drop files here or click to upload';
     }
 }
 
-// Fungsi untuk memanggil file input ketika dropzone diklik
+// Fungsi untuk memanggil file input saat dropzone diklik
 dropzone.addEventListener('click', () => {
     fileInput.click(); // Membuka dialog file
 });
@@ -419,7 +428,7 @@ dropzone.addEventListener('drop', (e) => {
     handleFiles(files); // Update tampilan
 });
 
-// Reset ketika file input dibatalkan
+// Reset saat file input dibatalkan
 fileInput.addEventListener('click', function() {
     if (!fileInput.files.length) {
         dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks saat Cancel

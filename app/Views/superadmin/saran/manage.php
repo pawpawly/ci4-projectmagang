@@ -13,6 +13,7 @@
  <!-- Form Pencarian dan Filter -->
  <div class="flex items-center mb-4 space-x-4">
         <form method="get" action="<?= site_url('superadmin/saran/manage') ?>" class="flex items-center space-x-4">
+        <?= csrf_field(); ?>
             <!-- Input Pencarian -->
             <div class="relative">
                 <input type="text" name="search" placeholder="Cari Nama Pengirim..." autocomplete="off"

@@ -11,32 +11,35 @@
     <?php endif; ?>
 
     <form id="editBukuDigitalForm" action="<?= site_url('superadmin/bukudigital/update') ?>" method="POST" autocomplete="off" enctype="multipart/form-data">
+    <?= csrf_field(); ?>
         <input type="hidden" name="id_buku" value="<?= $bukudigital['ID_BUKU'] ?>">
 
         <div class="mb-4">
             <label for="judul_buku" class="block text-sm font-medium text-gray-700">Judul Buku</label>
-            <input type="text" id="judul_buku" name="judul_buku" autocomplete="off"
+            <input type="text" maxlength="255" id="judul_buku" name="judul_buku" autocomplete="off" placeholder="Masukkan judul buku"
                    value="<?= esc($bukudigital['JUDUL_BUKU']) ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
 
         <div class="mb-4">
             <label for="penulis_buku" class="block text-sm font-medium text-gray-700">Penulis Buku</label>
-            <input type="text" id="penulis_buku" name="penulis_buku" autocomplete="off"
+            <input type="text" maxlength="255" id="penulis_buku" name="penulis_buku" autocomplete="off" placeholder="Masukkan penulis buku"
                    value="<?= esc($bukudigital['PENULIS_BUKU']) ?>" 
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
         </div>
 
         <div class="mb-4">
             <label for="tahun_buku" class="block text-sm font-medium text-gray-700">Tahun Terbit</label>
-            <input type="text" id="tahun_buku" name="tahun_buku" autocomplete="off"
-                   value="<?= esc($bukudigital['TAHUN_BUKU']) ?>" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
+            <input 
+                type="text" maxlength="4" id="tahun_buku" name="tahun_buku" 
+                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                placeholder="Masukkan tahun terbit" value="<?= esc($bukudigital['TAHUN_BUKU']) ?>" pattern="\d*" 
+                inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
         </div>
 
         <div class="mb-4">
             <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
-            <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" autocomplete="off"
+            <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" autocomplete="off" placeholder="Masukkan sinopsis"
                       class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"><?= esc($bukudigital['SINOPSIS_BUKU']) ?></textarea>
         </div>
 
@@ -72,12 +75,14 @@
                 <a href="<?= base_url('uploads/bukudigital/pdf/' . $bukudigital['PRODUK_BUKU']) ?>" target="_blank" class="text-blue-500 underline mt-2 block">View/Download PDF</a>
             <?php endif; ?>
         </div>
-
+        
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/bukudigital/manage') ?>" 
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
-            <button type="submit" 
-                    class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Simpan</button>
+               <button type="submit" id="submitButton" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center justify-center">
+    <span id="buttonText">Simpan</span> <!-- Teks tombol -->
+    <!-- Spinner akan ditambahkan dinamis di sini -->
+</button>
         </div>
     </form>
 </div>
@@ -85,101 +90,147 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.getElementById('editBukuDigitalForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('editBukuDigitalForm');
+    const submitButton = document.getElementById('submitButton');
+    const buttonText = document.getElementById('buttonText'); // Ambil span untuk teks "Simpan"
 
-    const formData = new FormData(this);
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>`;
 
-    fetch('<?= site_url('superadmin/bukudigital/update') ?>', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
+    // Form Validation Before Submit
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const judulBuku = document.getElementById('judul_buku').value;
+        const penulisBuku = document.getElementById('penulis_buku').value;
+        const tahunBuku = document.getElementById('tahun_buku').value;
+        const sinopsisBuku = document.getElementById('sinopsis_buku').value;
+
+        // Validasi sebelum tombol diganti
+        if (!judulBuku || !penulisBuku || !tahunBuku || !sinopsisBuku) {
             Swal.fire({
-                title: 'Berhasil!',
-                text: data.message,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                window.location.href = data.redirect;
+                title: 'Oops!',
+                text: 'Semua field wajib diisi!',
+                icon: 'warning',
+                confirmButtonText: 'OK',
             });
-        } else {
-            // Check if there are specific validation errors
-            if (data.errors) {
+            return;  // Tidak lanjutkan proses jika ada field kosong
+        }
+
+        // Tampilkan spinner dan disable tombol saat form disubmit
+        submitButton.disabled = true;
+        buttonText.innerHTML = 'Menyimpan...'; // Ubah teks tombol
+        submitButton.innerHTML = buttonText.innerHTML + spinner; // Tambahkan spinner di samping teks
+
+        const formData = new FormData(form);
+
+        fetch('<?= site_url('superadmin/bukudigital/update') ?>', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Jangan reset tombol setelah submit berhasil
+            if (data.success) {
                 Swal.fire({
-                    title: 'Oops!',
-                    text: 'Semua field wajib diisi!',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
+                    title: 'Berhasil!',
+                    text: 'Buku digital berhasil diperbarui!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    window.location.href = '<?= site_url('superadmin/bukudigital/manage') ?>';
                 });
             } else {
                 Swal.fire({
                     title: 'Gagal!',
-                    text: data.message,
+                    text: 'Terjadi kesalahan saat menyimpan data.',
                     icon: 'error',
-                    confirmButtonText: 'OK'
+                    confirmButtonText: 'OK',
                 });
             }
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: 'Error!',
-            text: 'Terjadi kesalahan pada server.',
-            icon: 'error',
-            confirmButtonText: 'OK'
+        })
+        .catch(error => {
+            // Reset tombol jika terjadi error saat submit
+            submitButton.disabled = false;
+            buttonText.innerHTML = 'Simpan'; // Reset teks tombol
+            submitButton.innerHTML = buttonText.innerHTML; // Reset button inner HTML tanpa spinner
+            Swal.fire({
+                title: 'Error!',
+                text: 'Terjadi kesalahan. Silakan coba lagi.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
         });
-        console.error('Error:', error);
     });
 });
 
+
+
+// Handler untuk Dropzone Sampul Buku dan Produk Buku
 document.addEventListener('DOMContentLoaded', () => {
-    // Drop zone for Sampul Buku
+    // Dropzone untuk Sampul Buku (maks 2MB)
     const dropzoneSampul = document.getElementById('dropzoneSampul');
     const sampulBukuInput = document.getElementById('sampulBukuInput');
     const dropzoneContentSampul = document.getElementById('dropzoneContentSampul');
 
     dropzoneSampul.addEventListener('click', () => sampulBukuInput.click());
-    sampulBukuInput.addEventListener('change', () => handleFiles(dropzoneContentSampul, sampulBukuInput.files));
-    dropzoneSampul.addEventListener('dragover', (e) => handleDragOver(e, dropzoneSampul));
-    dropzoneSampul.addEventListener('drop', (e) => handleDrop(e, dropzoneContentSampul, sampulBukuInput));
+    sampulBukuInput.addEventListener('change', () => {
+        const file = sampulBukuInput.files[0];
+        const textElement = dropzoneContentSampul.querySelector('p');
+        if (!file) {
+            resetDropzoneContent(textElement);
+        } else if (file.size > 2 * 1024 * 1024) { // 2MB limit for Sampul Buku
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran Sampul Buku Terlalu Besar',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            sampulBukuInput.value = ''; // Reset file input
+            resetDropzoneContent(textElement);
+        } else {
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
+        }
+    });
 
-    // Drop zone for File Buku
+    // Dropzone untuk Produk Buku (maks 40MB)
     const dropzoneFile = document.getElementById('dropzoneFile');
     const fileBukuInput = document.getElementById('fileBukuInput');
     const dropzoneContentFile = document.getElementById('dropzoneContentFile');
 
     dropzoneFile.addEventListener('click', () => fileBukuInput.click());
-    fileBukuInput.addEventListener('change', () => handleFiles(dropzoneContentFile, fileBukuInput.files));
-    dropzoneFile.addEventListener('dragover', (e) => handleDragOver(e, dropzoneFile));
-    dropzoneFile.addEventListener('drop', (e) => handleDrop(e, dropzoneContentFile, fileBukuInput));
-
-    // Common drop zone functions
-    function handleFiles(contentDiv, files) {
-        if (files.length > 0) {
-            contentDiv.innerHTML = `<p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>`;
+    fileBukuInput.addEventListener('change', () => {
+        const file = fileBukuInput.files[0];
+        const textElement = dropzoneContentFile.querySelector('p');
+        if (!file) {
+            resetDropzoneContent(textElement);
+        } else if (file.size > 40 * 1024 * 1024) { // 40MB limit for Produk Buku
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Produk Buku Terlalu Besar',
+                text: 'Silakan unggah file dengan ukuran maksimal 40MB.',
+            });
+            fileBukuInput.value = ''; // Reset file input
+            resetDropzoneContent(textElement);
         } else {
-            contentDiv.innerHTML = '<p class="text-sm text-gray-500">Drop files here or click to upload</p>';
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
         }
-    }
+    });
 
-    function handleDragOver(e, dropzone) {
-        e.preventDefault();
-        dropzone.classList.add('bg-gray-100');
-    }
-
-    function handleDrop(e, contentDiv, fileInput) {
-        e.preventDefault();
-        const files = e.dataTransfer.files;
-        fileInput.files = files;
-        handleFiles(contentDiv, files);
+    // Fungsi untuk reset konten dropzone
+    function resetDropzoneContent(textElement) {
+        textElement.textContent = 'Drop files here or click to upload';
+        textElement.classList.add('text-gray-500');
+        textElement.classList.remove('text-green-500');
     }
 });
+
 </script>
 
 <?= $this->endSection() ?>
