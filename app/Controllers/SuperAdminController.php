@@ -115,7 +115,26 @@ class SuperAdminController extends Controller
     ]);
 }
 
-    
+public function getDashboardCounts()
+{
+    // Ambil jumlah reservasi pending
+    $pendingReservations = $this->reservasiModel->where('STATUS_RESERVASI', 'pending')->countAllResults();
+
+    // Ambil jumlah koleksi
+    $totalCollections = $this->koleksiModel->countAllResults();
+
+    // Ambil jumlah event yang akan datang
+    $upcomingEvents = $this->eventModel->where('TANGGAL_EVENT >=', date('Y-m-d'))->countAllResults();
+
+    // Kembalikan data dalam format JSON
+    return $this->response->setJSON([
+        'pendingReservations' => $pendingReservations,
+        'totalCollections' => $totalCollections,
+        'upcomingEvents' => $upcomingEvents
+    ]);
+}
+
+
     
     
     public function userManage()

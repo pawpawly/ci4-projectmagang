@@ -2,6 +2,104 @@
 
 <?= $this->section('content'); ?>
 <section>
+    <div class="bg-white min-h-screen p-6">
+        <h1 class="text-2xl font-bold mb-4">Dashboard Statistik Pengunjung</h1>
+
+        <!-- New Section for the 4 Boxes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- Kotak 1: Pending Reservations -->
+            <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/reservasi/manage'); ?>'">
+                <h3 class="text-xl font-bold mb-4">Pending Reservations</h3>
+                <div class="flex justify-between">
+                    <p class="text-3xl font-bold" id="pendingReservations">0</p>
+                    <img src="path/to/your/image1.png" alt="Pending" class="w-12 h-12">
+                </div>
+            </div>
+
+            <!-- Kotak 2: Total Collections -->
+            <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/koleksi/manage'); ?>'">
+                <h3 class="text-xl font-bold mb-4">Total Collections</h3>
+                <div class="flex justify-between">
+                    <p class="text-3xl font-bold" id="totalCollections">0</p>
+                    <img src="path/to/your/image2.png" alt="Collections" class="w-12 h-12">
+                </div>
+            </div>
+
+            <!-- Kotak 3: Upcoming Events -->
+            <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/event/manage'); ?>'">
+                <h3 class="text-xl font-bold mb-4">Upcoming Events</h3>
+                <div class="flex justify-between">
+                    <p class="text-3xl font-bold" id="upcomingEvents">0</p>
+                    <img src="path/to/your/image3.png" alt="Events" class="w-12 h-12">
+                </div>
+            </div>
+
+            <!-- Kotak 4: Digital Clock -->
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Current Time</h3>
+                <div class="flex justify-between">
+                    <p class="text-3xl font-bold" id="digitalClock">00:00:00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistik Grafik -->
+        <div class="flex flex-col sm:flex-row gap-6 mt-6">
+            <div class="bg-white shadow-lg rounded-lg p-6 flex-1">
+                <h2 class="text-xl font-bold mb-4">Statistik Pengunjung per Bulan</h2>
+                <canvas id="monthlyChart" width="650" height="350"></canvas>
+            </div>
+
+            <div class="bg-white shadow-lg rounded-lg p-6 mt-6 sm:mt-0 w-full sm:w-[350px]">
+                <h2 class="text-xl font-bold mb-4">Distribusi Pengunjung Hari Ini</h2>
+                <canvas id="dailyChart" width="300" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Jam Digital
+function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('digitalClock').textContent = `${hours}:${minutes}:${seconds}`;
+}
+setInterval(updateClock, 1000);
+
+// Inisialisasi dengan memanggil fungsi saat halaman dimuat
+updateClock();
+
+// Fungsi untuk mengambil data dari backend
+// Fungsi untuk mengambil data dari backend
+function fetchDashboardData() {
+    fetch("<?= site_url('superadmin/dashboard/getDashboardData'); ?>")
+        .then(response => response.json())
+        .then(data => {
+            // Update Kotak 1: Pending Reservations
+            document.getElementById('pendingReservations').textContent = data.pendingReservations;
+
+            // Update Kotak 2: Total Collections
+            document.getElementById('totalCollections').textContent = data.totalCollections;
+
+            // Update Kotak 3: Upcoming Events
+            document.getElementById('upcomingEvents').textContent = data.upcomingEvents;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
+// Memperbarui data setiap 10 detik
+setInterval(fetchDashboardData, 10000);  // Interval dalam milidetik
+
+// Pertama kali load data ketika halaman dimuat
+fetchDashboardData();
+
+</script>
+
+<section>
 <div class="bg-white min-h-screen p-6">
     <h1 class="text-2xl font-bold mb-4">Dashboard Statistik Pengunjung</h1>
 
