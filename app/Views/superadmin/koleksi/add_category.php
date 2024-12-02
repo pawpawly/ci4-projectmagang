@@ -5,16 +5,17 @@
     <h1 class="text-2xl font-bold mb-6">Tambah Kategori Koleksi</h1>
 
     <form id="categoryForm" action="<?= site_url('superadmin/koleksi/category/save') ?>" autocomplete="off" method="POST">
+    <?= csrf_field(); ?>
         <div class="mb-4">
             <label for="kategori_kkoleksi" class="block text-sm font-medium text-gray-700">Kategori Koleksi</label>
-            <input type="text" id="kategori_kkoleksi" name="kategori_kkoleksi" autocomplete="off"
+            <input type="text" placeholder="Masukkan Nama Kategori" id="kategori_kkoleksi" name="kategori_kkoleksi" autocomplete="off" maxlength="255"
                    value="<?= old('kategori_kkoleksi') ?>"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kkoleksi" class="block text-sm font-medium text-gray-700">Deskripsi Koleksi</label>
-            <textarea id="deskripsi_kkoleksi" name="deskripsi_kkoleksi" rows="4" autocomplete="off"
+            <textarea id="deskripsi_kkoleksi" placeholder="Masukkan Deskripsi Kategori" name="deskripsi_kkoleksi" rows="4" autocomplete="off" maxlength="1000"
                       class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kkoleksi') ?></textarea>
         </div>
 

@@ -14,6 +14,7 @@
     </div>
 
     <form method="get" action="<?= site_url('superadmin/event/manage') ?>" class="flex items-center space-x-4 mb-6">
+    <?= csrf_field(); ?>
         <!-- Search Input with Clear Button -->
         <div class="relative">
             <input type="text" name="search" placeholder="Cari Event..." autocomplete="off"
@@ -135,43 +136,45 @@
     document.addEventListener("DOMContentLoaded", toggleClearButton);
 
     function confirmDelete(id_event) {
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Event ini akan dihapus secara permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteEvent(id_event);
-            }
-        });
-    }
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Event ini akan dihapus secara permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteEvent(id_event);
+        }
+    });
+}
 
-    function deleteEvent(id_event) {
-        fetch(`<?= site_url('superadmin/event/delete/') ?>${id_event}`, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire('Terhapus!', data.message, 'success').then(() => location.reload());
-            } else {
-                Swal.fire('Gagal!', data.message, 'error');
-            }
-        })
-        .catch(error => {
-            Swal.fire('Error!', 'Terjadi kesalahan pada server.', 'error');
-            console.error('Error:', error);
-        });
-    }
+function deleteEvent(id_event) {
+    fetch(`<?= site_url('superadmin/event/delete/') ?>${id_event}`, {
+        method: 'DELETE', // Gunakan DELETE bukan POST
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Terhapus!', data.message, 'success').then(() => location.reload());
+        } else {
+            Swal.fire('Gagal!', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error!', 'Terjadi kesalahan pada server.', 'error');
+        console.error('Error:', error);
+    });
+}
+
+
 </script>
 
 <?= $this->endSection() ?>

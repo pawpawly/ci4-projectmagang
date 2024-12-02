@@ -594,7 +594,7 @@ public function deleteUser($username)
             // Kembalikan JSON jika validasi gagal
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Mohon isi semua field dengan benar.'
+                'message' => 'Semua field wajb diisi!'
             ]);
         }
     
@@ -629,28 +629,6 @@ public function deleteUser($username)
     
     public function updateCategory()
     {
-        $validation = \Config\Services::validation();
-    
-        $validation->setRules([
-            'kategori_kevent' => 'required',
-            'deskripsi_kevent' => 'required',
-        ], [
-            'kategori_kevent' => [
-                'required' => 'Nama kategori tidak boleh kosong.'
-            ],
-            'deskripsi_kevent' => [
-                'required' => 'Deskripsi kategori tidak boleh kosong.'
-            ]
-        ]);
-    
-        if (!$validation->withRequest($this->request)->run()) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Mohon isi semua field dengan benar.',
-                'errors' => $validation->getErrors()
-            ]);
-        }
-    
         $id_kevent = $this->request->getPost('id_kevent');
         $data = [
             'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
@@ -671,6 +649,7 @@ public function deleteUser($username)
             ]);
         }
     }
+    
     
     public function deleteCategory($id_kevent)
     {
@@ -784,51 +763,6 @@ public function deleteUser($username)
 
     public function saveEvent()
     {
-        $validation = \Config\Services::validation();
-    
-        // Aturan Validasi
-        $validation->setRules([
-            'nama_event' => 'required',
-            'kategori_acara' => 'required',
-            'tanggal_event' => 'required|valid_date[Y-m-d]|checkFutureDate',
-            'jam_event' => 'required',
-            'deskripsi_event' => 'required',
-            'poster_event' => 'uploaded[poster_event]|is_image[poster_event]|mime_in[poster_event,image/jpg,image/jpeg,image/png]',
-        ], [
-            'nama_event' => ['required' => 'Nama event wajib diisi.'],
-            'kategori_acara' => ['required' => 'Kategori acara wajib dipilih.'],
-            'tanggal_event' => [
-                'required' => 'Tanggal event wajib diisi.',
-                'checkFutureDate' => 'Tidak boleh memilih tanggal masa lalu.'
-            ],
-            'jam_event' => ['required' => 'Jam mulai wajib diisi.'],
-            'deskripsi_event' => ['required' => 'Deskripsi acara wajib diisi.'],
-            'poster_event' => [
-                'uploaded' => 'Poster acara wajib diunggah.',
-                'is_image' => 'File harus berupa gambar.',
-                'mime_in' => 'Poster harus berformat jpg, jpeg, atau png.'
-            ]
-        ]);
-    
-        // Validasi gagal
-        if (!$validation->withRequest($this->request)->run()) {
-            $errors = $validation->getErrors();
-            
-            // Cek apakah error hanya terkait dengan tanggal masa lalu
-            if (isset($errors['tanggal_event']) && count($errors) === 1) {
-                return $this->response->setJSON([
-                    'success' => false,
-                    'message' => 'Tidak boleh memilih tanggal masa lalu.'
-                ]);
-            } 
-    
-            // Jika ada error selain tanggal
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Semua field wajib diisi!'
-            ]);
-        }
-    
         // Proses upload poster
         $poster = $this->request->getFile('poster_event');
         $posterName = '';
@@ -857,6 +791,7 @@ public function deleteUser($username)
         ]);
     }
     
+    
     public function editEvent($id_event)
     {
         $event = $this->eventModel->find($id_event);
@@ -875,44 +810,6 @@ public function deleteUser($username)
     public function updateEvent()
     {
         $id_event = $this->request->getPost('id_event');
-    
-        // Setup validation rules
-        $validation = \Config\Services::validation();
-    
-        $validation->setRules([
-            'nama_event' => 'required',
-            'kategori_id' => 'required',
-            'tanggal_event' => [
-                'rules' => 'required|valid_date[Y-m-d]|checkFutureDate',
-                'errors' => [
-                    'required' => 'Tanggal acara wajib diisi.',
-                    'valid_date' => 'Format tanggal tidak valid.',
-                    'checkFutureDate' => 'Tidak boleh memilih tanggal dari masa lalu.'
-                ]
-            ],
-            'jam_event' => 'required',
-            'deskripsi_event' => 'required',
-            'foto_event' => 'permit_empty|is_image[foto_event]|mime_in[foto_event,image/jpg,image/jpeg,image/png]'
-        ]);
-    
-        // Validasi gagal
-        if (!$validation->withRequest($this->request)->run()) {
-            $errors = $validation->getErrors();
-    
-            // Cek apakah ada error terkait tanggal
-            if (isset($errors['tanggal_event']) && count($errors) === 1) {
-                return $this->response->setJSON([
-                    'success' => false,
-                    'message' => 'Tidak boleh memilih tanggal dari masa lalu!'
-                ]);
-            }
-    
-            // Jika ada error selain tanggal
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Semua field wajib diisi!'
-            ]);
-        }
     
         // Data untuk di-update
         $data = [
@@ -959,6 +856,7 @@ public function deleteUser($username)
     
     
     
+    
     public function deleteEvent($id_event)
     {
         try {
@@ -998,6 +896,7 @@ public function deleteUser($username)
             ]);
         }
     }
+    
     
 
 

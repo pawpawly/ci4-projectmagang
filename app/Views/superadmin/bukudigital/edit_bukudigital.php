@@ -44,7 +44,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Sampul Buku (Foto) <i>Max 2MB</i></label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Sampul Buku (Foto) <i>Max 2MB</i> <p><i>(Abaikan Jika Tidak Mengganti Sampul Foto)</i></p></label>
             <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneSampul">
                 <input type="file" name="sampul_buku" id="sampulBukuInput" accept=".jpg,.jpeg,.png" class="hidden">
                 <div id="dropzoneContentSampul" class="flex flex-col justify-center items-center space-y-2">
@@ -61,7 +61,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">File Buku (PDF) <i>Max 40MB</i></label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">File Buku (PDF) <i>Max 40MB</i> <p><i>(Abaikan Jika Tidak Mengganti Buku)</i></p> </label>
             <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneFile">
                 <input type="file" name="produk_buku" id="fileBukuInput" accept=".pdf" class="hidden">
                 <div id="dropzoneContentFile" class="flex flex-col justify-center items-center space-y-2">
