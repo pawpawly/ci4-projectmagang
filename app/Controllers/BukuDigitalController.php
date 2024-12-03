@@ -51,28 +51,25 @@ class BukuDigitalController extends BaseController
     }
     public function flipbook($id)
     {
-        // Cari buku berdasarkan ID
         $buku = $this->bukuDigitalModel->find($id);
     
-        if (!$buku || !isset($buku['PRODUK_BUKU'])) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('File PDF tidak ditemukan.');
+        if (!$buku) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Buku tidak ditemukan.');
         }
     
-        // Validasi apakah file benar-benar ada
-        $pathToFile = FCPATH . 'uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU']; // Lokasi fisik file
-        if (!file_exists($pathToFile)) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('File PDF tidak ditemukan di server.');
+        $filePath = FCPATH . 'uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU'];
+        if (!file_exists($filePath)) {
+            echo "File PDF tidak ditemukan: " . $filePath;
+            exit;
         }
+        
     
-        // Kirim data ke view flipbook
-        return view('bukudigital/flipbook', [
-            'pdf_file' => base_url('uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU']),
-            'title' => $buku['JUDUL_BUKU']
-        ]);
+        $data = [
+            'title' => $buku['JUDUL_BUKU'], // Judul buku untuk tag <title>
+            'pdfPath' => base_url('uploads/bukudigital/pdf/' . $buku['PRODUK_BUKU']), // Jalur PDF
+        ];        
+    
+        return view('bukudigital/flipbook', $data);
     }
     
-    
-    
-    
-
 }
