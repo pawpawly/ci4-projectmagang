@@ -35,7 +35,7 @@ $routes->group('koleksi', function ($routes) {
 $routes->group('bukudigital', function ($routes) {
     $routes->get('/', 'BukuDigitalController::index'); // Daftar buku digital
     $routes->get('detail/(:num)', 'BukuDigitalController::detail/$1'); // Detail buku digital berdasarkan ID
-    $routes->get('flipbook/(:num)', 'BukuDigitalController::flipbook/$1'); // Halaman flipbook
+    $routes->get('flipbook/(:num)', 'BukuDigitalController::flipbook/$1');
 });
 
 
