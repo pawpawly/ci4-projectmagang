@@ -105,6 +105,11 @@ class SuperAdminController extends Controller
         'perempuan' => (int) ($resultHarian['perempuan'] ?? 0),
     ];
 
+    // Tambahkan logika untuk statistik grid
+    $pendingReservations = $this->reservasiModel->where('STATUS_RESERVASI', 'pending')->countAllResults();
+    $totalCollections = $this->koleksiModel->countAllResults();
+    $upcomingEvents = $this->eventModel->where('TANGGAL_EVENT >=', date('Y-m-d'))->countAllResults();
+
     // Kirim data ke view dashboard
     return view('superadmin/dashboard', [
         'dataBulanan' => $dataBulanan,
@@ -112,61 +117,13 @@ class SuperAdminController extends Controller
         'year' => $year,
         'date' => $date,
         'years' => $years, // Tahun yang tersedia untuk dropdown
-    ]);
-}
-
-public function statistikBulanan()
-{
-    $year = $this->request->getGet('year') ?? date('Y');
-
-    // Query data
-    $resultBulanan = $this->db->query("
-        SELECT 
-            MONTH(TGLKUNJUNGAN_TAMU) AS bulan, 
-            SUM(JKL_TAMU) AS laki, 
-            SUM(JKP_TAMU) AS perempuan
-        FROM bukutamu 
-        WHERE YEAR(TGLKUNJUNGAN_TAMU) = ?
-        GROUP BY MONTH(TGLKUNJUNGAN_TAMU)
-    ", [$year])->getResultArray();
-
-    // Inisialisasi data default
-    $dataBulanan = [
-        'laki' => array_fill(0, 12, 0),
-        'perempuan' => array_fill(0, 12, 0),
-    ];
-
-    foreach ($resultBulanan as $row) {
-        $dataBulanan['laki'][$row['bulan'] - 1] = (int) $row['laki'];
-        $dataBulanan['perempuan'][$row['bulan'] - 1] = (int) $row['perempuan'];
-    }
-
-    return $this->response->setJSON($dataBulanan);
-}
-
-
-
-public function getDashboardCounts()
-{
-    // Ambil jumlah reservasi pending
-    $pendingReservations = $this->reservasiModel->where('STATUS_RESERVASI', 'pending')->countAllResults();
-
-    // Ambil jumlah koleksi
-    $totalCollections = $this->koleksiModel->countAllResults();
-
-    // Ambil jumlah event yang akan datang
-    $upcomingEvents = $this->eventModel->where('TANGGAL_EVENT >=', date('Y-m-d'))->countAllResults();
-
-    // Kembalikan data dalam format JSON
-    return $this->response->setJSON([
         'pendingReservations' => $pendingReservations,
         'totalCollections' => $totalCollections,
-        'upcomingEvents' => $upcomingEvents
+        'upcomingEvents' => $upcomingEvents,
     ]);
 }
 
-
-    
+  
     
     public function userManage()
     {
