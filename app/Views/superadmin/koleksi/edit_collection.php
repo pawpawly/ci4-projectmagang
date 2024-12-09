@@ -5,11 +5,12 @@
     <h1 class="text-2xl font-bold mb-6">Edit Koleksi</h1>
 
     <form id="koleksiForm" action="<?= site_url('superadmin/koleksi/update') ?>" method="POST" autocomplete="off" enctype="multipart/form-data">
+    <?= csrf_field(); ?>
         <input type="hidden" name="id_koleksi" value="<?= $koleksi['ID_KOLEKSI'] ?>">
 
         <div class="mb-4">
             <label for="nama_koleksi" class="block text-sm font-medium text-gray-700">Nama Koleksi</label>
-            <input type="text" id="nama_koleksi" name="nama_koleksi" autocomplete="off"
+            <input type="text" maxlength="255" id="nama_koleksi" name="nama_koleksi" autocomplete="off" placeholder="Masukkan Nama Koleksi"
                    value="<?= old('nama_koleksi', $koleksi['NAMA_KOLEKSI']) ?>"
                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
         </div>
@@ -30,12 +31,12 @@
 
         <div class="mb-4">
             <label for="deskripsi_koleksi" class="block text-sm font-medium text-gray-700">Deskripsi Koleksi</label>
-            <textarea id="deskripsi_koleksi" name="deskripsi_koleksi" rows="4" autocomplete="off"
+            <textarea id="deskripsi_koleksi" name="deskripsi_koleksi" rows="4" autocomplete="off" placeholder="Masukkan Deskripsi Koleksi"
                       class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_koleksi', $koleksi['DESKRIPSI_KOLEKSI'] ?? '') ?></textarea>
         </div>
 
         <div class="mb-6">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Foto Koleksi</label>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Foto Koleksi <i>(Max 2MB)</i> <p><i>Abaikan jika tidak ingin mengganti foto</i></p> </label>
     <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneKoleksiEdit">
         <input type="file" name="foto_koleksi" id="fotoKoleksiEdit" accept=".jpg,.jpeg,.png" class="hidden">
         <div id="dropzoneKoleksiContentEdit" class="flex flex-col justify-center items-center space-y-2">
@@ -63,8 +64,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Menangani pengiriman form dengan AJAX
     document.getElementById('koleksiForm').addEventListener('submit', function (e) {
         e.preventDefault(); // Mencegah pengiriman form default
+
+        // Validasi untuk memastikan semua field sudah diisi (kecuali foto)
+        const namaKoleksi = document.getElementById('nama_koleksi').value.trim();
+        const kategoriKoleksi = document.getElementById('kategori_koleksi').value.trim();
+        const deskripsiKoleksi = document.getElementById('deskripsi_koleksi').value.trim();
+        
+        if (!namaKoleksi || !kategoriKoleksi || !deskripsiKoleksi) {
+            Swal.fire({
+                title: 'Oops!',
+                text: 'Semua field wajib diisi!',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Tidak lanjutkan proses submit jika ada field kosong
+        }
+
+        const submitButton = document.querySelector('button[type="submit"]');
+        submitButton.disabled = true; // Disable submit button
+        submitButton.innerHTML = 'Menyimpan... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
 
         const formData = new FormData(this);
 
@@ -74,6 +95,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            // Mengatur respons sukses
             if (data.success) {
                 Swal.fire({
                     title: 'Berhasil!',
@@ -90,6 +112,8 @@
                     icon: 'warning',
                     confirmButtonText: 'OK'
                 });
+                submitButton.disabled = false; // Aktifkan kembali tombol jika ada kesalahan
+                submitButton.innerHTML = 'Simpan';
             }
         })
         .catch(error => {
@@ -100,46 +124,83 @@
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
+            submitButton.disabled = false; // Aktifkan kembali tombol jika terjadi error
+            submitButton.innerHTML = 'Simpan';
         });
     });
 
-    // Ambil elemen dropzone dan input file
-const dropzoneKoleksiEdit = document.getElementById('dropzoneKoleksiEdit');
-const fileInputKoleksiEdit = document.getElementById('fotoKoleksiEdit');
-const dropzoneKoleksiContentEdit = document.getElementById('dropzoneKoleksiContentEdit');
+    // Mengatur drag-and-drop untuk input file
+    const dropzoneKoleksiEdit = document.getElementById('dropzoneKoleksiEdit');
+    const fileInput = document.getElementById('fotoKoleksiEdit');
+    const dropzoneContentFile = document.getElementById('dropzoneKoleksiContentEdit');
 
-// Fungsi untuk menampilkan file yang diunggah
-function handleFilesKoleksiEdit(files) {
-    if (files.length > 0) {
-        dropzoneKoleksiContentEdit.innerHTML = `<p class="text-sm text-green-500">File Terpilih: ${files[0].name}</p>`;
-    } else {
-        dropzoneKoleksiContentEdit.innerHTML = '<p class="text-sm text-gray-500">Drop files here or click to upload</p>';
+    dropzoneKoleksiEdit.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        const textElement = dropzoneContentFile.querySelector('p');
+
+        if (!file) {
+            resetDropzoneContent(textElement);
+        } else if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file Koleksi melebihi 2MB',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            fileInput.value = ''; // Reset file input
+            resetDropzoneContent(textElement);
+        } else {
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
+        }
+    });
+
+    function resetDropzoneContent(textElement) {
+        textElement.textContent = 'Drop files here or click to upload';
+        textElement.classList.add('text-gray-500');
+        textElement.classList.remove('text-green-500');
     }
-}
 
-// Klik pada dropzone membuka file input
-dropzoneKoleksiEdit.addEventListener('click', () => fileInputKoleksiEdit.click());
+    // Menangani efek drag-and-drop
+    dropzoneKoleksiEdit.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzoneKoleksiEdit.classList.add('bg-gray-100'); // Efek hover saat dragover
+    });
 
-// Update file yang dipilih melalui file input
-fileInputKoleksiEdit.addEventListener('change', () => handleFilesKoleksiEdit(fileInputKoleksiEdit.files));
+    dropzoneKoleksiEdit.addEventListener('dragleave', () => {
+        dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Menghapus efek hover saat drag leave
+    });
 
-// Tangani event drag-and-drop
-dropzoneKoleksiEdit.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzoneKoleksiEdit.classList.add('bg-gray-100'); // Tambahkan efek hover
-});
+    dropzoneKoleksiEdit.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Menghapus efek hover setelah drop
+        const files = e.dataTransfer.files; // Ambil file dari drop
+        fileInput.files = files; // Set file input dengan file yang di-drop
+        handleFilesKoleksiEdit(files); // Update tampilan dengan file yang dipilih
+    });
 
-dropzoneKoleksiEdit.addEventListener('dragleave', () => {
-    dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Hapus efek hover
-});
+    // Fungsi untuk memperbarui tampilan file yang dipilih
+    function handleFilesKoleksiEdit(files) {
+        const textElement = dropzoneContentFile.querySelector('p');
+        const file = files[0];
 
-dropzoneKoleksiEdit.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Hapus efek hover
-    const files = e.dataTransfer.files; // Ambil file dari drop
-    fileInputKoleksiEdit.files = files; // Set file input
-    handleFilesKoleksiEdit(files); // Update tampilan
-});
+        if (file && file.size <= 2 * 1024 * 1024) { // 2MB limit
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file Koleksi melebihi 2MB',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            fileInput.value = ''; // Reset file input jika file melebihi ukuran
+            resetDropzoneContent(textElement);
+        }
+    }
 </script>
+
 
 <?= $this->endSection() ?>

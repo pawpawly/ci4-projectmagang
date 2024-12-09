@@ -50,7 +50,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Poster Acara</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Poster Acara <i>(Max 2MB)</i><p><i>Abaikan jika tidak ingin mengganti poster</i></p></label>
             <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneEditEvent">
                 <input type="file" name="foto_event" id="posterEventInputEdit" accept=".jpg,.jpeg,.png" class="hidden">
                 <div id="dropzoneContentEditEvent" class="flex flex-col justify-center items-center space-y-2">
