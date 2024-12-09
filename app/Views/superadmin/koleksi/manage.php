@@ -14,6 +14,7 @@
 
     <div class="flex items-center justify-between mb-6">
     <form method="get" action="<?= site_url('superadmin/koleksi/manage') ?>" class="flex items-center space-x-4 relative">
+    <?= csrf_field(); ?>
         <!-- Input Pencarian dengan Tombol X di dalamnya -->
         <div class="relative">
             <input type="text" name="search" placeholder="Cari Koleksi..." autocomplete="off"
