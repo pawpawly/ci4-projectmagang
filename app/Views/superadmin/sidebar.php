@@ -72,10 +72,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-white">
     <div class="flex">
         <!-- Sidebar -->
-        <div class="w-64 bg-red-900 text-white sidebar">
+        <div class="w-64 bg-red-900 text-white sidebar fixed h-screen">
             <div class="p-4">
                 <div class="flex items-center">
                     <img src="<?= base_url('pict/iconmuseum.png'); ?>" alt="Logo" class="w-15 h-auto">
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 p-6 bg-white">
+        <div class="flex-1 p-6 bg-white ml-64">
             <div class="flex justify-end items-center space-x-4 bg-transparent p-4">
                 <div class="relative">
                     <button class="flex items-center space-x-2" onclick="toggleDropdown('userDropdown')">

@@ -6,38 +6,38 @@
 
         <!-- New Section for the 4 Boxes -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            <!-- Kotak 1: Pending Reservations -->
-            <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/reservasi/manage'); ?>'">
-                <h3 class="text-xl font-bold mb-4">Reservasi Pending</h3>
-                <div class="flex justify-between">
-                    <p class="text-3xl font-bold" id="pendingReservations">0</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                    </svg>
-                </div>
-            </div>
-            
-            <!-- Kotak 2: Total Collections -->
-            <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/koleksi/manage'); ?>'">
-                <h3 class="text-xl font-bold mb-4">Total Koleksi</h3>
-                <div class="flex justify-between">
-                    <p class="text-3xl font-bold" id="totalCollections">0</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
-                    </svg>
-                </div>
-            </div>
-            
-            <!-- Kotak 3: Upcoming Events -->
-            <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/event/manage'); ?>'">
-                <h3 class="text-xl font-bold mb-4">Events Berlangsung</h3>
-                <div class="flex justify-between">
-                    <p class="text-3xl font-bold" id="upcomingEvents">0</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
-                    </svg>
-                </div>
-            </div>
+    <!-- Kotak 1: Pending Reservations -->
+    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/reservasi/manage'); ?>'">
+        <h3 class="text-xl font-bold mb-4">Reservasi Pending</h3>
+        <div class="flex justify-between">
+            <p class="text-3xl font-bold"><?= $pendingReservations ?></p>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008Z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Kotak 2: Total Collections -->
+    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/koleksi/manage'); ?>'">
+        <h3 class="text-xl font-bold mb-4">Total Koleksi</h3>
+        <div class="flex justify-between">
+            <p class="text-3xl font-bold"><?= $totalCollections ?></p>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Kotak 3: Upcoming Events -->
+    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/event/manage'); ?>'">
+        <h3 class="text-xl font-bold mb-4">Events Berlangsung</h3>
+        <div class="flex justify-between">
+            <p class="text-3xl font-bold"><?= $upcomingEvents ?></p>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
+            </svg>
+        </div>
+    </div>
 
 
             <!-- Kotak 4: Digital Clock -->
@@ -94,7 +94,7 @@
 
     </div>
     <div class="bg-white shadow-lg rounded-lg p-6">
-    <h3 class="text-xl font-bold mb-4">Feedback</h3>
+    <h3 class="text-xl font-bold mb-4">Saran</h3>
     <div class="space-y-4">
         <?php 
         use App\Models\SaranModel;
@@ -180,28 +180,7 @@ function updateTotals(data) {
     document.getElementById('totalVisitors').textContent = totalVisitors;
 }
 
-// Fungsi untuk mengambil data dari backend
-function fetchDashboardData() {
-    fetch("<?= site_url('superadmin/dashboard/getDashboardData'); ?>")
-        .then(response => response.json())
-        .then(data => {
-            // Update Kotak 1: Pending Reservations
-            document.getElementById('pendingReservations').textContent = data.pendingReservations;
 
-            // Update Kotak 2: Total Collections
-            document.getElementById('totalCollections').textContent = data.totalCollections;
-
-            // Update Kotak 3: Upcoming Events
-            document.getElementById('upcomingEvents').textContent = data.upcomingEvents;
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-// Memperbarui data setiap 10 detik
-setInterval(fetchDashboardData, 10000); // Interval dalam milidetik
-
-// Pertama kali load data ketika halaman dimuat
-fetchDashboardData();
 
 document.addEventListener('DOMContentLoaded', function () {
     const monthlyChartCtx = document.getElementById('monthlyChart').getContext('2d');
@@ -213,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const monthlyChart = new Chart(monthlyChartCtx, {
     type: 'line',
     data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
         datasets: [
             {
                 label: 'Laki-laki',
