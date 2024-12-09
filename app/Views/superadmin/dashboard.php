@@ -60,21 +60,16 @@
     <div class="flex flex-col sm:flex-row gap-6">
         <!-- Grafik Garis -->
         <div class="bg-white shadow-lg rounded-lg p-6 flex-1">
-            <h2 class="text-xl font-bold mb-4">Statistik Pengunjung per Bulan</h2>
+            <h2 class="text-xl font-bold mb-4">Grafik Pengunjung Perbulan Dalam Tahun Ini</h2>
             <div class="flex justify-between mb-4">
-                <select id="yearSelector" class="border px-3 py-2 rounded">
-                    <!-- Tahun akan muncul jika ada datanya -->
-                    <?php if (!empty($years)): ?>
-                        <?php foreach ($years as $year): ?>
-                            <option value="<?= $year ?>" <?= $year == $year ? 'selected' : '' ?>><?= $year ?></option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+            <p id="noDataMessage" class="text-gray-500 mt-2" style="display: <?= empty($years) ? 'block' : 'none'; ?>">
+                Tidak ada data untuk ditampilkan.
+            </p>
                 
                 <div class="flex items-center">
-    <p><span class= "font-bold" style="color: rgba(54, 162, 235, 1);">Laki-laki:</span> <strong id="totalMale"></strong></p>
-    <p class="ml-4 font-bold"><span style="color: rgba(255, 99, 132, 1);">Perempuan:</span> <strong id="totalFemale"></strong></p>
-    <p class="ml-4 font-bold">Total: <strong id="totalVisitors"></strong></p>
+    <p><span class="ml-12 font-bold" style="color: rgba(54, 162, 235, 1);">Laki-laki:</span> <strong id="totalMale"></strong></p>
+    <p><span class="ml-12 font-bold" style="color: rgba(255, 99, 132, 1);">Perempuan:</span> <strong id="totalFemale"></strong></p>
+    <p><span class="ml-12 font-bold">Total:</span> <strong id="totalVisitors"></strong></p>
 </div>
 
             </div>
@@ -83,7 +78,7 @@
 
 <!-- Grafik Lingkaran -->
 <div class="bg-white shadow-lg rounded-lg p-6 mt-6 sm:mt-0 w-full sm:w-[350px]">
-    <h2 class="text-xl font-bold mb-4">Distribusi Pengunjung Hari Ini</h2>
+    <h2 class="text-xl font-bold mb-4">Grafik Pengunjung Hari Ini</h2>
     <canvas id="dailyChart" width="300" height="300"></canvas>  <!-- Grafik lingkaran lebih kecil -->
 
     <!-- Menampilkan jumlah dan persentase di bawah grafik -->
@@ -160,6 +155,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    
 // Jam Digital
 function updateClock() {
     const now = new Date();
@@ -172,6 +168,17 @@ setInterval(updateClock, 1000);
 
 // Inisialisasi dengan memanggil fungsi saat halaman dimuat
 updateClock();
+
+// Fungsi untuk menghitung total pengunjung (Laki-laki, Perempuan, Total)
+function updateTotals(data) {
+    const totalMale = data.laki.reduce((sum, value) => sum + value, 0);
+    const totalFemale = data.perempuan.reduce((sum, value) => sum + value, 0);
+    const totalVisitors = totalMale + totalFemale;
+
+    document.getElementById('totalMale').textContent = totalMale;
+    document.getElementById('totalFemale').textContent = totalFemale;
+    document.getElementById('totalVisitors').textContent = totalVisitors;
+}
 
 // Fungsi untuk mengambil data dari backend
 function fetchDashboardData() {
@@ -190,108 +197,64 @@ function fetchDashboardData() {
         .catch(error => console.error('Error:', error));
 }
 
-
 // Memperbarui data setiap 10 detik
-setInterval(fetchDashboardData, 10000);  // Interval dalam milidetik
+setInterval(fetchDashboardData, 10000); // Interval dalam milidetik
 
 // Pertama kali load data ketika halaman dimuat
 fetchDashboardData();
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const monthlyChartCtx = document.getElementById('monthlyChart').getContext('2d');
-    const dailyChartCtx = document.getElementById('dailyChart').getContext('2d');
 
-    // Data yang dikirim dari backend
-    const dataBulanan = <?= json_encode($dataBulanan); ?>;
-    const dataHarian = <?= json_encode($dataHarian); ?>;
+    // Data awal dari backend (tahun default)
+    const initialData = <?= json_encode($dataBulanan); ?>;
 
-    // Menampilkan total Laki-laki, Perempuan, dan Total di Grafik Garis
-    const totalLaki = dataBulanan.laki.reduce((a, b) => a + b, 0);
-    const totalPerempuan = dataBulanan.perempuan.reduce((a, b) => a + b, 0);
-    document.getElementById('totalMale').textContent = totalLaki;
-    document.getElementById('totalFemale').textContent = totalPerempuan;
-    document.getElementById('totalVisitors').textContent = totalLaki + totalPerempuan;
-
-    // Data Grafik Bulanan
-    const monthlyData = {
+    // Inisialisasi chart bulanan
+    const monthlyChart = new Chart(monthlyChartCtx, {
+    type: 'line',
+    data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
             {
                 label: 'Laki-laki',
-                data: dataBulanan.laki,
+                data: initialData.laki,
                 backgroundColor: 'rgba(54, 162, 235, 0.3)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
                 fill: true,
-                pointStyle: 'circle',
             },
             {
                 label: 'Perempuan',
-                data: dataBulanan.perempuan,
+                data: initialData.perempuan,
                 backgroundColor: 'rgba(255, 99, 132, 0.3)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
                 fill: true,
-                pointStyle: 'circle',
             },
         ],
-    };
-
-    // Grafik Bulanan
-    const monthlyChart = new Chart(monthlyChartCtx, {
-        type: 'line',
-        data: monthlyData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: true, // Menjaga rasio grafik tetap stabil
-            hover: {
-                mode: 'index',
-                intersect: false,
-                animationDuration: 0,
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    enabled: true,
-                    position: 'nearest',
-                    callbacks: {
-                        title: function(tooltipItem) {
-                            return `${tooltipItem[0].label}`;
-                        },
-                        label: function(tooltipItem) {
-                            const maleData = tooltipItem.datasetIndex === 0 ? tooltipItem.raw : 0;
-                            const femaleData = tooltipItem.datasetIndex === 1 ? tooltipItem.raw : 0;
-                            return `${tooltipItem.datasetIndex === 0 ? 'Laki-laki' : 'Perempuan'}: ${maleData + femaleData}`;
-                        },
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    title: { display: true, text: 'Bulan' },
-                    grid: { display: false },
-                    ticks: {
-                        autoSkip: true,
-                        maxRotation: 45,
-                        minRotation: 45,
-                    },
-                },
-                y: {
-                    title: { display: true, text: 'Jumlah Pengunjung' },
-                    beginAtZero: true,
-                    ticks: { stepSize: 10 },
-                    grid: { drawBorder: false },
-                },
-            },
-            elements: {
-                line: { tension: 0.4 },
-                point: { radius: 4 },
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: { title: { display: true, text: 'Bulan' } },
+            y: { title: { display: true, text: 'Jumlah Pengunjung' }, beginAtZero: true },
+        },
+        plugins: {
+            legend: {
+                display: false, // Menonaktifkan legend
             },
         },
-    });
+    },
+});
+
+// Panggil fungsi updateTotals dengan data awal
+updateTotals(initialData);
+
 
     // Grafik Harian (Lingkaran)
+    const dailyChartCtx = document.getElementById('dailyChart').getContext('2d');
+    const dataHarian = <?= json_encode($dataHarian); ?>;
+
     const dailyChart = new Chart(dailyChartCtx, {
         type: 'doughnut',
         data: {
@@ -348,21 +311,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fetch data ketika tahun diganti
     const yearSelector = document.getElementById('yearSelector');
-    yearSelector.addEventListener('change', function () {
-        const selectedYear = yearSelector.value;
 
-        fetch(`<?= site_url('superadmin/statistik/bulanan') ?>?year=${selectedYear}`)
-            .then(response => response.json())
-            .then(data => {
-                monthlyChart.data.datasets[0].data = data.laki;
-                monthlyChart.data.datasets[1].data = data.perempuan;
-                monthlyChart.update();
-                document.getElementById('totalMale').textContent = data.laki.reduce((a, b) => a + b, 0);
-                document.getElementById('totalFemale').textContent = data.perempuan.reduce((a, b) => a + b, 0);
-                document.getElementById('totalVisitors').textContent = document.getElementById('totalMale').textContent + document.getElementById('totalFemale').textContent;
-            })
-            .catch(error => console.error('Error:', error));
-    });
+    yearSelector.addEventListener('change', function () {
+    const selectedYear = yearSelector.value;
+
+    fetch(`<?= site_url('superadmin/statistikBulanan') ?>?year=${selectedYear}`)
+        .then(response => response.json())
+        .then(data => {
+            // Update grafik bulanan
+            monthlyChart.data.datasets[0].data = data.laki;
+            monthlyChart.data.datasets[1].data = data.perempuan;
+
+            // Update total pengunjung
+            updateTotals(data);
+
+            // Render ulang grafik
+            monthlyChart.update();
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+});
+
+
+
+    
 });
 
 </script>

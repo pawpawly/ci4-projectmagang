@@ -64,23 +64,23 @@ class SuperAdminController extends Controller
     $year = $this->request->getGet('year') ?? date('Y');
     $date = $this->request->getGet('date') ?? date('Y-m-d');
 
+    // Ambil tahun yang ada pada data
+    $yearsQuery = $this->db->query("SELECT DISTINCT YEAR(TGLKUNJUNGAN_TAMU) AS tahun FROM bukutamu");
+    $years = array_column($yearsQuery->getResultArray(), 'tahun');
+    sort($years);
+
     // Statistik Bulanan
     $resultBulanan = $this->db->query("
         SELECT 
             MONTH(TGLKUNJUNGAN_TAMU) AS bulan, 
             SUM(JKL_TAMU) AS laki, 
-            SUM(JKP_TAMU) AS perempuan, 
-            YEAR(TGLKUNJUNGAN_TAMU) AS tahun
+            SUM(JKP_TAMU) AS perempuan
         FROM bukutamu 
-        WHERE YEAR(TGLKUNJUNGAN_TAMU) IN (SELECT DISTINCT YEAR(TGLKUNJUNGAN_TAMU) FROM bukutamu)
-        GROUP BY YEAR(TGLKUNJUNGAN_TAMU), MONTH(TGLKUNJUNGAN_TAMU)
-    ")->getResultArray();
+        WHERE YEAR(TGLKUNJUNGAN_TAMU) = ?
+        GROUP BY MONTH(TGLKUNJUNGAN_TAMU)
+    ", [$year])->getResultArray();
 
-    // Ambil tahun yang ada pada data
-    $years = array_unique(array_column($resultBulanan, 'tahun'));
-    sort($years);
-
-    // Statistik Bulanan
+    // Inisialisasi data bulanan
     $dataBulanan = [
         'laki' => array_fill(0, 12, 0),
         'perempuan' => array_fill(0, 12, 0),
@@ -111,9 +111,40 @@ class SuperAdminController extends Controller
         'dataHarian' => $dataHarian,
         'year' => $year,
         'date' => $date,
-        'years' => $years,  // Mengirimkan data tahun yang tersedia ke view
+        'years' => $years, // Tahun yang tersedia untuk dropdown
     ]);
 }
+
+public function statistikBulanan()
+{
+    $year = $this->request->getGet('year') ?? date('Y');
+
+    // Query data
+    $resultBulanan = $this->db->query("
+        SELECT 
+            MONTH(TGLKUNJUNGAN_TAMU) AS bulan, 
+            SUM(JKL_TAMU) AS laki, 
+            SUM(JKP_TAMU) AS perempuan
+        FROM bukutamu 
+        WHERE YEAR(TGLKUNJUNGAN_TAMU) = ?
+        GROUP BY MONTH(TGLKUNJUNGAN_TAMU)
+    ", [$year])->getResultArray();
+
+    // Inisialisasi data default
+    $dataBulanan = [
+        'laki' => array_fill(0, 12, 0),
+        'perempuan' => array_fill(0, 12, 0),
+    ];
+
+    foreach ($resultBulanan as $row) {
+        $dataBulanan['laki'][$row['bulan'] - 1] = (int) $row['laki'];
+        $dataBulanan['perempuan'][$row['bulan'] - 1] = (int) $row['perempuan'];
+    }
+
+    return $this->response->setJSON($dataBulanan);
+}
+
+
 
 public function getDashboardCounts()
 {
