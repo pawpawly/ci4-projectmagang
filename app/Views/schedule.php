@@ -9,7 +9,7 @@
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
     <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center">JADWAL</h1>
+        <h1 class="text-5xl font-bold text-white text-center">JADWAL & RESERVASI</h1>
     </div>
 </div>
 
@@ -102,7 +102,7 @@
                 <!-- Jumlah Anggota -->
                 <div class="mb-4">
     <label class="block text-sm font-medium text-gray-700">Jumlah Anggota</label>
-    <input type="text" maxlength="3" name="jmlpengunjung_reservasi"
+    <input type="text" maxlength="4" name="jmlpengunjung_reservasi"
            placeholder="Masukkan Jumlah Anggota"
            class="w-full border rounded px-3 py-2"
            oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
@@ -325,11 +325,11 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Set waktu ke awal hari untuk perbandingan
 
-        if (selectedDate < today) {
+        if (selectedDate <= today) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Anda tidak dapat memilih tanggal dari masa lalu!',
+                text: 'Tidak dapat memilih tanggal hari ini atau sebelumnya!',
             });
             return; 
         }

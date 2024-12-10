@@ -44,7 +44,7 @@ class BukuTamuController extends Controller
         $validation->setRules([
             'NAMA_TAMU'    => 'required',
             'ALAMAT_TAMU'  => 'required',
-            'NOHP_TAMU'    => 'required|numeric|min_length[10]',
+            'NOHP_TAMU'    => 'required',
             'JENIS_KELAMIN' => 'required',
         ]);
     
@@ -115,9 +115,9 @@ class BukuTamuController extends Controller
     $validation->setRules([
         'NAMA_TAMU'    => 'required',
         'ALAMAT_TAMU'  => 'required',
-        'NOHP_TAMU'    => 'required|numeric|min_length[10]',
-        'JKL_TAMU'     => 'required|numeric', // Male count field
-        'JKP_TAMU'     => 'required|numeric', // Female count field
+        'NOHP_TAMU'    => 'required',
+        'JKL_TAMU'     => 'required',
+        'JKP_TAMU'     => 'required',
     ]);
 
     if (!$validation->withRequest($this->request)->run()) {
