@@ -37,25 +37,16 @@
             <?php endfor; ?>
         </select>
 
-        <!-- Filter Tahun -->
-        <select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-            <option value="">Semua Tahun</option>
-            <?php
-                // Ambil tahun unik dari data berita
-                $uniqueYears = array_unique(array_map(function($item) {
-                    return date('Y', strtotime($item['TANGGAL_BERITA'])); // Mengambil tahun dari TANGGAL_BERITA
-                }, $berita));
-            
-                // Sort tahun secara ascending
-                sort($uniqueYears);
-            
-                // Menampilkan pilihan tahun pada dropdown
-                foreach ($uniqueYears as $y): ?>
-                    <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>>
-                        <?= $y ?>
-                    </option>
-            <?php endforeach; ?>
-        </select>
+<!-- Filter Tahun -->
+<select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+    <option value="">Semua Tahun</option>
+    <?php foreach ($yearsRange as $yr): ?>
+        <option value="<?= $yr ?>" <?= $year == $yr ? 'selected' : '' ?>>
+            <?= $yr ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
 
 
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
@@ -103,6 +94,15 @@
             </tbody>
         </table>
     </div>
+    <?php
+echo view('pagers/admin_pagination', [
+    'page' => $page,
+    'totalPages' => $totalPages,
+    'baseUrl' => site_url('superadmin/berita/manage'),
+    'queryParams' => '&search=' . ($search ?? '') . '&month=' . ($month ?? '') . '&year=' . ($year ?? '')
+]);
+?>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

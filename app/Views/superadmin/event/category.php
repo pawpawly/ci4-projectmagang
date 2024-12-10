@@ -48,6 +48,15 @@
             </tbody>
         </table>
     </div>
+    <?php
+echo view('pagers/admin_pagination', [
+    'page' => $page, // Halaman saat ini
+    'totalPages' => $totalPages, // Total halaman
+    'baseUrl' => site_url('superadmin/event/category'), // Base URL untuk pagination
+    'queryParams' => '&search=' . ($search ?? '') // Query string tambahan untuk pencarian
+]);
+?>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -122,6 +122,16 @@
             </tbody>
         </table>
     </div>
+    <?php
+echo view('pagers/admin_pagination', [
+    'page' => $page, // Halaman saat ini
+    'totalPages' => $totalPages, // Total halaman
+    'baseUrl' => site_url('superadmin/reservasi/manage'), // Base URL untuk pagination
+    'queryParams' => '&search=' . ($search ?? '') . '&bulan=' . ($bulan ?? '') . '&tahun=' . ($tahun ?? '') // Query string tambahan
+]);
+?>
+
+
 </div>
 
 <!-- Tambahkan SweetAlert2 -->

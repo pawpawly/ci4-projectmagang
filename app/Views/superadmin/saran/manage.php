@@ -37,21 +37,15 @@
             </select>
                 
             <!-- Filter Tahun -->
-            <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                <option value="">Semua Tahun</option>
-                <?php
-                    // Ambil tahun unik dari data saran
-                    $uniqueYears = array_unique(array_map(function($saran) {
-                        return date('Y', strtotime($saran['TANGGAL_SARAN'])); // Ambil tahun dari TANGGAL_SARAN
-                    }, $saranList));
-                
-                    // Sort tahun secara ascending
-                    sort($uniqueYears);
-                
-                    foreach ($uniqueYears as $y): ?>
-                        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>><?= $y ?></option>
-                <?php endforeach; ?>
-            </select>
+            <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+    <option value="">Semua Tahun</option>
+    <?php foreach ($yearsRange as $year): ?>
+        <option value="<?= $year ?>" <?= $tahun == $year ? 'selected' : '' ?>>
+            <?= $year ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
                     
             <!-- Tombol Cari -->
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
@@ -93,6 +87,14 @@
             </tbody>
         </table>
     </div>
+<?php
+echo view('pagers/admin_pagination', [
+    'page' => $page, // Halaman saat ini
+    'totalPages' => $totalPages, // Total halaman
+    'baseUrl' => site_url('superadmin/saran/manage'), // Base URL untuk pagination
+    'queryParams' => '&search=' . ($search ?? '') . '&tipe_tamu=' . ($tipeTamu ?? '') . '&bulan=' . ($bulan ?? '') . '&tahun=' . ($tahun ?? '') // Query string tambahan
+]);
+?>
 </div>
 
 <!-- Modal Detail Saran -->

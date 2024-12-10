@@ -4,7 +4,6 @@
 
 <?php helper('month'); ?>
 
-
 <div class="bg-white min-h-screen">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Manajemen Buku Tamu</h1>
@@ -23,15 +22,15 @@
                 <!-- Input Pencarian -->
                 <div class="relative">
                     <input type="text" name="search" placeholder="Cari Nama Tamu..." autocomplete="off" 
-                           class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
-                           id="searchInput">
-                    <!-- Tombol X untuk menghapus input -->
-                    <button type="button" id="clearButton" onclick="clearSearch()" 
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-                            style="display: none;">
-                        ✕
-                    </button>
-                </div>
+                    class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    value="<?= esc($search) ?>" id="searchInput" oninput="toggleClearButton()">
+                <!-- Tombol X untuk menghapus input -->
+                <button type="button" id="clearButton" onclick="clearSearch()" 
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                        style="display: none;">
+                    ✕
+                </button>
+            </div>
 
                 <!-- Filter Tipe Tamu -->
                 <select name="tipe_tamu" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
@@ -50,25 +49,16 @@
                     <?php endfor; ?>
                 </select>
 
-                <!-- Filter Tahun -->
-                <select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-                    <option value="">Semua Tahun</option>
-                    <?php 
-                    // Ambil tahun unik dari data buku tamu
-                    $uniqueYears = array_unique(array_map(function($tamu) {
-                        return date('Y', strtotime($tamu['TGLKUNJUNGAN_TAMU'])); // Menampilkan tahun dari TGLKUNJUNGAN_TAMU
-                    }, $bukutamu));
+<!-- Filter Tahun -->
+<select name="tahun" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+    <option value="">Semua Tahun</option>
+    <?php foreach ($uniqueYears as $y): ?>
+        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>>
+            <?= $y ?>
+        </option>
+    <?php endforeach; ?>
+</select>
 
-                    // Sort tahun secara ascending
-                    sort($uniqueYears);
-                
-                    // Menampilkan pilihan tahun pada dropdown
-                    foreach ($uniqueYears as $y): ?>
-                        <option value="<?= $y ?>" <?= $tahun == $y ? 'selected' : '' ?>>
-                            <?= $y ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
 
                 <!-- Tombol Cari -->
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
@@ -118,31 +108,36 @@
                 </tbody>
             </table>
         </div>
+        <!-- Panggil Komponen Pagination -->
+<?php
+echo view('pagers/admin_pagination', [
+    'page' => $page, // Halaman saat ini
+    'totalPages' => $totalPages, // Total halaman
+    'baseUrl' => site_url('superadmin/bukutamu/manage'), // Base URL untuk pagination
+    'queryParams' => '&search=' . ($search ?? '') . '&tipe_tamu=' . ($tipeTamu ?? '') . '&bulan=' . ($bulan ?? '') . '&tahun=' . ($tahun ?? '') // Query string tambahan
+]);
+?>
     </div>
 </div>
+
 
 <!-- Tambahkan SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Toggle Clear Button (X) for Search Input
-    function toggleClearButton() {
-        const searchInput = document.getElementById('searchInput');
-        const clearButton = document.getElementById('clearButton');
-        clearButton.style.display = searchInput.value ? 'inline' : 'none';
-    }
+function toggleClearButton() {
+    const searchInput = document.getElementById('searchInput');
+    const clearButton = document.getElementById('clearButton');
+    clearButton.style.display = searchInput.value ? 'inline' : 'none';
+}
 
-    // Kosongkan input pencarian saat tombol X diklik
-    function clearSearch() {
-        const searchInput = document.getElementById('searchInput');
-        searchInput.value = '';
-        toggleClearButton();
-        searchInput.focus();
-    }
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    toggleClearButton();
+    document.getElementById('searchInput').focus();
+}
 
-    // Panggil toggleClearButton saat halaman dimuat dan saat ada input pada kotak pencarian
-    document.addEventListener("DOMContentLoaded", toggleClearButton);
-    document.getElementById('searchInput').addEventListener('input', toggleClearButton);
+document.addEventListener("DOMContentLoaded", toggleClearButton);
 
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
@@ -203,6 +198,7 @@
             console.error('Error:', error);
         });
     }
+
 </script>
 
 <?= $this->endSection() ?>

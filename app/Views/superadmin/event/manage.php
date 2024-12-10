@@ -47,19 +47,17 @@
             <?php endfor; ?>
         </select>
 
-        <!-- Filter Tahun -->
-        <select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-            <option value="">Semua Tahun</option>
-            <?php 
-                $uniqueYears = array_unique(array_map(function($event) {
-                    return date('Y', strtotime($event['TANGGAL_EVENT']));
-                }, $events));
-            
-                sort($uniqueYears);
-                foreach ($uniqueYears as $y): ?>
-                    <option value="<?= $y ?>" <?= ($year == $y) ? 'selected' : '' ?>><?= $y ?></option>
-            <?php endforeach; ?>
-        </select>
+<!-- Filter Tahun -->
+<select name="year" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+    <option value="">Semua Tahun</option>
+    <?php foreach ($yearsRange as $availableYear): ?>
+        <option value="<?= $availableYear ?>" <?= $availableYear == $year ? 'selected' : '' ?>>
+            <?= $availableYear ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
+
 
         <!-- Search Button -->
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
@@ -116,6 +114,14 @@
 
 
         </table>
+        <?php
+echo view('pagers/admin_pagination', [
+    'page' => $page,
+    'totalPages' => $totalPages,
+    'baseUrl' => site_url('superadmin/event/manage'),
+    'queryParams' => '&search=' . ($search ?? '') . '&category=' . ($category ?? '') . '&month=' . ($month ?? '') . '&year=' . ($year ?? '')
+]);
+?>
     </div>
 </div>
 
