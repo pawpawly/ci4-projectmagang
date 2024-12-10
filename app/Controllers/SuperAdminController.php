@@ -125,11 +125,42 @@ class SuperAdminController extends Controller
 
   
     
-    public function userManage()
-    {
-        $users = $this->userModel->findAll();
-        return view('superadmin/user/manage', ['users' => $users]);
+public function userManage()
+{
+    $search = $this->request->getGet('search'); // Filter pencarian (opsional)
+    $perPage = 10; // Jumlah data per halaman
+    $page = $this->request->getGet('page') ?? 1; // Halaman saat ini, default halaman 1
+
+    $userQuery = $this->userModel;
+
+    if (!empty($search)) {
+        $userQuery->like('USERNAME', $search); // Filter berdasarkan username
     }
+
+    $totalRecords = $userQuery->countAllResults(false); // Total data (tanpa reset query)
+    $totalPages = ceil($totalRecords / $perPage); // Total halaman
+    $userQuery->orderBy('USERNAME', 'ASC'); // Urutkan berdasarkan username
+    $users = $userQuery->findAll($perPage, ($page - 1) * $perPage); // Ambil data dengan offset
+
+    // Base URL untuk pagination
+    $baseUrl = site_url('superadmin/user/manage');
+
+    // Query params untuk pagination
+    $queryParams = [
+        'search' => $search,
+    ];
+
+    return view('superadmin/user/manage', [
+        'users' => $users,
+        'search' => $search,
+        'page' => (int)$page,
+        'totalPages' => $totalPages,
+        'baseUrl' => $baseUrl,
+        'queryParams' => $queryParams, // Kirim query params ke view
+    ]);
+}
+
+
 
     public function addUserForm()
     {
@@ -296,14 +327,17 @@ public function deleteUser($username)
     
     public function beritaManage()
     {
-        // Mengambil filter dari request
+        // Ambil parameter filter dari request
         $search = $this->request->getGet('search');
         $month = $this->request->getGet('month');
         $year = $this->request->getGet('year');
-        
-        // Query untuk data berita
+    
+        $perPage = 5; // Jumlah data per halaman
+        $page = $this->request->getGet('page') ?? 1;
+    
+        // Query utama untuk berita dengan filter
         $beritaQuery = $this->beritaModel->select('berita.*');
-        
+    
         if (!empty($search)) {
             $beritaQuery->like('NAMA_BERITA', $search);
         }
@@ -311,30 +345,40 @@ public function deleteUser($username)
         if (!empty($month)) {
             $beritaQuery->where('MONTH(TANGGAL_BERITA)', $month);
         }
-        
+    
         if (!empty($year)) {
             $beritaQuery->where('YEAR(TANGGAL_BERITA)', $year);
         }
     
-        // Ambil data berita setelah filter
-        $berita = $beritaQuery->findAll();
+        // Ambil data dengan paging
+        $totalRecords = $beritaQuery->countAllResults(false); // Hitung total data dengan filter
+        $totalPages = ceil($totalRecords / $perPage); // Total halaman
+        $beritaQuery->orderBy('TANGGAL_BERITA', 'DESC');
+        $berita = $beritaQuery->findAll($perPage, ($page - 1) * $perPage);
     
-        // Ambil tahun unik dari data berita
-        $yearsRange = array_unique(array_map(function($item) {
-            return date('Y', strtotime($item['TANGGAL_BERITA']));
-        }, $berita));
-        
-        // Sort tahun secara ascending
-        sort($yearsRange);
+        // Ambil semua tahun unik dari database (terlepas dari paging dan filter)
+        $allYears = $this->beritaModel
+            ->select("DISTINCT YEAR(TANGGAL_BERITA) AS tahun", false)
+            ->orderBy("tahun", "ASC")
+            ->findAll();
+    
+        $uniqueYears = array_map(function ($item) {
+            return $item['tahun'];
+        }, $allYears);
     
         return view('superadmin/berita/manage', [
             'berita' => $berita,
             'search' => $search,
             'month' => $month,
             'year' => $year,
-            'yearsRange' => $yearsRange
+            'yearsRange' => $uniqueYears, // Tahun diambil dari semua data di database
+            'page' => (int)$page,
+            'totalPages' => $totalPages
         ]);
     }
+    
+
+    
     
     
     public function detailBerita($id)
@@ -548,9 +592,39 @@ public function deleteUser($username)
 
     public function eventCategory()
     {
-        $categories = $this->kategoriEventModel->findAll();
-        return view('superadmin/event/category', ['categories' => $categories]);
+        $search = $this->request->getGet('search'); // Filter pencarian (opsional)
+        $perPage = 10; // Jumlah data per halaman
+        $page = $this->request->getGet('page') ?? 1; // Halaman saat ini, default halaman 1
+    
+        $categoryQuery = $this->kategoriEventModel;
+    
+        if (!empty($search)) {
+            $categoryQuery->like('KATEGORI_KEVENT', $search); // Filter berdasarkan nama kategori
+        }
+    
+        $totalRecords = $categoryQuery->countAllResults(false); // Total data tanpa reset query
+        $totalPages = ceil($totalRecords / $perPage); // Total halaman
+        $categoryQuery->orderBy('id_kevent', 'ASC'); // Urutkan berdasarkan id_kvent
+        $categories = $categoryQuery->findAll($perPage, ($page - 1) * $perPage); // Ambil data dengan offset
+    
+        // Base URL untuk pagination
+        $baseUrl = site_url('superadmin/event/category');
+    
+        // Query params untuk pagination
+        $queryParams = [
+            'search' => $search,
+        ];
+    
+        return view('superadmin/event/category', [
+            'categories' => $categories,
+            'search' => $search,
+            'page' => (int)$page,
+            'totalPages' => $totalPages,
+            'baseUrl' => $baseUrl,
+            'queryParams' => $queryParams, // Kirim query params ke view
+        ]);
     }
+    
 
     public function addCategory()
     {
@@ -679,21 +753,19 @@ public function deleteUser($username)
 
     public function eventManage()
     {
-        // Mengambil filter dari request
+        // Ambil filter dari request
         $search = $this->request->getGet('search');
         $category = $this->request->getGet('category');
         $month = $this->request->getGet('month');
         $year = $this->request->getGet('year');
-        
-        // Menghitung tahun saat ini dan rentang tahun
-        $currentYear = date('Y');
-        $yearsRange = range($currentYear - 10, $currentYear); // Menampilkan 10 tahun terakhir
-        
+        $perPage = 5;
+        $page = $this->request->getGet('page') ?? 1;
+    
         // Query untuk data event
         $eventsQuery = $this->eventModel
             ->select('event.*, kategori_event.KATEGORI_KEVENT as NAMA_KATEGORI')
             ->join('kategori_event', 'kategori_event.ID_KEVENT = event.ID_KEVENT', 'left');
-        
+    
         if (!empty($search)) {
             $eventsQuery->like('NAMA_EVENT', $search);
         }
@@ -707,8 +779,20 @@ public function deleteUser($username)
             $eventsQuery->where('YEAR(TANGGAL_EVENT)', $year);
         }
     
-        // Ambil data event
-        $events = $eventsQuery->findAll();
+        // Pagination
+        $totalRecords = $eventsQuery->countAllResults(false);
+        $totalPages = ceil($totalRecords / $perPage);
+        $events = $eventsQuery->orderBy('TANGGAL_EVENT', 'DESC')->findAll($perPage, ($page - 1) * $perPage);
+    
+        // Ambil semua tahun unik dari database
+        $allYears = $this->eventModel
+            ->select("DISTINCT YEAR(TANGGAL_EVENT) AS tahun", false)
+            ->orderBy("tahun", "ASC")
+            ->findAll();
+    
+        $yearsRange = array_map(function ($item) {
+            return $item['tahun'];
+        }, $allYears);
     
         // Ambil kategori event untuk filter kategori
         $categories = $this->kategoriEventModel->findAll();
@@ -721,9 +805,13 @@ public function deleteUser($username)
             'categories' => $categories,
             'month' => $month,
             'year' => $year,
-            'yearsRange' => $yearsRange
+            'yearsRange' => $yearsRange, // Semua tahun dari database
+            'page' => (int)$page,
+            'totalPages' => $totalPages
         ]);
     }
+    
+    
     
     
     public function eventDetail($id)
@@ -895,12 +983,34 @@ public function deleteUser($username)
 
     public function kategoriKoleksi()
     {
-        $categories = $this->kategoriKoleksiModel->findAll();
-
+        // Konfigurasi pagination
+        $perPage = 10; // Jumlah item per halaman
+        $page = $this->request->getGet('page') ?? 1; // Halaman saat ini
+        $search = $this->request->getGet('search'); // Parameter pencarian (opsional)
+    
+        // Query data kategori koleksi dengan pagination
+        $categoriesQuery = $this->kategoriKoleksiModel;
+    
+        if (!empty($search)) {
+            $categoriesQuery->like('nama_kategori', $search); // Sesuaikan dengan nama kolom di tabel
+        }
+    
+        $totalRecords = $categoriesQuery->countAllResults(false); // Total data tanpa reset query builder
+        $categories = $categoriesQuery->orderBy('id_kkoleksi', 'ASC') // Ganti 'id_koleksi' sesuai nama kolom di tabel Anda
+                                       ->findAll($perPage, ($page - 1) * $perPage);
+    
+        $totalPages = ceil($totalRecords / $perPage); // Total halaman
+    
+        // Kirim data ke view
         return view('superadmin/koleksi/category', [
-            'categories' => $categories
+            'categories' => $categories,
+            'page' => (int)$page,
+            'totalPages' => $totalPages,
+            'baseUrl' => site_url('superadmin/koleksi/category'),
+            'queryParams' => '&search=' . ($search ?? '') // Tambahkan query params ke pagination
         ]);
     }
+    
 
     // Menampilkan form tambah kategori koleksi
     public function addKategoriKoleksiForm()
@@ -1057,6 +1167,8 @@ public function koleksiManage()
     // Dapatkan nilai pencarian dan kategori dari request
     $search = $this->request->getGet('search');
     $category = $this->request->getGet('category');
+    $perPage = 5; // Jumlah item per halaman
+    $page = $this->request->getGet('page') ?? 1;
 
     // Query dasar dengan join ke tabel kategori
     $koleksiQuery = $this->koleksiModel
@@ -1073,16 +1185,27 @@ public function koleksiManage()
         $koleksiQuery = $koleksiQuery->where('kategori_koleksi.ID_KKOLEKSI', $category);
     }
 
-    // Ambil hasil query
-    $koleksi = $koleksiQuery->findAll();
+    // Hitung total data dan total halaman
+    $totalRecords = $koleksiQuery->countAllResults(false);
+    $totalPages = ceil($totalRecords / $perPage);
+
+    // Ambil data dengan limit dan offset
+    $koleksi = $koleksiQuery->orderBy('koleksi.NAMA_KOLEKSI', 'ASC')
+                            ->findAll($perPage, ($page - 1) * $perPage);
+
+    // Ambil kategori untuk filter
     $categories = $this->kategoriKoleksiModel->findAll();
 
     return view('superadmin/koleksi/manage', [
         'koleksi' => $koleksi,
         'categories' => $categories,
-        'request' => $this->request
+        'search' => $search,
+        'category' => $category,
+        'page' => (int)$page,
+        'totalPages' => $totalPages,
     ]);
 }
+
 
 public function koleksiDetail($id)
 {
@@ -1278,47 +1401,57 @@ public function deleteKoleksi($id_koleksi)
 
 public function reservationManage()
 {
-    // Ambil parameter filter dari request
     $search = $this->request->getGet('search');
     $status = $this->request->getGet('status');
     $bulan = $this->request->getGet('bulan');
     $tahun = $this->request->getGet('tahun');
-    
-    // Menghitung tahun saat ini dan satu tahun ke depan
-    $currentYear = date('Y');
-    $yearsRange = range($currentYear - 1, $currentYear);
+    $perPage = 10; // Jumlah data per halaman
+    $page = $this->request->getGet('page') ?? 1;
 
-    // Query untuk data reservasi
     $reservasiQuery = $this->reservasiModel;
-    
+
     if ($search) {
         $reservasiQuery->like('NAMA_RESERVASI', $search)
                        ->orLike('INSTANSI_RESERVASI', $search);
     }
+
     if ($status) {
         $reservasiQuery->where('STATUS_RESERVASI', $status);
     }
+
     if ($bulan) {
         $reservasiQuery->where('MONTH(TANGGAL_RESERVASI)', $bulan);
     }
+
     if ($tahun) {
         $reservasiQuery->where('YEAR(TANGGAL_RESERVASI)', $tahun);
     }
 
-    // Ambil data reservasi berdasarkan filter
-    $reservasi = $reservasiQuery->findAll();
+    $totalRecords = $reservasiQuery->countAllResults(false);
+    $totalPages = ceil($totalRecords / $perPage);
+    $reservasiQuery->orderBy('TANGGAL_RESERVASI', 'DESC');
+    $reservasi = $reservasiQuery->findAll($perPage, ($page - 1) * $perPage);
 
-    // Ambil data tahun dan bulan unik dari tabel reservasi
-    $yearsRange = array_unique(array_map(function($reservasiItem) {
-        return date('Y', strtotime($reservasiItem['TANGGAL_RESERVASI']));
-    }, $reservasi));
-    sort($yearsRange);
+    // Ambil semua tahun unik untuk filter dropdown
+    $allYears = $this->reservasiModel
+        ->select("DISTINCT YEAR(TANGGAL_RESERVASI) AS tahun", false)
+        ->orderBy("tahun", "ASC")
+        ->findAll();
 
-    $monthsRange = array_unique(array_map(function($reservasiItem) {
-        return date('n', strtotime($reservasiItem['TANGGAL_RESERVASI']));
-    }, $reservasi));
+    $yearsRange = array_map(function ($item) {
+        return $item['tahun'];
+    }, $allYears);
 
-    // Kirimkan data ke view
+    // Base URL untuk pagination
+    $baseUrl = site_url('superadmin/reservasi/manage');
+
+    // Query params
+    $queryParams = [
+        'search' => $search,
+        'bulan' => $bulan,
+        'tahun' => $tahun,
+    ];
+
     return view('superadmin/reservasi/manage', [
         'reservasi' => $reservasi,
         'search' => $search,
@@ -1326,7 +1459,10 @@ public function reservationManage()
         'bulan' => $bulan,
         'tahun' => $tahun,
         'yearsRange' => $yearsRange,
-        'monthsRange' => $monthsRange
+        'page' => (int)$page,
+        'totalPages' => $totalPages,
+        'baseUrl' => $baseUrl,
+        'queryParams' => $queryParams, // Kirim query params ke view
     ]);
 }
 
@@ -1430,18 +1566,15 @@ public function deleteReservation($id_reservasi)
 
 public function manageBukuTamu()
 {
-    // Mengambil filter dari request
     $search = $this->request->getGet('search');
     $tipeTamu = $this->request->getGet('tipe_tamu');
     $bulan = $this->request->getGet('bulan');
     $tahun = $this->request->getGet('tahun');
-    
-    // Menghitung tahun saat ini
-    $currentYear = date('Y');
+    $perPage = 15;
+    $page = $this->request->getGet('page') ?? 1;
 
-    // Query untuk mengambil semua data buku tamu
     $bukuTamuQuery = $this->bukuTamuModel;
-    
+
     if ($search) {
         $bukuTamuQuery->like('NAMA_TAMU', $search);
     }
@@ -1455,27 +1588,30 @@ public function manageBukuTamu()
         $bukuTamuQuery->where('YEAR(TGLKUNJUNGAN_TAMU)', $tahun);
     }
 
-    $bukutamu = $bukuTamuQuery->findAll();
+    $totalRecords = $bukuTamuQuery->countAllResults(false);
+    $totalPages = ceil($totalRecords / $perPage);
+    $bukuTamuQuery->orderBy('TGLKUNJUNGAN_TAMU', 'DESC');
+    $bukutamu = $bukuTamuQuery->findAll($perPage, ($page - 1) * $perPage);
 
-    // Ambil data tahun dan bulan unik dari tabel buku tamu
-    $yearsRange = array_unique(array_map(function($tamu) {
-        return date('Y', strtotime($tamu['TGLKUNJUNGAN_TAMU']));
-    }, $bukutamu));
-    sort($yearsRange);
+    // Ambil semua tahun unik dari tabel bukutamu
+    $allYears = $this->bukuTamuModel
+        ->select("DISTINCT YEAR(TGLKUNJUNGAN_TAMU) AS tahun", false)
+        ->orderBy("tahun", "ASC")
+        ->findAll();
 
-    $monthsRange = array_unique(array_map(function($tamu) {
-        return date('n', strtotime($tamu['TGLKUNJUNGAN_TAMU']));
-    }, $bukutamu));
+    $uniqueYears = array_map(function ($item) {
+        return $item['tahun'];
+    }, $allYears);
 
-    // Kirimkan data ke view
     return view('superadmin/bukutamu/manage', [
         'bukutamu' => $bukutamu,
         'search' => $search,
         'tipeTamu' => $tipeTamu,
         'bulan' => $bulan,
         'tahun' => $tahun,
-        'yearsRange' => $yearsRange,
-        'monthsRange' => $monthsRange
+        'page' => (int)$page,
+        'totalPages' => $totalPages,
+        'uniqueYears' => $uniqueYears // Kirim semua tahun ke view
     ]);
 }
 
@@ -1569,29 +1705,42 @@ public function form()
 
 public function manageBukuDigital()
 {
-    // Ambil input pencarian dari permintaan GET
+    // Ambil parameter filter dari request
     $search = $this->request->getGet('search');
+    $perPage = 5; // Jumlah data per halaman
+    $page = $this->request->getGet('page') ?? 1;
 
-    // Query dasar untuk mengambil data buku digital
+    // Query untuk data buku digital
     $bukudigitalQuery = $this->bukuDigitalModel;
 
     // Jika ada input pencarian, filter berdasarkan judul dan penulis
     if ($search) {
         $bukudigitalQuery = $bukudigitalQuery
-            ->groupStart() // Mulai grup kondisi pencarian
+            ->groupStart()
             ->like('JUDUL_BUKU', $search)
             ->orLike('PENULIS_BUKU', $search)
-            ->groupEnd(); // Akhiri grup kondisi pencarian
+            ->groupEnd();
     }
 
-    // Dapatkan hasil query
-    $bukudigital = $bukudigitalQuery->findAll();
+    // Hitung total data
+    $totalRecords = $bukudigitalQuery->countAllResults(false);
+
+    // Hitung total halaman
+    $totalPages = ceil($totalRecords / $perPage);
+
+    // Ambil data dengan limit dan offset
+    $bukudigital = $bukudigitalQuery
+        ->orderBy('JUDUL_BUKU', 'ASC') // Urutkan jika diperlukan
+        ->findAll($perPage, ($page - 1) * $perPage);
 
     return view('superadmin/bukudigital/manage', [
         'bukudigital' => $bukudigital,
-        'search' => $search, // Pass search term to view
+        'search' => $search,
+        'page' => (int)$page,
+        'totalPages' => $totalPages
     ]);
 }
+
 
 
 
@@ -1823,14 +1972,14 @@ public function deleteBukuDigital($id_buku)
 
 public function manageSaran()
 {
-    // Mengambil filter dari request
     $search = $this->request->getGet('search');
     $bulan = $this->request->getGet('bulan');
     $tahun = $this->request->getGet('tahun');
-    
-    // Query untuk data saran
+    $perPage = 10; // Jumlah data per halaman
+    $page = $this->request->getGet('page') ?? 1;
+
     $saranQuery = $this->saranModel;
-    
+
     if (!empty($search)) {
         $saranQuery->like('NAMA_SARAN', $search);
     }
@@ -1843,25 +1992,45 @@ public function manageSaran()
         $saranQuery->where('YEAR(TANGGAL_SARAN)', $tahun);
     }
 
-    // Ambil data saran setelah filter
-    $saranList = $saranQuery->findAll();
+    $totalRecords = $saranQuery->countAllResults(false);
+    $totalPages = ceil($totalRecords / $perPage);
+    $saranQuery->orderBy('TANGGAL_SARAN', 'DESC');
+    $saranList = $saranQuery->findAll($perPage, ($page - 1) * $perPage);
 
-    // Ambil tahun unik dari data saran
-    $yearsRange = array_unique(array_map(function($saran) {
-        return date('Y', strtotime($saran['TANGGAL_SARAN']));
-    }, $saranList));
-    
-    // Sort tahun secara ascending
-    sort($yearsRange);
+    // Ambil semua tahun dari database untuk dropdown filter
+    $allYears = $this->saranModel
+        ->select("DISTINCT YEAR(TANGGAL_SARAN) AS tahun", false)
+        ->orderBy("tahun", "ASC")
+        ->findAll();
+
+    $yearsRange = array_map(function ($item) {
+        return $item['tahun'];
+    }, $allYears);
+
+    // Base URL untuk pagination
+    $baseUrl = site_url('superadmin/saran/manage');
+
+    // Build query params
+    $queryParams = [
+        'search' => $search,
+        'bulan' => $bulan,
+        'tahun' => $tahun,
+    ];
 
     return view('superadmin/saran/manage', [
         'saranList' => $saranList,
         'search' => $search,
         'bulan' => $bulan,
         'tahun' => $tahun,
-        'yearsRange' => $yearsRange
+        'yearsRange' => $yearsRange,
+        'page' => (int)$page,
+        'totalPages' => $totalPages,
+        'baseUrl' => $baseUrl,
+        'queryParams' => $queryParams, // Kirim query params ke view
     ]);
 }
+
+
 
 
 // Method to delete a suggestion

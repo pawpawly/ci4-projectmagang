@@ -78,6 +78,14 @@
 </tbody>
 
     </table>
+    <?php
+    echo view('pagers/admin_pagination', [
+        'page' => $page, // Halaman saat ini
+        'totalPages' => $totalPages, // Total halaman
+        'baseUrl' => site_url('superadmin/koleksi/manage'), // URL dasar untuk pagination
+        'queryParams' => '&search=' . ($search ?? '') . '&category=' . ($category ?? '') // Query tambahan
+    ]);
+    ?>
 </div>
 
 

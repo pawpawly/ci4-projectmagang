@@ -94,6 +94,14 @@
                 <?php endif; ?>
             </tbody>
         </table>
+        <?php
+echo view('pagers/admin_pagination', [
+    'page' => $page,
+    'totalPages' => $totalPages,
+    'baseUrl' => site_url('superadmin/bukudigital/manage'),
+    'queryParams' => '&search=' . ($search ?? '')
+]);
+?>
     </div>
 </div>
 
