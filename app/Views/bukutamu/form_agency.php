@@ -11,9 +11,10 @@
             height: 100vh;
             background-image: url('<?= base_url('pict/bglogin.jpg'); ?>');
             background-size: cover;
-            display: flex;
+            display: inline;
             justify-content: center;
             align-items: center;
+            padding: 1px;
         }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
@@ -33,31 +34,41 @@
     <!-- Field Nama Instansi -->
     <div>
         <label for="NAMA_TAMU" class="block text-sm font-medium text-gray-700 mb-1">Nama Instansi</label>
-        <input type="text" id="NAMA_TAMU" name="NAMA_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" required>
+        <input type="text" id="NAMA_TAMU" name="NAMA_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+        placeholder="Masukkan Nama Instansi" required>
     </div>
 
     <!-- Field Alamat -->
     <div>
         <label for="ALAMAT_TAMU" class="block text-sm font-medium text-gray-700 mb-1">Alamat Instansi</label>
-        <input type="text" id="ALAMAT_TAMU" name="ALAMAT_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" required>
+        <input type="text" id="ALAMAT_TAMU" name="ALAMAT_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+        placeholder="Masukkan Alamat Instansi" required>
     </div>
 
-    <!-- Field No WhatsApp -->
     <div>
-        <label for="NOHP_TAMU" class="block text-sm font-medium text-gray-700 mb-1">No WhatsApp</label>
-        <input type="number" id="NOHP_TAMU" name="NOHP_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" required>
-    </div>
+    <label for="NOHP_TAMU" class="block text-sm font-medium text-gray-700 mb-1">No WhatsApp</label>
+    <input 
+        type="number" 
+        id="NOHP_TAMU" 
+        name="NOHP_TAMU" 
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+        placeholder="Masukkan No HP"
+        required
+    >
+</div>
 
     <!-- Field Jumlah Laki-Laki -->
     <div class="mb-4">
         <label for="JKL_TAMU" class="block text-sm font-medium text-gray-700">Jumlah Laki-Laki</label>
-        <input type="number" id="JKL_TAMU" name="JKL_TAMU" class="w-full border rounded px-3 py-2" value="0" required>
+        <input type="number" maxlength="4" id="JKL_TAMU" name="JKL_TAMU" class="w-full border rounded px-3 py-2" value="0" 
+        placeholder="Jumlah Pengunjung Laki-Laki" required>
     </div>
 
     <!-- Field Jumlah Perempuan -->
     <div class="mb-4">
         <label for="JKP_TAMU" class="block text-sm font-medium text-gray-700">Jumlah Perempuan</label>
-        <input type="number" id="JKP_TAMU" name="JKP_TAMU" class="w-full border rounded px-3 py-2" value="0" required>
+        <input type="number" maxlength="4" id="JKP_TAMU" name="JKP_TAMU" class="w-full border rounded px-3 py-2" value="0" 
+        placeholder="Jumlah Pengunjung Perempuan" required>
     </div>
 
     <!-- Field Foto Tamu -->
@@ -78,23 +89,81 @@
 
     <!-- Submit Button -->
     <div>
-        <button type="submit" class="w-full bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Simpan</button>
+        <button type="submit" id="submitButton" class="w-full bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">
+            Simpan
+        </button>
     </div>
-</form>
 
-        </form>
+</form>
+<p class="mt-6 text-right text-sm text-gray-500">
+            <a href="<?= site_url('bukutamu/individual'); ?>" class="text-yellow-500 font-medium hover:underline">&larr; Form Individual</a>
+        </p>
     </div>
 
         <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+            // Ambil elemen input
+            const nohpInput = document.getElementById('NOHP_TAMU');
+            const lakiInput = document.getElementById('JKL_TAMU');
+            const perempuanInput = document.getElementById('JKP_TAMU');
+            const form = document.getElementById('guestbookFormInstansi');
+
+            // Fungsi validasi panjang input
+            function limitInputLength(event, maxLength) {
+                const input = event.target;
+
+                // Hapus karakter non-angka
+                input.value = input.value.replace(/\D/g, '');
+
+                // Batasi panjang input
+                if (input.value.length > maxLength) {
+                    input.value = input.value.slice(0, maxLength);
+                }
+            }
+
+            // Tambahkan event listener untuk validasi
+            nohpInput.addEventListener('input', (e) => limitInputLength(e, 15)); // No HP max 15
+            lakiInput.addEventListener('input', (e) => limitInputLength(e, 4)); // Jumlah Laki-Laki max 4
+            perempuanInput.addEventListener('input', (e) => limitInputLength(e, 4)); // Jumlah Perempuan max 4
+
+            // Validasi saat submit
+            form.addEventListener('submit', function (event) {
+                const nohp = nohpInput.value.trim();
+                const jumlahLaki = lakiInput.value.trim();
+                const jumlahPerempuan = perempuanInput.value.trim();
+
+                if (nohp.length < 10 || nohp.length > 15) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops!',
+                        text: 'Nomor HP harus terdiri dari 10 hingga 15 digit!',
+                    });
+                    event.preventDefault();
+                    return;
+                }
+
+                if ((jumlahLaki <= 0 && jumlahPerempuan <= 0) || jumlahLaki.length > 4 || jumlahPerempuan.length > 4) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops!',
+                        text: 'Jumlah laki-laki atau perempuan minimal 1!',
+                    });
+                    event.preventDefault();
+                    return;
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('guestbookFormInstansi').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
         const nama = document.getElementById('NAMA_TAMU').value.trim();
         const alamat = document.getElementById('ALAMAT_TAMU').value.trim();
         const nohp = document.getElementById('NOHP_TAMU').value.trim();
-        const jumlahLaki = document.getElementById('JKL_TAMU').value.trim(); // Fixed field name
-        const jumlahPerempuan = document.getElementById('JKP_TAMU').value.trim(); // Fixed field name
+        const jumlahLaki = document.getElementById('JKL_TAMU').value.trim();
+        const jumlahPerempuan = document.getElementById('JKP_TAMU').value.trim();
+        const submitButton = document.getElementById('submitButton');
 
         // Validasi form: pastikan tidak ada yang kosong
         if (!nama || !alamat || !nohp || !jumlahLaki || !jumlahPerempuan) {
@@ -107,11 +176,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Validasi panjang nomor HP
-        if (nohp.length < 10) {
+        if (nohp.length < 10 || nohp.length > 15) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Oops!',
-                text: 'Nomor HP harus terdiri dari minimal 10 digit',
+                text: 'Nomor HP harus terdiri dari 10 hingga 15 digit',
                 confirmButtonText: 'OK'
             });
             return;
@@ -127,46 +196,64 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // If all fields are valid, show success and submit the form
-        Swal.fire({
-            icon: 'success',
-            title: 'Data berhasil ditambahkan!',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            const formData = new FormData(this);
-            formData.append('JKL_TAMU', jumlahLaki); // Add male count to form data
-            formData.append('JKP_TAMU', jumlahPerempuan); // Add female count to form data
+        // Validasi minimal 1 pengunjung
+        if (jumlahLaki <= 0 && jumlahPerempuan <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops!',
+                text: 'Minimal harus ada 1 pengunjung laki-laki atau perempuan.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
 
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                      window.location.href = '/bukutamu/form'; // Redirect after success
-                  } else {
-                      Swal.fire({
-                          icon: 'error',
-                          title: 'Error!',
-                          text: data.message || 'Terjadi kesalahan, coba lagi.',
-                          confirmButtonText: 'OK'
-                      });
-                  }
-              })
-              .catch(error => {
-                  console.error('Error:', error);
+        // Menonaktifkan tombol submit dan menampilkan spinner
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Menyimpan... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
+
+        // Jika semua field valid, submit form dengan fetch API
+        const formData = new FormData(this);
+        formData.append('JKL_TAMU', jumlahLaki);
+        formData.append('JKP_TAMU', jumlahPerempuan);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Data berhasil ditambahkan!',
+                      text: 'Terima Kasih Sudah Berkunjung Ke Museum Kayuh Baimbai!',
+                      confirmButtonText: 'OK'
+                  }).then(() => {
+                      window.location.href = '/bukutamu/form'; // Redirect setelah sukses
+                  });
+              } else {
                   Swal.fire({
                       icon: 'error',
                       title: 'Error!',
-                      text: 'Terjadi kesalahan. Coba lagi.',
+                      text: data.message || 'Terjadi kesalahan, coba lagi.',
                       confirmButtonText: 'OK'
                   });
+                  submitButton.disabled = false;
+                  submitButton.innerHTML = 'Simpan'; // Kembalikan tombol seperti semula
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error!',
+                  text: 'Terjadi kesalahan. Coba lagi.',
+                  confirmButtonText: 'OK'
               });
-        });
+              submitButton.disabled = false;
+              submitButton.innerHTML = 'Simpan'; // Kembalikan tombol seperti semula
+          });
     });
 });
-
-
 
 
             let videoStream = null;

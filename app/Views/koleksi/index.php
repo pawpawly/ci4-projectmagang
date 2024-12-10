@@ -14,6 +14,7 @@
 <div class="container mx-auto px-8 py-8">
     <div class="flex flex-col md:flex-row justify-center items-center gap-6">
         <form id="searchForm" autocomplete="off" class="flex items-center space-x-4 w-full md:w-1/2">
+        <?= csrf_field(); ?>
             <!-- Input Pencarian dengan Tombol X di dalamnya -->
             <div class="relative w-full">
                 <input type="text" name="keyword" placeholder="Cari Koleksi..." 
