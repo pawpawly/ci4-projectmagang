@@ -12,7 +12,7 @@
             <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
             <input type="text" maxlength="60" id="nama_lengkap" name="nama_lengkap" 
                    value="<?= esc($user['NAMA_USER']); ?>" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                    placeholder="Masukkan nama lengkap" required>
         </div>
 
@@ -20,14 +20,14 @@
             <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
             <input type="text" maxlength="30" id="username" name="username" autocomplete="off"
                    value="<?= esc($user['USERNAME']); ?>" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                    placeholder="Masukkan username" required>
         </div>
 
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium text-gray-700">Password (Opsional)</label>
             <input type="password" maxlength="30" id="password" name="password" autocomplete="off"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                    placeholder="Kosongkan jika tidak ingin mengubah">
         </div>
 

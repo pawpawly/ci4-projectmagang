@@ -10,13 +10,13 @@
             <label for="kategori_kkoleksi" class="block text-sm font-medium text-gray-700">Kategori Koleksi</label>
             <input type="text" placeholder="Masukkan Nama Kategori Koleksi" id="kategori_kkoleksi" name="kategori_kkoleksi" autocomplete="off" maxlength="255"
                    value="<?= old('kategori_kkoleksi') ?>"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kkoleksi" class="block text-sm font-medium text-gray-700">Deskripsi Koleksi</label>
             <textarea id="deskripsi_kkoleksi" placeholder="Masukkan Deskripsi Kategori Koleksi" name="deskripsi_kkoleksi" rows="4" autocomplete="off" maxlength="1000"
-                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kkoleksi') ?></textarea>
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"><?= old('deskripsi_kkoleksi') ?></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">

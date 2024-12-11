@@ -12,13 +12,13 @@
             <label for="kategori_kevent" class="block text-sm font-medium text-gray-700">Nama Kategori</label>
             <input type="text" maxlength="255" id="kategori_kevent" name="kategori_kevent" autocomplete="off" placeholder="Masukkan Nama Kategori Event"
                    value="<?= old('kategori_kevent', $category['KATEGORI_KEVENT']) ?>"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kevent" class="block text-sm font-medium text-gray-700">Deskripsi Kategori</label>
             <textarea id="deskripsi_kevent" maxlength="1000" name="deskripsi_kevent" rows="4" autocomplete="off" placeholder="Masukkan Deksripsi Kategori Event"
-                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_kevent', $category['DESKRIPSI_KEVENT']) ?></textarea>
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"><?= old('deskripsi_kevent', $category['DESKRIPSI_KEVENT']) ?></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">

@@ -12,13 +12,13 @@
             <label for="nama_koleksi" class="block text-sm font-medium text-gray-700">Nama Koleksi</label>
             <input type="text" maxlength="255" id="nama_koleksi" name="nama_koleksi" autocomplete="off" placeholder="Masukkan Nama Koleksi"
                    value="<?= old('nama_koleksi', $koleksi['NAMA_KOLEKSI']) ?>"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="kategori_koleksi" class="block text-sm font-medium text-gray-700">Kategori Koleksi</label>
             <select id="kategori_koleksi" name="kategori_koleksi" 
-                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                    class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
                 <option value="">Pilih Kategori</option>
                 <?php foreach ($categories as $category): ?>
                     <option value="<?= $category['ID_KKOLEKSI'] ?>"
@@ -32,7 +32,7 @@
         <div class="mb-4">
             <label for="deskripsi_koleksi" class="block text-sm font-medium text-gray-700">Deskripsi Koleksi</label>
             <textarea id="deskripsi_koleksi" name="deskripsi_koleksi" rows="4" autocomplete="off" placeholder="Masukkan Deskripsi Koleksi"
-                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_koleksi', $koleksi['DESKRIPSI_KOLEKSI'] ?? '') ?></textarea>
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"><?= old('deskripsi_koleksi', $koleksi['DESKRIPSI_KOLEKSI'] ?? '') ?></textarea>
         </div>
 
         <div class="mb-6">
