@@ -75,42 +75,42 @@ document.addEventListener('DOMContentLoaded', function () {
 <body class="bg-white">
     <div class="flex">
         <!-- Sidebar -->
-        <div class="w-64 bg-red-900 text-white sidebar fixed h-screen">
+        <div class="w-64 bg-gray-600 text-white sidebar fixed h-screen">
             <div class="p-4">
                 <div class="flex items-center">
                     <img src="<?= base_url('pict/iconmuseum.png'); ?>" alt="Logo" class="w-15 h-auto">
                 </div>
             </div>
             <ul class="mt-6">
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <a href="<?= site_url('superadmin/dashboard'); ?>" class="flex items-center space-x-4">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <a href="<?= site_url('superadmin/bukutamu/manage'); ?>" class="flex items-center space-x-4">
                         <i class="fas fa-book-open"></i>
                         <span>Manajemen Buku Tamu</span>
                     </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <a href="<?= site_url('superadmin/reservasi/manage'); ?>" class="flex items-center space-x-4">
                         <i class="fas fa-calendar-alt"></i>
                         <span>Manajemen Reservasi</span>
                     </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <a href="<?= site_url('superadmin/user/manage'); ?>" class="flex items-center space-x-4">
                         <i class="fas fa-users"></i>
                         <span>Manajemen Pengguna</span>
                     </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <a href="<?= site_url('superadmin/berita/manage'); ?>" class="flex items-center space-x-4">
                         <i class="fas fa-newspaper"></i>
                         <span>Manajemen Berita</span>
@@ -119,14 +119,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-        <li class="px-4 py-2 hover:bg-red-800">
+        <li class="px-4 py-2 hover:bg-gray-500">
             <a href="<?= site_url('superadmin/bukudigital/manage'); ?>" class="flex items-center space-x-4">
                 <i class="fas fa-book-reader"></i>
                 <span>Manajemen Buku Digital</span>
                 </a>
                 </li>
 
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                 <a href="<?= site_url('superadmin/saran/manage'); ?>" class="flex items-center space-x-4">
                     <i class="fas fa-comments"></i>
                     <span>Saran Pengunjung</span>
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                 <!-- Item Menu Event -->
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('eventDropdown')">
                         <div class="flex items-center space-x-4">
                             <i class="fas fa-calendar-day"></i>
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </li>
                 
 
-                <li class="px-4 py-2 hover:bg-red-800">
+                <li class="px-4 py-2 hover:bg-gray-500">
                     <div class="flex items-center justify-between cursor-pointer" onclick="toggleDropdown('koleksiDropdown')">
                         <div class="flex items-center space-x-4">
                             <i class="fas fa-book"></i>
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="text-gray-800 font-bold"><?= session()->get('NAMA_USER'); ?></span>
                         <i class="fas fa-user-circle"></i>
                     </button>
-                    <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-red-800 shadow-lg rounded-lg">
+                    <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-500 shadow-lg rounded-lg">
                         <li class="px-4 py-2 hover:bg-red-400 font-semibold cursor-pointer">
                             <a href="<?= site_url('logout'); ?>">Log Out</a>
                         </li>
