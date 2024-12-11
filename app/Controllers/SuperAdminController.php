@@ -2052,4 +2052,22 @@ public function deleteSaran($id)
         ]);
     }
 }
+
+public function detailSaran($id)
+{
+    // Load model Saran
+    $saranModel = new \App\Models\SaranModel();
+
+    // Cari data saran berdasarkan ID
+    $saran = $saranModel->find($id);
+
+    // Jika data tidak ditemukan, tampilkan halaman 404
+    if (!$saran) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException("Saran dengan ID $id tidak ditemukan.");
+    }
+
+    // Tampilkan view detail_saran dengan data
+    return view('superadmin/saran/detail_saran', ['saran' => $saran]);
+}
+
 }

@@ -161,5 +161,7 @@ $routes->group('superadmin/bukudigital', ['filter' => 'auth'], function ($routes
 $routes->group('superadmin/saran', ['filter' => 'auth'], function ($routes) {
     $routes->get('manage', 'SuperAdminController::manageSaran');
     $routes->delete('delete/(:num)', 'SuperAdminController::deleteSaran/$1');
+    $routes->get('detail/(:num)', 'SuperAdminController::detailSaran/$1');
+
 });
 
