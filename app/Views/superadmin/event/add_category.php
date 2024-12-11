@@ -9,13 +9,13 @@
         <div class="mb-4">
             <label for="kategori_kevent" class="block text-sm font-medium text-gray-700">Kategori Event</label>
             <input type="text" placeholder="Masukkan Nama Kategori Event" id="kategori_kevent" name="kategori_kevent" autocomplete="off" maxlength="255"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_kevent" class="block text-sm font-medium text-gray-700">Deskripsi Event</label>
             <textarea id="deskripsi_kevent" placeholder="Masukkan Deskripsi Kategori Event" name="deskripsi_kevent" rows="4" autocomplete="off" maxlength="1000"
-                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"></textarea>
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"></textarea>
         </div>
 
         <div class="mt-6 flex justify-end space-x-4">

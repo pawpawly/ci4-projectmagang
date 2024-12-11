@@ -55,6 +55,7 @@
             </tr>
         </thead>
         <tbody class="text-gray-800">
+        <?php if (!empty($koleksi) && is_array($koleksi)): ?>
     <?php foreach ($koleksi as $item): ?>
     <tr class="border-b transition duration-75 hover:bg-gray-300">
         <td class="py-2 px-4">
@@ -97,6 +98,11 @@
         </td>
     </tr>
     <?php endforeach; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada kategori yang ditemukan.</td>
+        </tr>
+    <?php endif; ?>
 </tbody>
 
     </table>

@@ -7,7 +7,7 @@
         <!-- New Section for the 4 Boxes -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
     <!-- Kotak 1: Pending Reservations -->
-    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/reservasi/manage'); ?>'">
+    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-200" onclick="window.location.href='<?= site_url('superadmin/reservasi/manage'); ?>'">
         <h3 class="text-xl font-bold mb-4">Reservasi Pending</h3>
         <div class="flex justify-between">
             <p class="text-3xl font-bold"><?= $pendingReservations ?></p>
@@ -18,7 +18,7 @@
     </div>
 
     <!-- Kotak 2: Total Collections -->
-    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/koleksi/manage'); ?>'">
+    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-200" onclick="window.location.href='<?= site_url('superadmin/koleksi/manage'); ?>'">
         <h3 class="text-xl font-bold mb-4">Total Koleksi</h3>
         <div class="flex justify-between">
             <p class="text-3xl font-bold"><?= $totalCollections ?></p>
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Kotak 3: Upcoming Events -->
-    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-100" onclick="window.location.href='<?= site_url('superadmin/event/manage'); ?>'">
+    <div class="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:bg-gray-200" onclick="window.location.href='<?= site_url('superadmin/event/manage'); ?>'">
         <h3 class="text-xl font-bold mb-4">Events Berlangsung</h3>
         <div class="flex justify-between">
             <p class="text-3xl font-bold"><?= $upcomingEvents ?></p>

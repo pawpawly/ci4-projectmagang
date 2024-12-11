@@ -12,13 +12,13 @@
             <label for="nama_event" class="block text-sm font-medium text-gray-700">Nama Event</label>
             <input type="text" maxlength="255" id="nama_event" name="nama_event" autocomplete="off" placeholder="Masukkan Nama Event"
                 value="<?= old('nama_event', $event['NAMA_EVENT']); ?>"
-                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="kategori_id" class="block text-sm font-medium text-gray-700">Kategori Acara</label>
             <select id="kategori_id" name="kategori_id"
-                    class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                    class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
                 <option value="">Pilih Kategori</option>
                 <?php foreach ($categories as $category): ?>
                     <option value="<?= $category['ID_KEVENT'] ?>"
@@ -32,21 +32,21 @@
         <div class="mb-4">
             <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
             <input type="date" id="tanggal_event" name="tanggal_event" autocomplete="off"
-                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                 value="<?= date('Y-m-d', strtotime(old('tanggal_event', $event['TANGGAL_EVENT']))); ?>">
         </div>
 
         <div class="mb-4">
             <label for="jam_event" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
             <input type="time" id="jam_event" name="jam_event" autocomplete="off"
-                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                 value="<?= old('jam_event', $event['JAM_EVENT']); ?>">
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_event" class="block text-sm font-medium text-gray-700">Deskripsi Acara</label>
             <textarea id="deskripsi_event" name="deskripsi_event" rows="4" autocomplete="off" placeholder="Masukkan Deskripsi Event"
-                class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"><?= old('deskripsi_event', $event['DEKSRIPSI_EVENT']); ?></textarea>
+                class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"><?= old('deskripsi_event', $event['DEKSRIPSI_EVENT']); ?></textarea>
         </div>
 
         <div class="mb-6">

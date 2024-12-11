@@ -14,21 +14,21 @@
         <div class="mb-4">
             <label for="nama_berita" class="block text-sm font-medium text-gray-700">Nama Berita</label>
             <input type="text" maxlength="255" id="nama_berita" name="nama_berita" autocomplete="off"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                    placeholder="Masukkan nama berita" required>
         </div>
 
         <div class="mb-4">
             <label for="deskripsi_berita" class="block text-sm font-medium text-gray-700">Deskripsi Berita</label>
             <textarea id="deskripsi_berita" name="deskripsi_berita" rows="4" autocomplete="off"
-                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                       placeholder="Masukkan deskripsi berita" required></textarea>
         </div>
 
         <div class="mb-4">
             <label for="sumber_berita" class="block text-sm font-medium text-gray-700">Sumber Berita</label>
             <input type="text" maxlength="255" id="sumber_berita" name="sumber_berita" autocomplete="off"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                    placeholder="Masukkan sumber berita" required>
         </div>
 

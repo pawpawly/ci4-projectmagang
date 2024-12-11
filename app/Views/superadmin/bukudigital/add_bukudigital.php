@@ -11,14 +11,14 @@
     <div class="mb-4">
         <label for="judul_buku" class="block text-sm font-medium text-gray-700">Judul Buku</label>
         <input type="text" maxlength="255" id="judul_buku" name="judul_buku" 
-               class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+               class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                placeholder="Masukkan judul buku" required>
     </div>
 
     <div class="mb-4">
         <label for="penulis_buku" class="block text-sm font-medium text-gray-700">Penulis Buku</label>
         <input type="text" maxlength="255" id="penulis_buku" name="penulis_buku" 
-               class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+               class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                placeholder="Masukkan penulis buku" required>
     </div>
 
@@ -29,7 +29,7 @@
         maxlength="4" 
         id="tahun_buku" 
         name="tahun_buku" 
-        class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+        class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
         placeholder="Masukkan tahun terbit" 
         pattern="\d*" 
         inputmode="numeric" 
@@ -39,7 +39,7 @@
     <div class="mb-4">
         <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
         <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" 
-                  class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                  class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                   placeholder="Masukkan sinopsis buku" required></textarea>
     </div>
 

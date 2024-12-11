@@ -18,21 +18,21 @@
             <label for="judul_buku" class="block text-sm font-medium text-gray-700">Judul Buku</label>
             <input type="text" maxlength="255" id="judul_buku" name="judul_buku" autocomplete="off" placeholder="Masukkan judul buku"
                    value="<?= esc($bukudigital['JUDUL_BUKU']) ?>" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="penulis_buku" class="block text-sm font-medium text-gray-700">Penulis Buku</label>
             <input type="text" maxlength="255" id="penulis_buku" name="penulis_buku" autocomplete="off" placeholder="Masukkan penulis buku"
                    value="<?= esc($bukudigital['PENULIS_BUKU']) ?>" 
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
         </div>
 
         <div class="mb-4">
             <label for="tahun_buku" class="block text-sm font-medium text-gray-700">Tahun Terbit</label>
             <input 
                 type="text" maxlength="4" id="tahun_buku" name="tahun_buku" 
-                class="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
                 placeholder="Masukkan tahun terbit" value="<?= esc($bukudigital['TAHUN_BUKU']) ?>" pattern="\d*" 
                 inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
         </div>
@@ -40,7 +40,7 @@
         <div class="mb-4">
             <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
             <textarea id="sinopsis_buku" name="sinopsis_buku" rows="4" autocomplete="off" placeholder="Masukkan sinopsis"
-                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"><?= esc($bukudigital['SINOPSIS_BUKU']) ?></textarea>
+                      class="mt-1 px-4 py-2 w-full resize-none border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"><?= esc($bukudigital['SINOPSIS_BUKU']) ?></textarea>
         </div>
 
         <div class="mb-6">

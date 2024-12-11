@@ -47,14 +47,14 @@
                 $statusClass = '';
                 switch ($status) {
                     case 'setuju':
-                        $statusClass = 'bg-green-500 text-white px-2 py-1 rounded';
+                        $statusClass = 'bg-green-200 text-green-700 text-white text-center  text-base font-semibold rounded-md px-1 py-1';
                         break;
                     case 'tolak':
-                        $statusClass = 'bg-red-500 text-white px-2 py-1 rounded';
+                        $statusClass = 'bg-red-200 text-red-700 text-white text-center  text-base font-semibold rounded-md px-1 py-1';
                         break;
                     case 'pending':
                     default:
-                        $statusClass = 'bg-yellow-500 text-white px-2 py-1 rounded';
+                        $statusClass = 'bg-yellow-200 text-yellow-700 text-white text-center  text-base font-semibold rounded-md px-1 py-1';
                         break;
                 }
             ?>
@@ -103,8 +103,8 @@ function updateStatus(newStatus) {
             const statusElement = document.getElementById('detailStatus');
             statusElement.textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1);
             statusElement.className = 
-                data.status === 'setuju' ? 'bg-green-500 text-white px-2 py-1 rounded' :
-                data.status === 'tolak' ? 'bg-red-500 text-white px-2 py-1 rounded' :
+                data.status === 'setuju' ? 'bg-green-200 text-green-700 text-white text-center  text-base font-semibold rounded-md px-1 py-1' :
+                data.status === 'tolak' ? 'bg-red-200 text-red-700 text-white text-center  text-base font-semibold rounded-md px-1 py-1' :
                 'bg-yellow-500 text-white px-2 py-1 rounded';
 
             // Show success message with SweetAlert2
