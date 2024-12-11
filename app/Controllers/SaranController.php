@@ -28,7 +28,7 @@ class SaranController extends Controller
             log_message('error', 'Validation failed: ' . json_encode($validation->getErrors()));
             return $this->response->setJSON([
                 'success' => false,
-                'message' => 'Semua field wajib diisi dengan benar.',
+                'message' => 'Format Email Tidak Valid',
                 'errors' => $validation->getErrors()
             ]);
         }

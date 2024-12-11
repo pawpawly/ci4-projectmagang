@@ -199,7 +199,7 @@
 
         <div>
             <label for="EMAIL_SARAN" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
-            <input type="email" id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
+            <input type="text" id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
         </div>
 
         <div>
@@ -429,72 +429,70 @@
                 leftArrow.addEventListener('click', () => swiperEvent.slidePrev());
                 rightArrow.addEventListener('click', () => swiperEvent.slideNext());
             });
-    document.getElementById('saranForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+        
+            document.getElementById('saranForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-        const nama = document.getElementById('NAMA_SARAN').value.trim();
-        const email = document.getElementById('EMAIL_SARAN').value.trim();
-        const saran = document.getElementById('KOMENTAR_SARAN').value.trim();
+    const nama = document.getElementById('NAMA_SARAN').value.trim();
+    const email = document.getElementById('EMAIL_SARAN').value.trim();
+    const saran = document.getElementById('KOMENTAR_SARAN').value.trim();
 
-        if (!nama || !email || !saran) {
-            Swal.fire({
-                title: 'Oops!',
-                text: 'Semua field wajib diisi!',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-            return;
+    if (!nama || !email || !saran) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Semua field wajib diisi!',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Mengirim...";
+
+    fetch('<?= site_url("saran/saveSaran") ?>', {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
-
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Mengirim...";
-
-        fetch('<?= site_url("saran/saveSaran") ?>', {
-            method: 'POST',
-            body: new FormData(this),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Response data:", data); // Debugging line
-
-            if (data.success) {
-                Swal.fire({
-                    title: 'Berhasil!',
-                    text: 'Saran berhasil dikirim!',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    document.getElementById('saranForm').reset();
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "Kirim";
-                });
-            } else {
-                Swal.fire({
-                    title: 'Gagal!',
-                    text: data.message || 'Gagal mengirim saran.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Kirim";
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error); // Debugging line
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
             Swal.fire({
-                title: 'Error!',
-                text: 'Terjadi kesalahan pada server.',
+                title: 'Berhasil!',
+                text: 'Saran berhasil dikirim!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = './'; // Kembali ke base URL
+            });
+        } else {
+            Swal.fire({
+                title: 'Gagal!',
+                text: data.message || 'Gagal mengirim saran.',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
             submitBtn.disabled = false;
             submitBtn.innerText = "Kirim";
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Terjadi kesalahan pada server.',
+            icon: 'error',
+            confirmButtonText: 'OK'
         });
+        console.error('Error:', error);
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Kirim";
     });
+});
+
         // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
         window.onbeforeunload = function () {
             window.scrollTo(0, 0);
