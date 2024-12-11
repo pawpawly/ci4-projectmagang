@@ -48,34 +48,50 @@
 
                     
             <!-- Tombol Cari -->
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Cari</button>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Cari</button>
         </form>
     </div>
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white shadow-md rounded-lg">
-            <thead class="bg-yellow-400">
+            <thead class="bg-gray-600">
                 <tr>
-                    <th class="text-left py-2 px-4">Nama Pengirim</th>
-                    <th class="text-left py-2 px-4">Email</th>
-                    <th class="text-left py-2 px-4">Tanggal</th>
-                    <th class="text-right py-2 px-4">Aksi</th>
+                    <th class="text-left text-white py-2 px-4">Nama Pengirim</th>
+                    <th class="text-left text-white py-2 px-4">Email</th>
+                    <th class="text-left text-white py-2 px-4">Tanggal</th>
+                    <th class="text-center text-white py-2 px-4">Aksi</th>
                 </tr>
             </thead>
             <tbody class="text-gray-800">
                 <?php if (!empty($saranList)): ?>
                     <?php foreach ($saranList as $saran): ?>
-                        <tr class="border-b">
+                        <tr class="border-b transition duration-75 hover:bg-gray-300">
                             <td class="py-2 px-4"><?= esc($saran['NAMA_SARAN']); ?></td>
                             <td class="py-2 px-4"><?= esc($saran['EMAIL_SARAN']); ?></td>
                             <td class="py-2 px-4">
                                 <?= formatTanggalIndonesia($saran['TANGGAL_SARAN']) . ' ' . date('H:i:s', strtotime($saran['TANGGAL_SARAN'])) . ' WITA'; ?>
                             </td>
-                            <td class="py-2 px-4 text-right">
-                                <a href="#" onclick="showDetail(<?= htmlspecialchars(json_encode($saran), ENT_QUOTES, 'UTF-8') ?>)" 
-                                class="text-green-500 font-semibold hover:underline hover:text-green-700">Lihat Saran</a>
-                                <a href="#" onclick="confirmDelete('<?= $saran['ID_SARAN'] ?>')" 
-                                class="text-red-500 font-semibold hover:underline hover:text-red-700">Delete</a>
+                            <td class="py-2 px-4 text-center">
+                                <div class="flex justify-center items-center space-x-2">
+                                    <!-- Tombol Lihat Saran -->
+                                    <button onclick="showDetail(<?= htmlspecialchars(json_encode($saran), ENT_QUOTES, 'UTF-8') ?>)" 
+                                            class="bg-blue-500 text-white inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-blue-700" 
+                                            title="Lihat Saran">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                              <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
+                                            </svg>
+                                    </button>
+
+                                    <!-- Tombol Delete -->
+                                    <button onclick="confirmDelete('<?= $saran['ID_SARAN'] ?>')" 
+                                            class="bg-red-500 text-white inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-red-700" 
+                                            title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
