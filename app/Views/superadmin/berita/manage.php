@@ -13,6 +13,8 @@
         </a>
     </div>
 
+    <p class="mb-4 text-gray-800">Daftar semua berita di halaman anda</p>
+
     <form method="get" action="<?= site_url('superadmin/berita/manage') ?>" class="flex items-center space-x-4 mb-6">
     <?= csrf_field(); ?> 
         <!-- Search Input with Clear Button -->
@@ -63,13 +65,17 @@
                     <th class="text-center text-white py-2 px-4">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-800">
+           <tbody class="text-gray-800">
                 <?php if (!empty($berita) && is_array($berita)): ?>
                     <?php foreach ($berita as $item): ?>
                         <tr class="border-b transition duration-75 hover:bg-gray-300">
                             <td class="py-2 px-4">
-                                <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>" 
-                                     alt="Foto Berita" class="w-24 h-24 object-cover rounded-md shadow-sm">
+                                <?php if ($item['FOTO_BERITA']): ?>
+                                    <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>" 
+                                         alt="Foto Berita" class="w-24 h-24 object-cover rounded-md shadow-sm">
+                                <?php else: ?>
+                                    <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Foto Berita Tidak Tersedia</span>
+                                <?php endif; ?>
                             </td>
                             <td class="py-2 px-4"><?= esc($item['NAMA_BERITA']); ?></td>
                             <td class="py-2 px-4"><?= esc($item['SUMBER_BERITA']); ?></td>

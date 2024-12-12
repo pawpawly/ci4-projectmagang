@@ -6,8 +6,12 @@
 
     <div class="mb-4">
         <h2 class="text-lg font-semibold">Poster Acara:</h2>
-        <img src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']); ?>" 
-             alt="Poster Acara" class="w-48 h-72 object-cover rounded-md shadow-md">
+        <?php if (!empty($event['FOTO_EVENT'])): ?>
+            <img src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']); ?>" 
+                 alt="Poster Acara" class="w-48 h-72 object-cover rounded-md shadow-md">
+        <?php else: ?>
+            <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Foto Event Tidak Tersedia</span>
+        <?php endif; ?>
     </div>
 
     <div class="mb-4">

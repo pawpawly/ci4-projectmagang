@@ -13,6 +13,8 @@
         </a>
     </div>
 
+    <p class="mb-4 text-gray-800">Daftar semua acara/event di halaman anda</p>
+
     <form method="get" action="<?= site_url('superadmin/event/manage') ?>" class="flex items-center space-x-4 mb-6">
     <?= csrf_field(); ?>
         <!-- Search Input with Clear Button -->
@@ -80,8 +82,12 @@
             <tr class="border-b transition duration-75 hover:bg-gray-300">
                 <!-- Foto Acara -->
                 <td class="py-4 px-4">
-                    <img src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']); ?>" 
-                         alt="Poster Acara" class="w-20 h-28 object-cover rounded-md shadow-sm">
+                    <?php if (!empty($event['FOTO_EVENT'])): ?>
+                        <img src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']); ?>" 
+                             alt="Poster Acara" class="w-20 h-28 object-cover rounded-md shadow-sm">
+                    <?php else: ?>
+                        <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Foto Event Tidak Tersedia</span>
+                    <?php endif; ?>
                 </td>
                 
                 <!-- Nama Acara -->

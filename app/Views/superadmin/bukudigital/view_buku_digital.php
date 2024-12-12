@@ -6,8 +6,12 @@
 
     <div class="mb-4">
         <h2 class="text-lg font-semibold">Sampul Buku:</h2>
-        <img src="<?= base_url('uploads/bukudigital/sampul/' . $book['SAMPUL_BUKU']); ?>" 
-             alt="Sampul Buku" class="w-48 h-72 object-cover rounded-md shadow-md">
+        <?php if (!empty($book['SAMPUL_BUKU'])): ?>
+            <img src="<?= base_url('uploads/bukudigital/sampul/' . $book['SAMPUL_BUKU']); ?>" 
+                 alt="Sampul Buku" class="w-48 h-72 object-cover rounded-md shadow-md">
+        <?php else: ?>
+            <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Sampul Buku Tidak Tersedia</span>
+        <?php endif; ?>
     </div>
     
     <div class="mb-4">
@@ -32,10 +36,14 @@
 
     <div class="mb-4">
         <h2 class="text-lg font-semibold">File Buku (PDF):</h2>
-        <a href="<?= base_url('uploads/bukudigital/pdf/' . $book['PRODUK_BUKU']); ?>" target="_blank" 
-           class="text-blue-500 font-semibold hover:underline">
-            View / Download PDF
-        </a>
+        <?php if (!empty($book['PRODUK_BUKU'])): ?>
+            <a href="<?= base_url('uploads/bukudigital/pdf/' . $book['PRODUK_BUKU']); ?>" target="_blank" 
+               class="text-blue-500 font-semibold hover:underline">
+                View / Download PDF
+            </a>
+        <?php else: ?>
+            <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Produk Buku Tidak Tersedia</span>
+        <?php endif; ?>
     </div>
 
     <div class="mt-6">

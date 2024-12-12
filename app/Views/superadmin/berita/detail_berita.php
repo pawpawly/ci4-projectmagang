@@ -6,8 +6,12 @@
 
     <div class="mb-4">
         <h2 class="text-lg font-semibold">Foto Berita:</h2>
-        <img src="<?= base_url('uploads/berita/' . $berita['FOTO_BERITA']); ?>" 
-             alt="Foto Berita" class="w-72 h-48 object-cover rounded-md shadow-md">
+        <?php if (!empty($berita['FOTO_BERITA'])): ?>
+            <img src="<?= base_url('uploads/berita/' . $berita['FOTO_BERITA']); ?>" 
+                 alt="Foto Berita" class="w-72 h-48 object-cover rounded-md shadow-md">
+        <?php else: ?>
+            <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Foto Berita Tidak Tersedia</span>
+        <?php endif; ?>
     </div>
     
     <div class="mb-4">
