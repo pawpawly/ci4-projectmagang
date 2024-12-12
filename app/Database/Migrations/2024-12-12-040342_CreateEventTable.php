@@ -31,7 +31,7 @@ class CreateEventTable extends Migration
                 'constraint' => 255,
                 'null'       => false,
             ],
-            'DEKSIRIPSI_EVENT' => [
+            'DEKSRIPSI_EVENT' => [
                 'type' => 'TEXT',
                 'null' => false,
             ],

@@ -59,8 +59,12 @@
     <?php foreach ($koleksi as $item): ?>
     <tr class="border-b transition duration-75 hover:bg-gray-300">
         <td class="py-2 px-4">
-            <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
-                 alt="Foto Koleksi" class="w-24 h-24 object-cover rounded-md">
+            <?php if (!empty($item['FOTO_KOLEKSI'])): ?>
+                <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
+                     alt="Foto Koleksi" class="w-24 h-24 object-cover rounded-md">
+            <?php else: ?>
+                <span class="text-gray-400 text-xs font-semibold inline-flex items-center justify-center w-24 h-8 rounded-md text-sm">Foto Koleksi Tidak Tersedia</span>
+            <?php endif; ?>
         </td>
         <td class="py-2 px-4"><?= esc($item['NAMA_KOLEKSI']); ?></td>
         <td class="py-2 px-4"><?= esc($item['NAMA_KATEGORI']); ?></td>
