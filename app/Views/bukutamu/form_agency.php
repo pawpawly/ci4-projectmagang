@@ -9,7 +9,7 @@
     <style>
         body {
             height: 100vh;
-            background-image: url('<?= base_url('pict/bglogin.jpg'); ?>');
+            background-image: url('<?= base_url('pict/endless-constlelation.png'); ?>');
             background-size: cover;
             display: inline;
             justify-content: center;
@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <div class="container mx-auto px-4 py-8 bg-white rounded-lg shadow-lg w-full max-w-lg">
+    <div class="container mx-auto px-4 py-8 bg-white border-solid border-2 border-yellow-600 rounded-lg shadow-lg w-full max-w-lg">
         <h1 class="text-2xl font-bold text-center mb-6">Form Buku Tamu - Instansi</h1>
         <?= csrf_field(); ?>
         <form id="guestbookFormInstansi" action="/bukutamu/storeAgency" method="POST" autocomplete="off" novalidate class="space-y-4">
@@ -60,14 +60,14 @@
     <!-- Field Jumlah Laki-Laki -->
     <div class="mb-4">
         <label for="JKL_TAMU" class="block text-sm font-medium text-gray-700">Jumlah Laki-Laki</label>
-        <input type="number" maxlength="4" id="JKL_TAMU" name="JKL_TAMU" class="w-full border rounded px-3 py-2" value="0" 
+        <input type="number" maxlength="4" id="JKL_TAMU" name="JKL_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" value="0" 
         placeholder="Jumlah Pengunjung Laki-Laki" required>
     </div>
 
     <!-- Field Jumlah Perempuan -->
     <div class="mb-4">
         <label for="JKP_TAMU" class="block text-sm font-medium text-gray-700">Jumlah Perempuan</label>
-        <input type="number" maxlength="4" id="JKP_TAMU" name="JKP_TAMU" class="w-full border rounded px-3 py-2" value="0" 
+        <input type="number" maxlength="4" id="JKP_TAMU" name="JKP_TAMU" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" value="0" 
         placeholder="Jumlah Pengunjung Perempuan" required>
     </div>
 
@@ -79,7 +79,7 @@
             <canvas id="canvas" class="hidden w-full rounded-md shadow-md"></canvas>
         </div>
         <div class="mt-4 flex space-x-4">
-            <button type="button" id="toggleCameraButton" onclick="startCamera()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Buka Kamera</button>
+            <button type="button" id="toggleCameraButton" onclick="startCamera()" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Buka Kamera</button>
             <button type="button" id="captureButton" onclick="capturePhoto()" class="hidden bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Ambil Foto</button>
             <button type="button" id="cancelCameraButton" onclick="cancelCamera()" class="hidden bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</button>
             <button type="button" id="deletePhotoButton" onclick="deletePhoto()" class="hidden bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Hapus Foto</button>
@@ -89,13 +89,13 @@
 
     <!-- Submit Button -->
     <div>
-        <button type="submit" id="submitButton" class="w-full bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">
+        <button type="submit" id="submitButton" class="w-full bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-700">
             Simpan
         </button>
     </div>
 
 </form>
-<p class="mt-6 text-right text-sm text-gray-500">
+<p class="mt-6 text-right text-base text-gray-500">
             <a href="<?= site_url('bukutamu/individual'); ?>" class="text-yellow-500 font-medium hover:underline">&larr; Form Individual</a>
         </p>
     </div>

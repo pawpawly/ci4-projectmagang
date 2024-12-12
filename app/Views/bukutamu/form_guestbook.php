@@ -9,7 +9,7 @@
     <style>
         body {
             height: 100vh;
-            background-image: url('<?= base_url('pict/bglogin.jpg'); ?>');
+            background-image: url('<?= base_url('pict/endless-constlelation.png'); ?>');
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -36,27 +36,30 @@
                     title: 'Aksi Tidak Diizinkan!',
                     text: 'Tombol kembali dinonaktifkan untuk halaman ini.',
                     icon: 'warning',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#fbbf24'
+                    confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Setelah klik OK, tampilkan pilihan kembali
                         Swal.fire({
                             title: 'Apakah Kamu dari Instansi?',
-                            icon: 'question',
+                            imageUrl: '<?= base_url('pict/iconmuseum.png'); ?>', 
+                            imageWidth: 400, 
+                            imageHeight: 100, 
+                            imageAlt: 'Gambar ilustrasi',
                             showCancelButton: false,
                             allowOutsideClick: false,
-                            confirmButtonText: 'Tidak, Saya datang sendiri',
-                            confirmButtonColor: '#fbbf24',
+                            confirmButtonText: 'Iya, Saya dari Instansi',
+                            confirmButtonColor: '#fab911',
                             showDenyButton: true,
-                            denyButtonText: 'Iya, Saya dari Instansi',
-                            denyButtonColor: '#1d4ed8',
+                            
+                            denyButtonText: 'Tidak, Saya datang sendiri',
+                            denyButtonColor: '#424242',
                             heightAuto: false, // Fullscreen dialog
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "<?= base_url('bukutamu/individual'); ?>"; // Route untuk Individual
+                                window.location.href = "<?= base_url('bukutamu/agency'); ?>"; // Route untuk Individual
                             } else if (result.isDenied) {
-                                window.location.href = "<?= base_url('bukutamu/agency'); ?>"; // Route untuk Agency
+                                window.location.href = "<?= base_url('bukutamu/individual'); ?>"; // Route untuk Agency
                             }
                         });
                     }
@@ -71,20 +74,24 @@
         window.onload = function () {
             Swal.fire({
                 title: 'Apakah Kamu dari Instansi?',
-                icon: 'question',
+                background:'#fafafa',
+                imageUrl: '<?= base_url('pict/iconmuseum.png'); ?>', 
+                imageWidth: 400, 
+                imageHeight: 80, 
+                imageAlt: 'Gambar ilustrasi',
                 showCancelButton: false,
                 allowOutsideClick: false,
-                confirmButtonText: 'Tidak, Saya datang sendiri',
-                confirmButtonColor: '#fbbf24',
+                confirmButtonText: 'Iya, Saya dari Instansi',
+                confirmButtonColor: '#fab911',
                 showDenyButton: true,
-                denyButtonText: 'Iya, Saya dari Instansi',
-                denyButtonColor: '#1d4ed8',
+                denyButtonText: 'Tidak, Saya datang sendiri',
+                denyButtonColor: '#424242',
                 heightAuto: false, // Fullscreen dialog
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "<?= base_url('bukutamu/individual'); ?>"; // Route untuk Individual
+                    window.location.href = "<?= base_url('bukutamu/agency'); ?>"; // Route untuk Individual
                 } else if (result.isDenied) {
-                    window.location.href = "<?= base_url('bukutamu/agency'); ?>"; // Route untuk Agency
+                    window.location.href = "<?= base_url('bukutamu/individual'); ?>"; // Route untuk Agency
                 }
             });
         };
