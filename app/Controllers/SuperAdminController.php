@@ -14,6 +14,8 @@ use App\Models\BukuDigitalModel;
 use App\Models\SaranModel;
 use CodeIgniter\Controller;
 use App\Validation\CustomValidation;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SuperAdminController extends Controller
 {
@@ -1586,6 +1588,52 @@ public function manageBukuTamu()
     }
     if ($tahun) {
         $bukuTamuQuery->where('YEAR(TGLKUNJUNGAN_TAMU)', $tahun);
+    }
+
+    // Jika ada parameter export, lakukan ekspor ke Excel
+    if ($this->request->getGet('export')) {
+        $data = $bukuTamuQuery->orderBy('TGLKUNJUNGAN_TAMU', 'DESC')->findAll();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Header
+        $sheet->setCellValue('A1', 'ID Tamu');
+        $sheet->setCellValue('B1', 'Nama Tamu');
+        $sheet->setCellValue('C1', 'Tipe Tamu');
+        $sheet->setCellValue('D1', 'Alamat Tamu');
+        $sheet->setCellValue('E1', 'No HP');
+        $sheet->setCellValue('F1', 'Tanggal Kunjungan');
+        $sheet->setCellValue('G1', 'Jumlah Tamu Laki-Laki');
+        $sheet->setCellValue('H1', 'Jumlah Tamu Perempuan');
+
+        // Data
+        $row = 2;
+        $id = 1; // Mulai dari 1
+        foreach ($data as $tamu) {
+            $sheet->setCellValue('A' . $row, $id);
+            $sheet->setCellValue('B' . $row, $tamu['NAMA_TAMU']);
+            $sheet->setCellValue('C' . $row, $tamu['TIPE_TAMU'] == '1' ? 'Individual' : 'Instansi');
+            $sheet->setCellValue('D' . $row, $tamu['ALAMAT_TAMU']);
+            $sheet->setCellValue('E' . $row, $tamu['NOHP_TAMU']);
+            $sheet->setCellValue('F' . $row, $tamu['TGLKUNJUNGAN_TAMU']);
+            $sheet->setCellValue('G' . $row, $tamu['JKL_TAMU']);
+            $sheet->setCellValue('H' . $row, $tamu['JKP_TAMU']);
+            $row++;
+            $id++;
+        }
+
+        // Generate file
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'Data_Buku_Tamu.xlsx';
+
+        // Send file to browser for download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
     }
 
     $totalRecords = $bukuTamuQuery->countAllResults(false);

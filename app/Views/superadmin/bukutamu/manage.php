@@ -63,6 +63,11 @@
                 <!-- Tombol Cari -->
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Cari</button>
             </form>
+                <!-- Tombol Ekspor ke Excel -->
+                <a href="<?= site_url('superadmin/bukutamu/manage?export=1&search=' . ($search ?? '') . '&tipe_tamu=' . ($tipeTamu ?? '') . '&bulan=' . ($bulan ?? '') . '&tahun=' . ($tahun ?? '')) ?>" 
+                   class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+                   Export ke Excel
+                </a>
         </div>
 
         <div class="overflow-x-auto">
