@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
 </head>
-<body class="h-screen bg-cover bg-center" style="background-image: url('<?= base_url('pict/bglogin4.png'); ?>');">
+<body class="h-screen bg-cover bg-center" style="background-image: url('<?= base_url('pict/loginbg.png'); ?>');">
 
     <!-- Container Form -->
     <div class="w-full max-w-md px-8 py-10 bg-white bg-opacity-90 shadow-lg rounded-lg mx-auto mt-20">
@@ -82,8 +82,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         Swal.fire({
             icon: 'warning',
             title: 'Peringatan',
-            text: 'Mohon Username dan Password diisi terlebih dahulu!',
-            confirmButtonColor: '#f59e0b',
+            text: 'Mohon Username dan Password diisi terlebih dahulu!'
         });
         return; // Hentikan eksekusi lebih lanjut
     }
@@ -100,8 +99,7 @@ window.onload = function() {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: '<?= session()->getFlashdata('error') ?>',
-            confirmButtonColor: '#f59e0b',
+            text: '<?= session()->getFlashdata('error') ?>'
         });
     <?php endif; ?>
 };
