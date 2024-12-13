@@ -2,21 +2,21 @@
 
 <?= $this->section('content') ?>
 <!-- Header dengan Latar Gambar -->
-<div class="relative pb-1" 
-     style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center">DAFTAR EVENT</h1>
+<div class="relative pb-1 bg-gray-200" 
+     style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
+    <div class="container mx-auto px-8 py-40">
+        <h1 class="text-5xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;">DAFTAR EVENT</h1>
     </div>
 </div>
 
-<div class="container mx-auto px-8 py-12 max-w-5xl"> <!-- Menambah max-width agar tidak full screen -->
+<div class="container mx-auto px-8 bg-gray-200 py-12 max-w-5xl"> <!-- Menambah max-width agar tidak full screen -->
 
     <?php if (!empty($events) && is_array($events)): ?>
-        <div class="space-y-8"> <!-- Memberi jarak vertikal antar event -->
+        <div class="space-y-8 bg-gray-200"> <!-- Memberi jarak vertikal antar event -->
             <?php foreach ($events as $event): ?>
-                <div class="flex flex-col md:flex-row items-center border border-[#2C1011] rounded-lg shadow-lg overflow-hidden bg-white">
+                <div class="flex flex-col md:flex-row items-center border border-gray-900 rounded-lg shadow-lg overflow-hidden bg-gray-100">
                     <!-- Bagian Poster -->
-                    <div class="w-full md:w-1/3 bg-white" 
+                    <div class="w-full md:w-1/3 bg-gray-100" 
                          style="background-image: url('<?= base_url('pict/dotted-pattern.png'); ?>'); background-size: cover;">
                         <img 
                             src="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 
@@ -27,20 +27,20 @@
                     <!-- Bagian Konten -->
                     <div class="w-full md:w-2/3 p-6">
                         <h2 class="text-2xl font-semibold truncate"><?= esc($event['NAMA_EVENT']); ?></h2>
-                        <p class="text-gray-500 mt-1">
+                        <p class="text-gray-500 text-sm mt-1">
                             <?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?> - <?= date('H:i', strtotime($event['JAM_EVENT'])); ?> WITA
                         </p>
-                        <p class="mt-2 text-sm text-gray-600 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
+                        <p class="mt-2 text-sm font-semibold text-gray-600 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
 
                         <div class="mt-4">
-                            <span class="inline-block px-2 py-1 bg-red-400 text-white font-semibold rounded text-sm">
+                            <span class="inline-block px-2 py-1 bg-yellow-200 text-yellow-700 font-semibold rounded-lg text-xs">
                                 <?= esc($event['KATEGORI_KEVENT']); ?>
                             </span>
                         </div>
 
                         <div class="mt-4 flex justify-start"> <!-- Mengatur posisi tombol -->
                             <a href="<?= site_url('event/' . urlencode($event['NAMA_EVENT'])); ?>" 
-                               class="bg-red-900 text-white py-2 px-6 rounded-full hover:bg-red-700">
+                               class="bg-gray-900 text-yellow-500 py-2 px-6 rounded-lg hover:bg-gray-600">
                                 Baca Selengkapnya
                             </a>
                         </div>
@@ -49,7 +49,7 @@
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <p class="text-center text-gray-500">Tidak ada event yang tersedia saat ini.</p>
+        <p class="text-center text-gray-700">Tidak ada event yang tersedia saat ini.</p>
     <?php endif; ?>
 </div>
 

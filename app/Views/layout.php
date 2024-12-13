@@ -13,7 +13,7 @@
   <?= $this->include('header'); ?>
 
   <!-- Page Content -->
-  <main>
+  <main class="bg-gray-200">
     <?= $this->renderSection('content') ?>
   </main>
 
