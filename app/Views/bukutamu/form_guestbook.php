@@ -19,6 +19,9 @@
 </head>
 <body>
     <script>
+        window.addEventListener('beforeunload', () => {
+        navigator.sendBeacon('<?= site_url('logout') ?>'); // Pastikan route logout sesuai
+    });
         // Menonaktifkan tombol "Go Back" di browser langsung setelah halaman dimuat
         (function preventBackNavigation() {
             // Menambahkan state palsu secara otomatis

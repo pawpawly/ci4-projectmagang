@@ -4,14 +4,14 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 
-class Auth extends Controller
+class LogoutController extends Controller
 {
-    public function logout()
+    public function index()
     {
         // Hapus semua session
         session()->destroy();
 
         // Redirect ke halaman login dengan pesan sukses
-        return redirect()->to('/login')->with('success', 'Anda berhasil logout.');
+        return redirect()->to('/')->with('success', 'Anda berhasil logout.');
     }
 }
