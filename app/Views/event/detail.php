@@ -4,10 +4,10 @@
 
 <!-- Header dengan Latar Gambar dan Nama Event -->
 <div class="relative pb-1" 
-     style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center"><?= esc($event['NAMA_EVENT']); ?></h1>
-        <p class="text-xl text-white text-center mt-4">Detail Event</p>
+     style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
+    <div class="container mx-auto px-8 py-40">
+        <h1 class="text-5xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;"><?= esc($event['NAMA_EVENT']); ?></h1>
+        <p class="text-xl text-gray-800 font-semibold text-center mt-4" style="position: relative; top: -80px;">Detail Event</p>
     </div>
 </div>
 
@@ -22,7 +22,7 @@
                 <img 
                     src="<?= base_url('uploads/poster/' . (!empty($event['FOTO_EVENT']) ? $event['FOTO_EVENT'] : 'default.png')); ?>" 
                     alt="<?= esc($event['NAMA_EVENT']); ?>" 
-                    class="object-contain w-full max-h-[500px] bg-white p-2 rounded-lg">
+                    class="object-contain w-full max-h-[500px] bg-gray-200 p-2 rounded-lg">
             </a>
         </div>
 
@@ -34,9 +34,9 @@
                 <?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?> - <?= date('H:i', strtotime($event['JAM_EVENT'])); ?>
             </p>
             <p class="mt-6 text-base justify-text"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
-            <p class="mt-4 text-lg"><strong>Kategori:</strong> <?= esc($event['KATEGORI_KEVENT']); ?></p>
+            <p class="mt-4 text-base"><strong>Kategori:  </strong><span class="inline-block px-2 py-1 bg-yellow-200 text-yellow-700 font-semibold rounded-lg text-sm"><?= esc($event['KATEGORI_KEVENT']); ?></span></p>
             <a href="<?= site_url('event/index'); ?>" 
-               class="mt-6 inline-block bg-red-900 text-white py-2 px-6 rounded-full hover:bg-red-700">
+               class="mt-6 inline-block bg-gray-900 font-semibold text-yellow-500 py-2 px-6 rounded-lg shadow-lg hover:bg-gray-600">
                ← Kembali
             </a>
         </div>

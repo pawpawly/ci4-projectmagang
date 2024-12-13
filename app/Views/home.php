@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <section class="relative">
         <div class="relative w-full h-[500px] overflow-hidden">
-            <img src="<?= base_url('pict/museum.png'); ?>" alt="Museum Kayuh Baimbai" class="absolute inset-0 w-full h-full object-cover">
+            <img src="<?= base_url('pict/museumkuning.png'); ?>" alt="Museum Kayuh Baimbai" class="absolute inset-0 w-full h-full object-cover">
         </div>
         <div class="absolute inset-x-0 bottom-0 text-center bg-gradient-to-t from-gray-900/80 to-transparent py-20">
             <div class="container mx-auto">
@@ -15,7 +15,7 @@
     </section>
 
     <!-- Section Icon -->
-    <section class="py-5 bg-white mx-2 md:mx-10">
+    <section class="py-5 mx-2 md:mx-10" style="background-image: url('<?= base_url('pict/sasiranganabu.png'); ?>'); background-size: cover; background-position: center;">
         <div class="container mx-auto text-center">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="group flex justify-center">
@@ -37,7 +37,7 @@
 
 
     <!-- Section Event -->
-    <section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
+    <section class="py-12 bg-gray-200">
         <div class="container mx-auto px-8 relative">
             <div class="relative text-center">
                 <h2 class="event-overlay">EVENT</h2>
@@ -59,7 +59,7 @@
                                     <p class="text-gray-600"><?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?></p>
                                     <p class="text-sm text-gray-500 mt-2 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
                                     <a href="<?= site_url('event/' . urlencode($event['NAMA_EVENT'])); ?>" 
-                                    class="block mt-4 bg-[#2C1011] text-white text-center font-semibold py-2 rounded-full hover:bg-[#4A2A2C] text-xs">
+                                    class="block mt-4 bg-gray-900 text-yellow-500 text-center font-semibold py-2 rounded-lg hover:bg-gray-600 text-xs">
                                     Baca Selengkapnya
                                     </a>
                                 </div>
@@ -81,7 +81,7 @@
 
 
     <!-- Forum Section -->
-    <section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
+    <section class="py-12 bg-gray-200">
         <div class="container mx-auto px-8">
             <div class="relative text-center">
                 <h2 class="event-overlay">FORUM</h2> <!-- Overlay -->
@@ -116,7 +116,7 @@
                 </div>
                 <div class="text-center mt-8">
                     <a href="<?= site_url('berita'); ?>" 
-                    class="bg-red-900 text-white py-2 px-6 rounded-full hover:bg-red-700">
+                    class="bg-gray-900 text-yellow-500 py-2 px-6 font-semibold rounded-lg hover:bg-gray-600">
                     Lihat Berita Lebih Banyak
                     </a>
                 </div>         
@@ -128,19 +128,19 @@
 
 
     <!-- Section Kayuh Baimbai TV -->
-    <section class="py-12 bg-gradient-to-b from-[#B09091] to-white relative overflow-hidden">
+    <section class="py-12 bg-gray-200">
         <div class="container mx-auto max-w-7xl px-4">
             <!-- Judul Section -->
             <div class="relative text-center mb-8">
                 <h2 class="event-overlay">KAYUH BAIMBAI TV</h2>
-                <h2 class="text-4xl font-bold text-[#2C1011] mb-4 hover:scale-105 transition-transform duration-300">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4 hover:scale-105 transition-transform duration-300">
                     KAYUH BAIMBAI TV
                 </h2>
             </div>
 
             <!-- Video Besar -->
             <div class="mb-8 flex justify-center">
-                <iframe width="60%" height="350" src="https://www.youtube.com/embed/9pRIoZr-jZ0" 
+                <iframe width="100%" height="500" src="https://www.youtube.com/embed/9pRIoZr-jZ0" 
                         title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen class="rounded-xl shadow-lg"></iframe>
             </div>
@@ -170,7 +170,7 @@
             <!-- Tombol Lihat Lainnya -->
             <div class="text-center mt-8">
                 <a href="https://www.youtube.com/@EwingHDTV" target="_blank" 
-                class="bg-[#2C1011] text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-[#4A2A2C] transition-transform duration-300">
+                class="bg-gray-900 text-yellow-500 px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-gray-600 transition-transform duration-300">
                     Lihat Lainnya...
                 </a>
             </div>
@@ -181,33 +181,33 @@
 
 
     <!-- Saran Section -->
-    <section class="py-12 bg-gradient-to-b from-white to-[#B09091] relative overflow-hidden">
+    <section class="py-12" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">>
         <div class="container mx-auto px-8">
             <div class="relative text-center mb-12">
                 <h2 class="event-overlay text-6xl font-extrabold text-gray-200 mb-2">SARAN</h2>
-                <h2 class="text-4xl font-bold text-[#2C1011] mb-4 hover:scale-105 transition-transform duration-300">SARAN</h2>
+                <h2 class="text-4xl font-bold text-gray-900 mb-4 hover:scale-105 transition-transform duration-300">SARAN</h2>
             </div>
-            <p class="text-gray-800 text-center hover:text-[#4A2A2C] transition duration-300">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
+            <p class="text-gray-900 text-center">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
             <div class="max-w-3xl mx-auto p-10">
             <form id="saranForm" class="space-y-8" autocomplete="off">
 
 
         <div>
-            <label for="NAMA_SARAN" class="block text-[#2C1011] text-lg font-semibold">Nama*</label>
-            <input type="text" id="NAMA_SARAN" name="NAMA_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Nama Anda">
+            <label for="NAMA_SARAN" class="block text-gray-900 text-lg font-semibold">Nama*</label>
+            <input type="text" id="NAMA_SARAN" name="NAMA_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-400 rounded-md focus:ring-2 focus:ring-yellow-500 focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Nama Anda">
         </div>
 
         <div>
-            <label for="EMAIL_SARAN" class="block text-[#2C1011] text-lg font-semibold">Email*</label>
-            <input type="text" id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
+            <label for="EMAIL_SARAN" class="block text-gray-900 text-lg font-semibold">Email*</label>
+            <input type="text" id="EMAIL_SARAN" name="EMAIL_SARAN" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-400 rounded-md focus:ring-2 focus:ring-yellow-500 focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Email Anda">
         </div>
 
         <div>
-            <label for="KOMENTAR_SARAN" class="block text-[#2C1011] text-lg font-semibold">Saran*</label>
-            <textarea id="KOMENTAR_SARAN" name="KOMENTAR_SARAN" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-300 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-[#2C1011] focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
+            <label for="KOMENTAR_SARAN" class="block text-gray-900 text-lg font-semibold">Saran*</label>
+            <textarea id="KOMENTAR_SARAN" name="KOMENTAR_SARAN" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-400 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-yellow-500 focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
         </div>
         <div class="text-center">
-            <button type="submit" id="submitBtn" class="px-8 py-3 bg-[#2C1011] text-white font-bold rounded-lg hover:bg-[#4A2A2C] hover:shadow-lg transition duration-300">Kirim</button>
+            <button type="submit" id="submitBtn" class="px-8 py-3 bg-gray-900 text-yellow-500 font-bold rounded-lg hover:bg-gray-600 hover:shadow-lg transition duration-300">Kirim</button>
         </div>
     </form>
 

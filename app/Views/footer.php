@@ -1,9 +1,9 @@
-<footer class="bg-[#1E0A0B] text-white py-8">
+<footer class="bg-black text-white py-8">
     <div class="container mx-auto px-6">
         <div class="flex flex-wrap justify-between">
             <!-- Left Side: Visit Us -->
             <div class="w-full md:w-1/3 mb-6">
-                <h3 class="text-white text-lg font-semibold mb-4">Visit Us</h3>
+                <h3 class="text-white text-lg font-semibold mb-4">Kunjungi Kami</h3>
                 <p>
                     Jl. Teluk Kelayan No.17, RT.005/RW.001,<br>
                     Kelayan Barat, Kecamatan Banjarmasin Selatan,<br>

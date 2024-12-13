@@ -7,26 +7,26 @@
 
 <!-- Header dengan Latar Gambar -->
 <div class="relative pb-1" 
-     style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center">JADWAL & RESERVASI</h1>
+     style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
+    <div class="container mx-auto px-8 py-40">
+        <h1 class="text-5xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;">JADWAL & RESERVASI</h1>
     </div>
 </div>
 
-<section class="py-12 bg-white px-4 md:px-16">
+<section class="py-12 bg-gray-200 px-4 md:px-16">
     <div class="container mx-auto">
-        <div class="bg-white shadow-md rounded-lg">
+        <div class="bg-gray-200 shadow-md rounded-lg">
             <div class="flex justify-between items-center px-6 py-4">
                 <h2 id="monthYear" class="text-2xl font-semibold text-gray-800"></h2>
 
                 <div class="flex space-x-2">
-                    <button id="today" class="px-4 py-2 text-white rounded-md font-semibold hover:scale-105 hover:bg-yellow-900" 
-                            style="background-color: #2C1011;">Today</button>
+                    <button id="today" class="px-4 py-2 text-yellow-500 rounded-md font-semibold hover:scale-105 hover:bg-yellow-900" 
+                            style="background-color: #111827;">Today</button>
                     <div class="flex space-x-2">
-                        <button id="prev" class="px-4 py-2 text-white rounded-md hover:scale-105 hover:bg-yellow-900" 
-                                style="background-color: #2C1011;">&lt;</button>
-                        <button id="next" class="px-4 py-2 text-white rounded-md hover:scale-105 hover:bg-yellow-900" 
-                                style="background-color: #2C1011;">&gt;</button>
+                        <button id="prev" class="px-4 py-2 text-yellow-500 rounded-md hover:scale-105 hover:bg-yellow-900" 
+                                style="background-color: #111827;">&lt;</button>
+                        <button id="next" class="px-4 py-2 text-yellow-500 rounded-md hover:scale-105 hover:bg-yellow-900" 
+                                style="background-color: #111827;">&gt;</button>
                     </div>
                 </div>
             </div>
@@ -34,15 +34,15 @@
             <!-- Header Hari -->
             <div class="grid grid-cols-7 gap-px bg-gray-300">
                 <?php foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $day): ?>
-                    <div class="text-center py-3" 
-                         style="background-color: #2C1011; color: white; font-weight: 600;">
+                    <div class="text-center py-3 font-yellow-500" 
+                         style="background-color: #111827; color: #f59e0b; font-weight: 600;">
                         <?= $day; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
 
             <!-- Grid Kalender -->
-            <div id="calendar" class="grid grid-cols-7 gap-px bg-white min-h-[80vh]"></div>
+            <div id="calendar" class="grid grid-cols-7 gap-px bg-gray-200 min-h-[80vh]"></div>
         </div>
         <p class="italic">Klik pada tanggal untuk melakukan reservasi.</p>
     </div>
@@ -50,7 +50,7 @@
 
 <!-- Modal Form Reservasi -->
 <div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+    <div class="bg-gray-200 p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
         <form id="reservationForm" action="/reservasi/store" method="post" enctype="multipart/form-data" autocomplete="off">
@@ -114,7 +114,7 @@
 <!-- Dropzone Surat Kunjungan -->
 <div class="mb-6">
     <label class="block text-sm font-medium text-gray-700 mb-2">Surat Kunjungan (Foto/PDF) <i>Max 2MB</i></label>
-    <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzone">
+    <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-200 transition relative" id="dropzone">
         <input type="file" name="surat_reservasi" id="suratReservasi" accept=".pdf, image/*" class="hidden" />
         <div id="dropzoneContent" class="flex flex-col justify-center items-center space-y-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -308,7 +308,7 @@
         for (let day = 1; day <= lastDate; day++) {
             const dayElement = document.createElement('div');
             dayElement.textContent = day;
-            dayElement.className = 'text-center px-2 py-1 bg-white border border-gray-300 rounded hover:bg-yellow-200 cursor-pointer';
+            dayElement.className = 'text-center px-2 py-1 bg-gray-200 border border-gray-300 rounded hover:bg-yellow-200 cursor-pointer';
 
             const today = new Date();
             if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
@@ -413,16 +413,16 @@ fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 // Tangani event drag-and-drop
 dropzone.addEventListener('dragover', (e) => {
     e.preventDefault(); // Menghindari aksi default
-    dropzone.classList.add('bg-gray-100'); // Tambahkan efek hover saat dragover
+    dropzone.classList.add('bg-gray-200'); // Tambahkan efek hover saat dragover
 });
 
 dropzone.addEventListener('dragleave', () => {
-    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover saat dragleave
+    dropzone.classList.remove('bg-gray-200'); // Hapus efek hover saat dragleave
 });
 
 dropzone.addEventListener('drop', (e) => {
     e.preventDefault(); // Menghindari aksi default
-    dropzone.classList.remove('bg-gray-100'); // Hapus efek hover setelah drop
+    dropzone.classList.remove('bg-gray-200'); // Hapus efek hover setelah drop
     const files = e.dataTransfer.files; // Ambil file dari drop
     fileInput.files = files; // Set file input
     handleFiles(files); // Update tampilan

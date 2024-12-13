@@ -3,15 +3,15 @@
 <?= $this->section('content') ?>
 
 <!-- Header dengan Latar Gambar -->
-<div class="relative pb-1" 
-     style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center">TENTANG KAMI</h1>
+<div class="relative pb-1 bg-gray-200" 
+     style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
+    <div class="container mx-auto px-8 py-40">
+        <h1 class="text-5xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;">TENTANG KAMI</h1>
     </div>
 </div>
 
 <!-- Visi Misi Section -->
-<section class="py-12 bg-white px-4 md:px-16">
+<section class="py-12 bg-gray-200 px-4 md:px-16">
     <div class="container mx-auto text-center opacity-0 animate-fade-up">
         <h2 class="text-4xl font-bold text-gray-800 mb-8">VISI & MISI</h2>
         <div class="flex flex-col md:flex-row justify-center space-y-8 md:space-y-0 md:space-x-16">
@@ -62,7 +62,7 @@
 </section>
 
 <!-- Induk Asosiasi Section -->
-<section class="py-12 bg-white px-4 md:px-16">
+<section class="py-12 bg-gray-200 px-4 md:px-16">
     <div class="container mx-auto text-center opacity-0 animate-fade-up">
         <h2 class="text-4xl font-bold text-gray-800 mb-8">INDUK ASOSIASI</h2>
         <div class="flex flex-col md:flex-row items-center justify-center gap-8">
