@@ -3,10 +3,10 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
-use App\Models\BukuTamuModel;
 
 class BukuTamuController extends Controller
 {
+
     public function form()
     {
         helper(['form', 'url']);
@@ -18,7 +18,7 @@ class BukuTamuController extends Controller
 
         // Cek sesi `guestbook_auth`
         if (!session()->get('guestbook_auth')) {
-            return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses untuk halaman ini.');
+            return redirect()->to('/')->with('error', 'Anda tidak memiliki akses untuk halaman ini.');
         }
 
         return view('bukutamu/form_guestbook');

@@ -6,6 +6,7 @@ use CodeIgniter\Config\BaseConfig;
 
 class App extends BaseConfig
 {
+    public $sessionExpiration = 0;  
     public $sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler';
     /**
      * --------------------------------------------------------------------------

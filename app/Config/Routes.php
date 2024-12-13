@@ -51,7 +51,7 @@ $routes->group('reservasi', function ($routes) {
 
 // Grouping Logout dengan Middleware Auth
 $routes->group('logout', ['filter' => 'auth'], function ($routes) {
-    $routes->get('/', 'Auth::logout');
+    $routes->get('/', 'LogoutController::index');
 });
 
 // Grouping untuk SuperAdmin dengan Middleware Auth
