@@ -23,7 +23,7 @@ class KoleksiFaker extends Seeder
 
         $data = [];
 
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 80; $i++) {
             $data[] = [
                 'ID_KKOLEKSI' => $faker->randomElement($idKkoleksiList), // Pilih secara acak dari ID_KKOLEKSI yang ada
                 'USERNAME' => null,

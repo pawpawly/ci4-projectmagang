@@ -22,16 +22,14 @@ class Koleksi extends BaseController
         $keyword = $this->request->getVar('keyword');
         $kategoriId = $this->request->getVar('kategori');
 
-        // Mulai query untuk koleksi
+        // Query untuk koleksi
         $this->koleksiModel->select('koleksi.*, kategori_koleksi.KATEGORI_KKOLEKSI')
             ->join('kategori_koleksi', 'kategori_koleksi.ID_KKOLEKSI = koleksi.ID_KKOLEKSI', 'left');
 
-        // Filter berdasarkan pencarian nama
         if ($keyword) {
             $this->koleksiModel->like('NAMA_KOLEKSI', $keyword);
         }
 
-        // Filter berdasarkan kategori
         if ($kategoriId) {
             $this->koleksiModel->where('koleksi.ID_KKOLEKSI', $kategoriId);
         }
