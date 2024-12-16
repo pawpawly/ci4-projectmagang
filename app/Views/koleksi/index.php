@@ -18,7 +18,7 @@
             <!-- Input Pencarian dengan Tombol X di dalamnya -->
             <div class="relative w-full">
                 <input type="text" name="keyword" placeholder="Cari Koleksi..." 
-                       class="border border-gray-300 p-3 rounded-lg w-full shadow-md focus:outline-none"
+                       class="p-2 w-full border border-gray-400 rounded-md focus:ring-2 focus:ring-yellow-500 focus:outline-none hover:shadow-md transition-shadow duration-200"
                        value="<?= esc($keyword ?? ''); ?>" id="searchInput" oninput="toggleClearButton()">
                 <!-- Tombol X untuk menghapus input -->
                 <button type="button" id="clearButton" onclick="clearSearch()" 
@@ -28,12 +28,12 @@
                 </button>
             </div>
             <button type="submit" 
-                    class="bg-blue-600 text-white px-5 py-3 rounded-lg shadow-md hover:bg-blue-700">
+                    class="bg-gray-900 text-yellow-500 py-2 px-6 rounded-lg hover:bg-gray-600">
                 Cari
             </button>
         </form>
 
-        <select id="filterKategori" class="border border-gray-300 p-3 rounded-lg shadow-md w-full md:w-1/3"
+        <select id="filterKategori" class="p-2 w-full md:w-1/3 border border-gray-400 rounded-md focus:ring-2 focus:ring-yellow-500 focus:outline-none hover:shadow-md transition-shadow duration-200"
                 onchange="location = this.value;">
             <option value="<?= site_url('koleksi'); ?>">Semua Kategori</option>
             <?php foreach ($kategori as $kat): ?>
@@ -47,37 +47,43 @@
 </div>
 
 <!-- Grid Koleksi -->
-<div class="container mx-auto px-8 py-12">
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Grid dengan 5 Kolom untuk Layar Besar -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         <?php if (count($koleksi) > 0): ?>
             <?php foreach ($koleksi as $item): ?>
-                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-2">
-                    <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
-                         alt="<?= esc($item['NAMA_KOLEKSI']); ?>" 
-                         class="w-full h-56 object-cover rounded-t-lg">
-                    <div class="p-5">
-                        <h2 class="text-xl font-bold truncate"><?= esc($item['NAMA_KOLEKSI']); ?></h2>
-                        <p class="mt-2 text-sm text-gray-500">
-                            <?= substr($item['DESKRIPSI_KOLEKSI'], 0, 80); ?>...
+                <!-- Kartu Koleksi -->
+                <div class="bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-2">
+                    <!-- Gambar Koleksi dengan Rasio 1:1 -->
+                    <div class="w-full h-60 aspect-w-1 aspect-h-1">
+                        <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
+                             alt="<?= esc($item['NAMA_KOLEKSI']); ?>" 
+                             class="w-full h-full object-cover rounded-t-lg hover:opacity-75 transition duration-100">
+                    </div>
+                    <!-- Deskripsi Koleksi -->
+                    <div class="p-3 md:p-4">
+                        <h2 class="text-lg font-semibold truncate"><?= esc($item['NAMA_KOLEKSI']); ?></h2>
+                        <p class="mt-1 text-xs md:text-sm text-gray-500">
+                            <?= substr($item['DESKRIPSI_KOLEKSI'], 0, 60); ?>...
                         </p>
                         <a href="<?= site_url('koleksi/detail/' . $item['ID_KOLEKSI']); ?>" 
-                           class="text-blue-500 hover:underline mt-4 block">
+                           class="text-yellow-500 hover:underline mt-2 font-semibold block text-xs md:text-sm">
                             Baca Selengkapnya
                         </a>
                     </div>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p class="text-center text-gray-600">Koleksi tidak ditemukan.</p>
+            <p class="text-center text-gray-600 col-span-full">Koleksi tidak ditemukan.</p>
         <?php endif; ?>
     </div>
-
-    <!-- Pagination -->
-    <div class="mt-10 flex justify-center">
+        <!-- Pagination -->
+        <div class="mt-10 flex justify-center">
         <nav aria-label="Pagination" class="inline-flex space-x-1">
-            <?= $pager->links('default', 'custom_pagination'); ?>
+        <?= $pager->links('default', 'custom_pagination'); ?>
         </nav>
     </div>
+</div>
 </div>
 
 <script>
