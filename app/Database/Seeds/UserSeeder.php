@@ -11,8 +11,9 @@ class UserSeeder extends Seeder
         $data = [
             'USERNAME'      => 'superadmin',
             'NAMA_USER'     => 'superadminTest',
-            'PASSWORD_USER' => password_hash('1', PASSWORD_BCRYPT),
-            'LEVEL_USER'    => '2',
+            'PASSWORD_USER' => password_hash('1', PASSWORD_BCRYPT), // Password default
+            'LEVEL_USER'    => '2', // Role superadmin
+            'USER_TOKEN'    => bin2hex(random_bytes(16)), // Token unik
         ];
 
         // Insert data ke tabel user
