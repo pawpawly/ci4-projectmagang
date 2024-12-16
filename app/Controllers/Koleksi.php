@@ -55,21 +55,24 @@ class Koleksi extends BaseController
             ->join('kategori_koleksi', 'kategori_koleksi.ID_KKOLEKSI = koleksi.ID_KKOLEKSI', 'left')
             ->where('koleksi.ID_KOLEKSI', $id)
             ->first();
-
+    
         if (!$koleksi) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Koleksi dengan ID $id tidak ditemukan.");
         }
-
+    
+        // Tambahkan join untuk relatedKoleksi
         $relatedKoleksi = $this->koleksiModel
-            ->where('ID_KKOLEKSI', $koleksi['ID_KKOLEKSI'])
-            ->where('ID_KOLEKSI !=', $id)
+            ->select('koleksi.*, kategori_koleksi.KATEGORI_KKOLEKSI') // Pastikan KATEGORI_KKOLEKSI disertakan
+            ->join('kategori_koleksi', 'kategori_koleksi.ID_KKOLEKSI = koleksi.ID_KKOLEKSI', 'left')
+            ->where('koleksi.ID_KKOLEKSI', $koleksi['ID_KKOLEKSI'])
+            ->where('koleksi.ID_KOLEKSI !=', $id)
             ->limit(4)
             ->findAll();
-
+    
         return view('koleksi/detail', [
             'title' => $koleksi['NAMA_KOLEKSI'],
             'koleksi' => $koleksi,
             'relatedKoleksi' => $relatedKoleksi,
         ]);
-    }
+    }    
 }
