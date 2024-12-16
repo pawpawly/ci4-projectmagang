@@ -29,6 +29,12 @@ class CreateUserTable extends Migration
                 'constraint' => 1,
                 'null'       => false,
             ],
+            'USER_TOKEN' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true, // Kolom USER_TOKEN dapat bernilai NULL
+                'default'    => null,
+            ],
         ]);
 
         $this->forge->addKey('USERNAME', true); // PRIMARY KEY

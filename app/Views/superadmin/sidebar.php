@@ -175,26 +175,40 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
 
         <!-- Main Content -->
-
-
         <div class="flex-1 p-6 bg-white ml-64">
     <div class="flex justify-end items-center space-x-4 bg-transparent p-4">
-        <div class="relative">
-            <button class="flex items-center space-x-2" onclick="toggleDropdown('userDropdown')">
-                <span class="text-gray-800 font-bold"><?= session()->get('NAMA_USER'); ?></span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-gray-800">
-                  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
-                </svg>
-            </button>
-            <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-600 shadow-lg rounded-lg">
-                <li class="hover:bg-gray-400 font-semibold cursor-pointer">
-                    <a href="<?= site_url('logout'); ?>" class="block px-4 py-2 text-white text-center">
-                        Log Out
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <div class="relative">
+        <button class="flex items-center space-x-2" onclick="toggleDropdown('userDropdown')">
+            <!-- Tampilkan Nama User berdasarkan USER_TOKEN -->
+            <span class="text-gray-800 font-bold">
+                <?php if (session()->has('USER_TOKEN')): ?>
+                    <?= esc(session()->get('NAMA_USER')); ?>
+                <?php else: ?>
+                    Tidak Terautentikasi
+                <?php endif; ?>
+            </span>
+            <!-- Icon User -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-gray-800">
+                <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+            </svg>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-600 shadow-lg rounded-lg">
+            <li class="hover:bg-gray-400 font-semibold cursor-pointer">
+                <!-- Menampilkan Token (Debugging) -->
+                <div class="text-xs px-4 py-2 text-white text-center">
+                    Token: <?= esc(session()->get('USER_TOKEN')); ?>
+                </div>
+            </li>
+            <li class="hover:bg-gray-400 font-semibold cursor-pointer">
+                <a href="<?= site_url('logout'); ?>" class="block px-4 py-2 text-white text-center">
+                    Log Out
+                </a>
+            </li>
+        </ul>
     </div>
+</div>
 
 
             <div class="mt-6">

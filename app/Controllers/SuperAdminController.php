@@ -56,74 +56,86 @@ class SuperAdminController extends Controller
     // Manajemen Pengguna (CRUD)
     // ============================
     public function dashboard()
-{
-    // Pastikan hanya pengguna dengan level superadmin yang bisa mengakses
-    if (!session()->get('isLoggedIn') || session()->get('LEVEL_USER') !== '2') {
-        return redirect()->to(site_url('login'))->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini!');
+    {
+        $session = session();
+        $userModel = new \App\Models\UserModel();
+    
+        // Ambil USER_TOKEN dan USERNAME dari sesi
+        $username = $session->get('username');
+        $userToken = $session->get('USER_TOKEN');
+    
+        // Validasi sesi dan token di database
+        $user = $userModel->where('USERNAME', $username)
+                          ->where('USER_TOKEN', $userToken)
+                          ->first();
+    
+        if (!$session->get('isLoggedIn') || !$user) {
+            $session->destroy();
+            return redirect()->to(site_url('login'))->with('error', 'Sesi Anda tidak valid atau telah berakhir.');
+        }
+    
+        // Tangkap data statistik bulanan dan harian
+        $year = $this->request->getGet('year') ?? date('Y');
+        $date = $this->request->getGet('date') ?? date('Y-m-d');
+    
+        // Ambil tahun yang ada pada data
+        $yearsQuery = $this->db->query("SELECT DISTINCT YEAR(TGLKUNJUNGAN_TAMU) AS tahun FROM bukutamu");
+        $years = array_column($yearsQuery->getResultArray(), 'tahun');
+        sort($years);
+    
+        // Statistik Bulanan
+        $resultBulanan = $this->db->query("
+            SELECT 
+                MONTH(TGLKUNJUNGAN_TAMU) AS bulan, 
+                SUM(JKL_TAMU) AS laki, 
+                SUM(JKP_TAMU) AS perempuan
+            FROM bukutamu 
+            WHERE YEAR(TGLKUNJUNGAN_TAMU) = ?
+            GROUP BY MONTH(TGLKUNJUNGAN_TAMU)
+        ", [$year])->getResultArray();
+    
+        $dataBulanan = [
+            'laki' => array_fill(0, 12, 0),
+            'perempuan' => array_fill(0, 12, 0),
+        ];
+    
+        foreach ($resultBulanan as $row) {
+            $dataBulanan['laki'][$row['bulan'] - 1] = (int) $row['laki'];
+            $dataBulanan['perempuan'][$row['bulan'] - 1] = (int) $row['perempuan'];
+        }
+    
+        // Statistik Harian
+        $resultHarian = $this->db->query("
+            SELECT 
+                SUM(JKL_TAMU) AS laki, 
+                SUM(JKP_TAMU) AS perempuan 
+            FROM bukutamu 
+            WHERE DATE(TGLKUNJUNGAN_TAMU) = ?
+        ", [$date])->getRowArray();
+    
+        $dataHarian = [
+            'laki' => (int) ($resultHarian['laki'] ?? 0),
+            'perempuan' => (int) ($resultHarian['perempuan'] ?? 0),
+        ];
+    
+        // Tambahkan logika untuk statistik grid
+        $pendingReservations = $this->reservasiModel->where('STATUS_RESERVASI', 'pending')->countAllResults();
+        $totalCollections = $this->koleksiModel->countAllResults();
+        $upcomingEvents = $this->eventModel->where('TANGGAL_EVENT >=', date('Y-m-d'))->countAllResults();
+    
+        // Kirim data ke view dashboard
+        return view('superadmin/dashboard', [
+            'dataBulanan' => $dataBulanan,
+            'dataHarian' => $dataHarian,
+            'year' => $year,
+            'date' => $date,
+            'years' => $years,
+            'pendingReservations' => $pendingReservations,
+            'totalCollections' => $totalCollections,
+            'upcomingEvents' => $upcomingEvents,
+        ]);
     }
-
-    // Tangkap data statistik bulanan dan harian
-    $year = $this->request->getGet('year') ?? date('Y');
-    $date = $this->request->getGet('date') ?? date('Y-m-d');
-
-    // Ambil tahun yang ada pada data
-    $yearsQuery = $this->db->query("SELECT DISTINCT YEAR(TGLKUNJUNGAN_TAMU) AS tahun FROM bukutamu");
-    $years = array_column($yearsQuery->getResultArray(), 'tahun');
-    sort($years);
-
-    // Statistik Bulanan
-    $resultBulanan = $this->db->query("
-        SELECT 
-            MONTH(TGLKUNJUNGAN_TAMU) AS bulan, 
-            SUM(JKL_TAMU) AS laki, 
-            SUM(JKP_TAMU) AS perempuan
-        FROM bukutamu 
-        WHERE YEAR(TGLKUNJUNGAN_TAMU) = ?
-        GROUP BY MONTH(TGLKUNJUNGAN_TAMU)
-    ", [$year])->getResultArray();
-
-    // Inisialisasi data bulanan
-    $dataBulanan = [
-        'laki' => array_fill(0, 12, 0),
-        'perempuan' => array_fill(0, 12, 0),
-    ];
-
-    foreach ($resultBulanan as $row) {
-        $dataBulanan['laki'][$row['bulan'] - 1] = (int) $row['laki'];
-        $dataBulanan['perempuan'][$row['bulan'] - 1] = (int) $row['perempuan'];
-    }
-
-    // Statistik Harian
-    $resultHarian = $this->db->query("
-        SELECT 
-            SUM(JKL_TAMU) AS laki, 
-            SUM(JKP_TAMU) AS perempuan 
-        FROM bukutamu 
-        WHERE DATE(TGLKUNJUNGAN_TAMU) = ?
-    ", [$date])->getRowArray();
-
-    $dataHarian = [
-        'laki' => (int) ($resultHarian['laki'] ?? 0),
-        'perempuan' => (int) ($resultHarian['perempuan'] ?? 0),
-    ];
-
-    // Tambahkan logika untuk statistik grid
-    $pendingReservations = $this->reservasiModel->where('STATUS_RESERVASI', 'pending')->countAllResults();
-    $totalCollections = $this->koleksiModel->countAllResults();
-    $upcomingEvents = $this->eventModel->where('TANGGAL_EVENT >=', date('Y-m-d'))->countAllResults();
-
-    // Kirim data ke view dashboard
-    return view('superadmin/dashboard', [
-        'dataBulanan' => $dataBulanan,
-        'dataHarian' => $dataHarian,
-        'year' => $year,
-        'date' => $date,
-        'years' => $years, // Tahun yang tersedia untuk dropdown
-        'pendingReservations' => $pendingReservations,
-        'totalCollections' => $totalCollections,
-        'upcomingEvents' => $upcomingEvents,
-    ]);
-}
+    
 
   
     
@@ -285,15 +297,28 @@ public function updateUser()
 
 public function deleteUser($username)
 {
-    $session = session(); // Inisialisasi session
-    $userModel = new \App\Models\UserModel(); // Pastikan ini model yang benar untuk tabel user Anda
+    $session = session(); // Inisialisasi sesi
+    $userModel = new \App\Models\UserModel(); // Model user
 
     try {
-        // Hapus pengguna berdasarkan username
-        if ($userModel->where('username', $username)->delete()) {
-            // Jika username yang dihapus adalah pengguna yang sedang login
+        // Cari pengguna berdasarkan username
+        $user = $userModel->where('USERNAME', $username)->first();
+
+        if (!$user) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Pengguna tidak ditemukan.'
+            ]);
+        }
+
+        // Hapus pengguna dari database
+        if ($userModel->where('USERNAME', $username)->delete()) {
+            // Hapus token pengguna dari database (opsional, jika Anda menyimpan token secara terpisah)
+            $userModel->update($username, ['USER_TOKEN' => null]);
+
+            // Jika pengguna yang dihapus adalah pengguna aktif
             if ($session->get('username') === $username) {
-                $session->destroy(); // Hapus session
+                $session->destroy(); // Hapus sesi aktif
                 return $this->response->setJSON([
                     'success' => true,
                     'message' => 'Akun Anda telah dihapus. Anda akan diarahkan ke halaman login.',
@@ -312,6 +337,7 @@ public function deleteUser($username)
             'message' => 'Gagal menghapus pengguna.'
         ]);
     } catch (\Exception $e) {
+        // Tangani jika ada error
         return $this->response->setJSON([
             'success' => false,
             'message' => 'Terjadi kesalahan: ' . $e->getMessage()

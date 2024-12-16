@@ -8,9 +8,8 @@ class EventFaker extends Seeder
 {
     public function run()
     {
-        $faker = Factory::create('id_ID'); // Menggunakan bahasa Indonesia
+        $faker = Factory::create('id_ID');
 
-        // Ambil data ID_KEVENT dari tabel kategori_event
         $db = \Config\Database::connect();
         $kategoriEvent = $db->table('kategori_event')->select('ID_KEVENT')->get()->getResultArray();
 
@@ -23,10 +22,10 @@ class EventFaker extends Seeder
 
         $data = [];
 
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $data[] = [
                 'NAMA_EVENT' => $faker->sentence(3),
-                'ID_KEVENT' => $faker->randomElement($idKeventList), // Pilih secara acak dari ID_KEVENT yang ada
+                'ID_KEVENT' => $faker->randomElement($idKeventList),
                 'TANGGAL_EVENT' => $faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
                 'JAM_EVENT' => $faker->time('H:i:s'),
                 'FOTO_EVENT' => null,
@@ -34,7 +33,6 @@ class EventFaker extends Seeder
             ];
         }
 
-        // Insert data ke database
         $this->db->table('event')->insertBatch($data);
     }
 }

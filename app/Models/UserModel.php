@@ -6,9 +6,9 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $table = 'USER';  
+    protected $table = 'USER';
     protected $primaryKey = 'USERNAME';
-    protected $allowedFields = ['USERNAME', 'NAMA_USER', 'PASSWORD_USER', 'LEVEL_USER'];
+    protected $allowedFields = ['USERNAME', 'NAMA_USER', 'PASSWORD_USER', 'LEVEL_USER', 'USER_TOKEN'];
     public $timestamps = false;
 
     public function getUserByUsername($username)
@@ -19,7 +19,7 @@ class UserModel extends Model
     // Fungsi untuk memperbarui user dengan transaksi
     public function updateUserWithTransaction($originalUsername, $data)
     {
-        $db = \Config\Database::connect(); // Pastikan koneksi DB ada
+        $db = \Config\Database::connect(); // Koneksi DB
         $builder = $db->table($this->table);
 
         try {
@@ -40,5 +40,11 @@ class UserModel extends Model
             log_message('error', $e->getMessage());
             return false;
         }
+    }
+
+    // Fungsi untuk memperbarui USER_TOKEN
+    public function updateUserToken($username, $token)
+    {
+        return $this->update($username, ['USER_TOKEN' => $token]);
     }
 }
