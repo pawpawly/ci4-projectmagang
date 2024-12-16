@@ -67,12 +67,6 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-
-                <!-- Tombol Navigasi -->
-                <div class="flex justify-center gap-4 mt-4">
-                    <button class="swiper-button-prev">←</button>
-                    <button class="swiper-button-next">→</button>
-                </div>
             <?php else: ?>
                 <p class="text-center text-gray-500 text-lg mt-2">Tidak ada event yang tersedia saat ini.</p>
             <?php endif; ?>
@@ -218,10 +212,15 @@
 
 
     <style>
+        html, body {
+    overflow-x: hidden; /* Hilangkan overflow horizontal */
+    max-width: 100%; /* Pastikan lebar tidak lebih dari viewport */
+    margin: 0; /* Hapus margin default */
+}
     /* Styling untuk Swiper Event */
     .swiper-container {
         padding-bottom: 2   0px;
-        width: calc(100% - 50px); /* Kurangi 50px kiri dan kanan */
+        width: 100%; /* Kurangi 50px kiri dan kanan */
         margin: 0 auto;
     }
 
@@ -229,6 +228,8 @@
         display: flex;
         justify-content: center;
         margin: 10px 5px; /* Atur jarak antar slide */
+        width: auto; /* Pastikan slide sesuai kontainer */
+        min-width: 0; /* Batasi lebar minimum */
     }
 
     .event-item {
