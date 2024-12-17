@@ -1,3 +1,9 @@
+[![Contributors](https://img.shields.io/github/contributors/pawpawly/ci4-projectmagang)](https://github.com/pawpawly/ci4-projectmagang/graphs/contributors)
+[![Forks](https://img.shields.io/github/forks/pawpawly/ci4-projectmagang)](https://github.com/pawpawly/ci4-projectmagang/network/members)
+[![Stars](https://img.shields.io/github/stars/pawpawly/ci4-projectmagang)](https://github.com/pawpawly/ci4-projectmagang/stargazers)
+[![Issues](https://img.shields.io/github/issues/pawpawly/ci4-projectmagang)](https://github.com/pawpawly/ci4-projectmagang/issues)
+[![License](https://img.shields.io/github/license/pawpawly/ci4-projectmagang)](LICENSE)
+
 # Project Magang - CodeIgniter 4
 
 Proyek ini dikembangkan selama masa magang di **DISBUDPORAPAR bidang kebudayaan**. Website ini dibuat menggunakan **CodeIgniter 4** sebagai framework backend dan **Tailwind CSS** untuk desain antarmuka.
@@ -5,9 +11,9 @@ Proyek ini dikembangkan selama masa magang di **DISBUDPORAPAR bidang kebudayaan*
 ---
 
 ## 📋 Fitur Utama
-- Menampilkan paginasi item dengan format seperti **"Showing 1 to 10 of 97 results"**.
-- Desain antarmuka responsif menggunakan **Tailwind CSS**.
 - Struktur kode bersih dan modular menggunakan **CodeIgniter 4**.
+- Desain antarmuka responsif menggunakan **Tailwind CSS**.
+
 
 ---
 
@@ -18,7 +24,7 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan proyek secara lokal:
 ### Prasyarat
 - **PHP** >= 7.4
 - **Composer**
-- **Web Server** (Apache/Nginx)
+- **Web Server** 
 
 ### Langkah Instalasi
 1. **Clone repositori**:
@@ -115,27 +121,25 @@ ci4-projectmagang/
 
 ## 🛠 Pengembangan Selanjutnya
 Berikut adalah beberapa fitur yang akan dikembangkan di masa mendatang:
-- [ ] Fitur autentikasi pengguna (Login & Register)
-- [ ] CRUD data kebudayaan
-- [ ] Validasi form input
-- [ ] Dokumentasi API (jika diperlukan)
+- [ ] Flipbook
+- [ ] 3D Virtual Tour
+- [ ] Tampilan Untuk Mobile Device
 
 ---
 
 ## 👥 Tim Pengembang
 | Nama                 | Role              | Sosial Media                                      |
 |----------------------|-------------------|--------------------------------------------------|
-| [Nama Anda]          | [Role Anda]       | [IG](#) | [Discord](#) | [GitHub](#)          |
-| [Nama Rekan]         | [Role Rekan]      | [IG](#) | [Discord](#) | [GitHub](#)          |
+| Muhammad Ganang Ramadhan          | Frontend       | [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/username) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/username) [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/pawpawly) |
+| Muhammad Mashaan Navarin        | Backend      | [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/username) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/username) [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/RinnHehe) |
 
 ---
 
 ## 📧 Kontak
 Jika ada pertanyaan atau masukan terkait proyek ini, silakan hubungi:
 
-- **Nama**: Yusuf Habib Wijoyo  
-- **Email**: [Masukkan email Anda]  
-- **GitHub**: [https://github.com/pawpawly](https://github.com/pawpawly)
+- **Nama**: Muhammad Ganang Ramadhan
+- **Email**: - 
 
 ---
 
