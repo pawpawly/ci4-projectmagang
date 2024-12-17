@@ -5,7 +5,7 @@
 <?php helper('month'); ?>
 
 <div class="bg-white min-h-screen">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center mb-">
         <h1 class="text-2xl font-bold">Manajemen Buku Tamu</h1>
         <a href="<?= site_url('superadmin/bukutamu/form') ?>" 
            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
@@ -18,9 +18,8 @@
         </div>
         <p class="mb-4 text-gray-800">Daftar semua tamu yang berkunjung ke museum</p>
         <div class="flex items-center justify-between mb-6">
-            <form method="get" action="<?= site_url('superadmin/bukutamu/manage') ?>" class="flex items-center space-x-4 relative">
+            <form method="get" action="<?= site_url('superadmin/bukutamu/manage') ?>" class="flex items-center space-x-4">
                 <!-- Input Pencarian -->
-                <div class="relative">
                     <input type="text" name="search" placeholder="Cari Nama Tamu..." autocomplete="off" 
                     class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                     value="<?= esc($search) ?>" id="searchInput" oninput="toggleClearButton()">
@@ -30,7 +29,6 @@
                         style="display: none;">
                     ✕
                 </button>
-            </div>
 
                 <!-- Filter Tipe Tamu -->
                 <select name="tipe_tamu" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">

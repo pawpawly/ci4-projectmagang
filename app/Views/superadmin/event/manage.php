@@ -18,7 +18,7 @@
     <form method="get" action="<?= site_url('superadmin/event/manage') ?>" class="flex items-center space-x-4 mb-6">
     <?= csrf_field(); ?>
         <!-- Search Input with Clear Button -->
-        <div class="relative">
+        <div>
             <input type="text" name="search" placeholder="Cari Event..." autocomplete="off"
                    class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                    value="<?= esc($search) ?>" id="searchInput" oninput="toggleClearButton()">
