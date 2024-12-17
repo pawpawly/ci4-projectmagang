@@ -4,9 +4,9 @@
 
 <!-- Header dengan Latar Gambar -->
 <div class="relative pb-1" 
-     style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="container mx-auto px-8 py-24">
-        <h1 class="text-5xl font-bold text-white text-center">FORUM</h1>
+     style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
+    <div class="container mx-auto px-8 py-40">
+        <h1 class="text-5xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;">FORUM</h1>
     </div>
 </div>
 
@@ -19,18 +19,22 @@
                         <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>">
                             <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
                                  alt="<?= esc($item['NAMA_BERITA']); ?>"
-                                 class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                                 class="w-full h-48 object-cover transition-transform hover:opacity-75 transition duration-200 group-hover:scale-110">
                         </a>
                     </div>
                     <p class="text-gray-600 mt-2"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
                     <h3 class="forum-title mt-1 text-lg font-semibold">
                         <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
-                           class="text-black transition duration-300 ease-in-out group-hover:text-red-400">
+                           class="text-black transition duration-300 ease-in-out group-hover:text-yellow-500 hover:underline">
                             <?= esc($item['NAMA_BERITA']); ?>
                         </a>
                     </h3>
                 </div>
             <?php endforeach; ?>
+        </div>
+        <!-- Pagination -->
+        <div class="mt-10 flex justify-center">
+            <?= $pager->links('default', 'custom_pagination'); ?>
         </div>
     <?php else: ?>
         <p class="text-center text-gray-500">Tidak ada berita yang ditemukan.</p>

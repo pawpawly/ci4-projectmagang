@@ -6,7 +6,7 @@
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
     <div class="container mx-auto px-8 py-40">
-        <h1 class="text-5xl font-bold text-black text-center" style="position: relative; top: -80px;">
+        <h1 class="text-3xl font-bold text-black text-center" style="position: relative; top: -80px;">
             <?= esc($koleksi['NAMA_KOLEKSI']); ?>
         </h1>
     </div>
