@@ -18,7 +18,13 @@
     <h1 class="text-6xl font-bold mb-4">404</h1>
     <p class="text-2xl mb-6">Halaman tidak ditemukan</p>
     <p class="mb-8">Maaf, kami tidak dapat menemukan halaman yang Anda cari.</p>
-    <a href="<?= site_url('/'); ?>" class="text-blue-400 underline">← Kembali ke halaman utama</a>
+    <a href="<?= site_url('/'); ?>" class="text-blue-400 font-semibold hover:text-blue-600 hover:underline">← Kembali ke halaman utama</a>
   </div>
 </body>
+
+    <!-- Footer -->
+    <footer class="absolute bottom-0 w-full py-6">
+        <div class="max-w-4xl mx-auto text-center text-xs text-white">&copy; 2024 Made With Love💕 By <strong class="font-semibold"> Admin NPC POLIBAN🍪</strong>
+        </div>
+    </footer>
 </html>
