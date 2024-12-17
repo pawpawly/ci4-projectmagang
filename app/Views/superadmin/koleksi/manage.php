@@ -13,10 +13,10 @@
     <p class="mb-4 text-gray-800">Daftar semua event di Website Anda</p>
 
     <div class="flex items-center justify-between mb-6">
-    <form method="get" action="<?= site_url('superadmin/koleksi/manage') ?>" class="flex items-center space-x-4 relative">
+    <form method="get" action="<?= site_url('superadmin/koleksi/manage') ?>" class="flex items-center space-x-4">
     <?= csrf_field(); ?>
         <!-- Input Pencarian dengan Tombol X di dalamnya -->
-        <div class="relative">
+        <div>
             <input type="text" name="search" placeholder="Cari Koleksi..." autocomplete="off"
                    class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                    value="<?= esc(service('request')->getGet('search')) ?>" id="searchInput" oninput="toggleClearButton()">

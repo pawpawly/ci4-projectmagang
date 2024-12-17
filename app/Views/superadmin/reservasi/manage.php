@@ -16,7 +16,6 @@
         <form method="get" action="<?= site_url('superadmin/reservasi/manage') ?>" class="flex items-center space-x-4">
         <?= csrf_field(); ?>
             <!-- Input Pencarian -->
-            <div class="relative">
                 <input type="text" name="search" placeholder="Cari Nama atau Instansi..." autocomplete="off"
                        class="px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
                        value="<?= esc($search) ?>" id="searchInput" oninput="toggleClearButton()">
@@ -27,7 +26,7 @@
                         style="display: none;">
                     ✕
                 </button>
-            </div>
+           
 
             <!-- Filter Status Reservasi -->
             <select name="status" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
