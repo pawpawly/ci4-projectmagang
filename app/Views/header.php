@@ -3,7 +3,7 @@
 <header id="navbar" class="fixed top-0 left-0 w-full z-20 transition-all duration-300 bg-transparent">
   <div class="container mx-auto flex justify-between items-center py-4 px-6">
     <div class="logo">
-      <a href="#"><img src="<?= base_url('pict/iconmuseumabu.png'); ?>" alt="Logo" class="h-10"></a>
+      <a href="<?= site_url('./');?>"><img src="<?= base_url('pict/iconmuseumabu.png'); ?>" alt="Logo" class="h-10"></a>
     </div>
 
     <!-- Membungkus navigasi dengan div flex untuk memastikan center alignment -->

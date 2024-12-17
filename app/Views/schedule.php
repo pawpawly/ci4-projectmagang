@@ -136,16 +136,61 @@
     </div>
 </div>
 
+<!-- Tombol Scroll to Top -->
+<button id="scrollTopButton" 
+    class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-yellow-500 shadow-lg 
+    flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 font-bold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+    </svg>
+</button>
+
 
 <!-- Tambahkan SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <script>
-    // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
+   // Intersection Observer untuk menjalankan animasi saat elemen terlihat di layar
+   const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.remove('opacity-0'); // Hapus opacity-0 saat terlihat
+      entry.target.classList.add('show'); // Tambahkan kelas show
+    }
+  });
+}, { threshold: 0.1 });
+
+// Terapkan observer ke semua elemen dengan kelas animate-fade-up
+document.querySelectorAll('.animate-fade-up').forEach((el) => {
+  observer.observe(el);
+});
+
+
+    // Scroll ke bagian atas saat halaman dimuat atau di-refresh
     window.onbeforeunload = function () {
-        window.scrollTo(0, 0);
+      window.scrollTo(0, 0);
     };
+
+    // Scroll ke atas ketika tombol diklik
+document.getElementById('scrollTopButton').addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// Pantau scroll dan tampilkan/hilangkan tombol
+window.addEventListener('scroll', () => {
+    const scrollTopButton = document.getElementById('scrollTopButton');
+    if (window.scrollY > 100) { // Jika scroll lebih dari 100px
+        scrollTopButton.classList.add('opacity-100');
+        scrollTopButton.classList.remove('opacity-0', 'pointer-events-none');
+    } else {
+        scrollTopButton.classList.remove('opacity-100');
+        scrollTopButton.classList.add('opacity-0', 'pointer-events-none');
+    }
+});
 
     document.querySelector('input[name="jmlpengunjung_reservasi"]').addEventListener('input', function () {
         if (this.value < 0) {
