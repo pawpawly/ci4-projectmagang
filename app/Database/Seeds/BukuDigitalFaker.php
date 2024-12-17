@@ -12,7 +12,7 @@ class BukuDigitalFaker extends Seeder
 
         $data = [];
 
-        for ($i = 0; $i < 600; $i++) {
+        for ($i = 0; $i < 80; $i++) {
             $data[] = [
                 'JUDUL_BUKU' => $faker->sentence,
                 'PENULIS_BUKU' => $faker->name,

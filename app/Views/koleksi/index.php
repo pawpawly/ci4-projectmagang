@@ -63,12 +63,15 @@
                     <!-- Deskripsi Koleksi -->
                     <div class="p-3 md:p-4">
                         <h2 class="text-lg font-semibold truncate"><?= esc($item['NAMA_KOLEKSI']); ?></h2>
+                        <span class="inline-block px-2 py-1 bg-yellow-200 text-yellow-700 font-semibold rounded-lg text-xs uppercase">
+                                <?= esc($item['KATEGORI_KKOLEKSI']); ?>
+                            </span>
                         <p class="mt-1 text-xs md:text-sm text-gray-500">
                             <?= substr($item['DESKRIPSI_KOLEKSI'], 0, 60); ?>...
                         </p>
                         <a href="<?= site_url('koleksi/detail/' . $item['ID_KOLEKSI']); ?>" 
-                           class="text-yellow-500 hover:underline mt-2 font-semibold block text-xs md:text-sm">
-                            Baca Selengkapnya
+                           class="bg-gray-900 text-yellow-500 font-semibold hover:underline py-2 px-6 rounded-lg hover:bg-gray-600 mt-2 inline-block text-xs">
+                            Lihat Detail
                         </a>
                     </div>
                 </div>

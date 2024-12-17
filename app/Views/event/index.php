@@ -27,13 +27,13 @@
                     <!-- Bagian Konten -->
                     <div class="w-full md:w-2/3 p-6">
                         <h2 class="text-2xl font-semibold truncate"><?= esc($event['NAMA_EVENT']); ?></h2>
-                        <p class="text-gray-500 text-sm mt-1">
+                        <p class="text-gray-500 font-semibold text-sm mt-1">
                             <?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?> - <?= date('H:i', strtotime($event['JAM_EVENT'])); ?> WITA
                         </p>
-                        <p class="mt-2 text-sm font-semibold text-gray-600 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
+                        <p class="mt-2 text-sm text-gray-600 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
 
                         <div class="mt-4">
-                            <span class="inline-block px-2 py-1 bg-yellow-200 text-yellow-700 font-semibold rounded-lg text-xs">
+                            <span class="inline-block px-2 py-1 bg-yellow-200 text-yellow-700 font-semibold rounded-lg text-xs uppercase">
                                 <?= esc($event['KATEGORI_KEVENT']); ?>
                             </span>
                         </div>

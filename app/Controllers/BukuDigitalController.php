@@ -16,17 +16,24 @@ class BukuDigitalController extends BaseController
     public function index()
     {
         $keyword = $this->request->getVar('keyword');
-        $bukudigital = $keyword
-            ? $this->bukuDigitalModel->like('JUDUL_BUKU', $keyword)->findAll(8)
-            : $this->bukuDigitalModel->findAll(8);
-
-            return view('bukudigital/index', [
-                'bukudigital' => $bukudigital,
-                'keyword' => $keyword,
-                'title' => 'Daftar E-Book' // Tambahkan title di sini
-            ]);
-            
+    
+        $this->bukuDigitalModel->select('*'); // Mulai query buku digital
+    
+        if ($keyword) {
+            $this->bukuDigitalModel->like('JUDUL_BUKU', $keyword);
+        }
+    
+        $bukudigital = $this->bukuDigitalModel->paginate(8); // Tambahkan paginate
+        $pager = $this->bukuDigitalModel->pager;
+    
+        return view('bukudigital/index', [
+            'bukudigital' => $bukudigital,
+            'pager' => $pager,
+            'keyword' => $keyword,
+            'title' => 'Daftar E-Book'
+        ]);
     }
+    
 
     public function detail($id)
     {

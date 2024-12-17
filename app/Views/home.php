@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <section class="relative">
         <div class="relative w-full h-[500px] overflow-hidden">
-            <img src="<?= base_url('pict/museumkuning.png'); ?>" alt="Museum Kayuh Baimbai" class="absolute inset-0 w-full h-full object-cover">
+            <img src="<?= base_url('pict/museum.png'); ?>" alt="Museum Kayuh Baimbai" class="absolute inset-0 w-full h-full object-cover">
         </div>
         <div class="absolute inset-x-0 bottom-0 text-center bg-gradient-to-t from-gray-900/80 to-transparent py-20">
             <div class="container mx-auto">
@@ -75,7 +75,7 @@
 
 
     <!-- Forum Section -->
-    <section class="py-12 bg-gray-200">
+    <section class="py-12 bg-gray-900">
         <div class="container mx-auto px-8">
             <div class="relative text-center">
                 <h2 class="event-overlay">FORUM</h2> <!-- Overlay -->
