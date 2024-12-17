@@ -14,7 +14,7 @@
             </div>
         </div>
     </section>
-
+        
     <!-- Section Icon -->
     <section class="py-5 mx-2 md:mx-10" style="background-image: url('<?= base_url('pict/sasiranganabu2.png'); ?>'); background-size: cover; background-position: center;">
         <div class="container mx-auto text-center">
@@ -35,7 +35,84 @@
         </div>
     </section>
 
+<!-- ==================================================================================== -->
 
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<!-- Section Koleksi -->
+<section class="py-12 bg-gray-200">
+    <div class="container mx-auto px-8">
+
+
+        <!-- Judul Section -->
+        <div class="relative text-center mb-8">
+            <h2 class="event-overlay text-6xl font-extrabold text-gray-200 mb-2">KOLEKSI</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Koleksi</h2>
+        </div>
+
+        <!-- Teks Informasi Koleksi -->
+        <div class="text-center mb-8">
+            <p class="text-gray-700 text-lg md:text-lg">
+                Temui lebih dari <strong class="font-bold"><?= esc($jumlahKoleksi); ?> koleksi</strong>
+                warisan budaya Banjar, yang menggambarkan perjalanan sejarah, tradisi, dan kehidupan masyarakat Banjar dari masa ke masa. <br>Rasakan pengalaman menyelami kekayaan budaya yang terus hidup di hati warga Banua.
+            </p>
+        </div>
+
+        <!-- Swiper Slider -->
+        <div class="swiper koleksi-slider">
+            <div class="swiper-wrapper">
+                <?php foreach ($koleksi as $item): ?>
+                    <!-- Slide Koleksi -->
+                    <div class="swiper-slide flex justify-center items-center">
+                        <div class="relative flex w-[100%] max-w-4xl h-[300px] md:h-[400px] bg-white shadow-lg rounded-lg overflow-hidden">
+                            <!-- Gambar Koleksi -->
+                            <div class="relative w-full h-full">
+                                <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
+                                     alt="<?= esc($item['NAMA_KOLEKSI']); ?>" 
+                                     class="absolute inset-0 w-full h-full object-cover">
+                            </div>
+                            <!-- Deskripsi Koleksi (Hanya di Slide Tengah) -->
+                            <div class="deskripsi hidden absolute inset-0 flex flex-col justify-center p-6 bg-white opacity-0 transition-opacity duration-300">
+                                <h3 class="text-lg md:text-2xl font-bold mb-2 text-gray-800"><?= esc($item['NAMA_KOLEKSI']); ?></h3>
+                                <p class="text-sm md:text-base text-gray-600 leading-relaxed line-clamp-3">
+                                    <?= substr(esc($item['DESKRIPSI_KOLEKSI']), 0, 100); ?>...
+                                </p>
+                                <a href="<?= site_url('koleksi/detail/' . $item['ID_KOLEKSI']); ?>" 
+                                   class="mt-4 text-yellow-500 font-semibold text-sm hover:underline">
+                                    Selengkapnya →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Tombol Lihat Koleksi Lebih Banyak -->
+        <div class="text-center mt-8">
+            <a href="<?= site_url('koleksi'); ?>" 
+               class="inline-block bg-gray-900 text-yellow-500 py-2 px-6 rounded-lg font-semibold shadow-lg hover:bg-gray-600 transition duration-300">
+                Lihat Koleksi Lebih Banyak
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+<!-- ==================================================================================== -->
 
     <!-- Section Event -->
     <section class="py-12 bg-gray-200">
@@ -185,7 +262,7 @@
                 <h2 class="event-overlay text-6xl font-extrabold text-gray-200 mb-2">SARAN</h2>
                 <h2 class="text-4xl font-bold text-gray-900 mb-4 hover:scale-105 transition-transform duration-300">SARAN</h2>
             </div>
-            <p class="text-gray-900 text-center">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
+            <p class="text-gray-700 text-center md:text-lg px-20">Kami sangat menghargai masukan dan saran Anda untuk meningkatkan layanan kami.</p>
             <div class="max-w-3xl mx-auto p-10">
             <form id="saranForm" class="space-y-8" autocomplete="off">
 
@@ -401,6 +478,55 @@
             grid-template-columns: 1fr;
         }
     }
+
+    /* ============================================ */
+    .koleksi-slider {
+    width: 100%;
+    overflow: hidden;
+}
+
+.koleksi-slider .swiper-slide {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0.5;
+    transform: scale(0.8); /* Slide kiri-kanan lebih kecil */
+}
+
+.koleksi-slider .swiper-slide-active {
+    opacity: 1;
+    transform: scale(1); /* Slide tengah lebih besar */
+    z-index: 10;
+}
+
+/* Tampilkan deskripsi hanya untuk slide aktif */
+.koleksi-slider .swiper-slide-active .deskripsi {
+    opacity: 1;
+    display: flex;
+}
+
+.koleksi-slider .swiper-slide .deskripsi {
+    display: none; /* Sembunyikan deskripsi di slide lain */
+}
+
+/* Hilangkan jarak antar slide */
+.koleksi-slider .swiper-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+
+
+
+    /* ============================================ */
 
 
     </style>
@@ -750,9 +876,26 @@ window.addEventListener('scroll', () => {
 
     // Inisialisasi awal
     updateCarousel(currentIndex);
-
-
-
     </script>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Swiper Koleksi
+        new Swiper('.koleksi-slider', {
+            loop: true,
+            centeredSlides: true,
+            slidesPerView: 3, // Hanya tampilkan 3 koleksi
+            spaceBetween: 0,  // Hilangkan jarak antar slide
+            grabCursor: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+        });
+    });
+</script>
+
+
 
     <?= $this->endSection() ?>
