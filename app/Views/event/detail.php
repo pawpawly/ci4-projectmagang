@@ -6,7 +6,7 @@
 <div class="relative pb-1" 
      style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
     <div class="container mx-auto px-8 py-40">
-        <h1 class="text-5xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;"><?= esc($event['NAMA_EVENT']); ?></h1>
+        <h1 class="text-4xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;"><?= esc($event['NAMA_EVENT']); ?></h1>
         <p class="text-xl text-gray-800 font-semibold text-center mt-4" style="position: relative; top: -80px;">Detail Event</p>
     </div>
 </div>

@@ -4,9 +4,10 @@
 
 <!-- Header dengan Latar Gambar -->
 <div class="relative pb-1" 
-     style="background-image: url('<?= base_url('pict/headerbg.png'); ?>'); background-size: cover; background-position: center;">
-    <div class="container mx-auto px-8 py-24">
-        <h1 class="text-3xl font-bold text-white text-center"><?= esc($berita['NAMA_BERITA']); ?></h1>
+     style="background-image: url('<?= base_url('pict/waveyellow5.png'); ?>'); background-size: cover; background-position: center;">
+    <div class="container mx-auto px-8 py-40">
+        <h1 class="text-4xl font-bold text-gray-800 text-center" style="position: relative; top: -80px;">
+            <?= esc($berita['NAMA_BERITA']); ?></h1>
     </div>
 </div>
 
@@ -40,7 +41,7 @@
                             </a>
                             <div class="flex-1">
                                 <a href="<?= site_url('berita/' . urlencode($post['NAMA_BERITA'])); ?>" 
-                                   class="text-lg font-semibold hover:text-red-400 transition duration-300 ease-in-out line-clamp-2">
+                                   class="text-lg font-semibold hover:text-yellow-400 hover:underline transition duration-200 ease-in-out line-clamp-2">
                                     <?= esc($post['NAMA_BERITA']); ?>
                                 </a>
                                 <p class="text-sm text-gray-600"><?= formatTanggalIndonesia($post['TANGGAL_BERITA']); ?></p>

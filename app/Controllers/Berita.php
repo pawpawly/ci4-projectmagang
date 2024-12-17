@@ -15,13 +15,18 @@ class Berita extends BaseController
 
     public function index()
     {
+        // Tentukan jumlah item per halaman
+        $perPage = 6;
+    
         $data = [
-            'title' => 'Daftar Berita', // Tambahkan variabel title
-            'berita' => $this->beritaModel->orderBy('TANGGAL_BERITA', 'DESC')->findAll()
+            'title' => 'Daftar Berita',
+            'berita' => $this->beritaModel->orderBy('TANGGAL_BERITA', 'DESC')->paginate($perPage, 'default'),
+            'pager' => $this->beritaModel->pager, // Tambahkan pager
         ];
     
-        return view('berita/index', $data); // Kirim data ke view
+        return view('berita/index', $data);
     }
+
     
     public function detail($slug)
     {

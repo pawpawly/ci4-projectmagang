@@ -1,21 +1,22 @@
-    <?= $this->extend('layout') ?>
+    <?= $this->extend('homelayout') ?>
 
     <?= $this->section('content') ?>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
     <section class="relative">
         <div class="relative w-full h-[500px] overflow-hidden">
             <img src="<?= base_url('pict/museum.png'); ?>" alt="Museum Kayuh Baimbai" class="absolute inset-0 w-full h-full object-cover">
         </div>
         <div class="absolute inset-x-0 bottom-0 text-center bg-gradient-to-t from-gray-900/80 to-transparent py-20">
             <div class="container mx-auto">
-                <h2 class="text-4xl font-bold leading-snug text-white hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Museum Kayuh Baimbai Kota Banjarmasin</h2>
+                <h2 class="text-4xl font-bold leading-snug text-gray-100 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Museum Kayuh Baimbai Kota Banjarmasin</h2>
                 <p class="mt-4 text-lg text-gray-300 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">"Merawat Tradisi, Mengayuh Sejarah, dan Menginspirasi Generasi."</p>
             </div>
         </div>
     </section>
 
     <!-- Section Icon -->
-    <section class="py-5 mx-2 md:mx-10" style="background-image: url('<?= base_url('pict/sasiranganabu.png'); ?>'); background-size: cover; background-position: center;">
+    <section class="py-5 mx-2 md:mx-10" style="background-image: url('<?= base_url('pict/sasiranganabu2.png'); ?>'); background-size: cover; background-position: center;">
         <div class="container mx-auto text-center">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="group flex justify-center">
@@ -75,7 +76,7 @@
 
 
     <!-- Forum Section -->
-    <section class="py-12 bg-gray-900">
+    <section class="py-12 bg-gray-200">
         <div class="container mx-auto px-8">
             <div class="relative text-center">
                 <h2 class="event-overlay">FORUM</h2> <!-- Overlay -->
@@ -88,18 +89,21 @@
                         <!-- 2 berita per baris pada layar medium dan besar -->
                         <?php foreach (array_slice($berita, 0, 3) as $item): ?>
                             <div class="forum-card relative">
-                                <div class="forum-image-wrapper overflow-hidden rounded-lg">
-                                    <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>"> 
-                                        <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
-                                            alt="<?= esc($item['NAMA_BERITA']); ?>"
-                                            class="forum-image transition-transform duration-300 ease-in-out hover:scale-105">
-                                    </a>
-                                </div>
-                                <div class="absolute bottom-4 left-4 text-white">
+                            <div class="forum-image-wrapper overflow-hidden rounded-lg relative">
+                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>"> 
+                                    <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
+                                         alt="<?= esc($item['NAMA_BERITA']); ?>"
+                                         class="forum-image transition-transform duration-300 ease-in-out hover:scale-105">
+                                    <!-- Inner Shadow -->
+                                    <div class="absolute inset-0 pointer-events-none rounded-lg" 
+                                         style="box-shadow: inset 0 -30px 100px -10px rgba(0, 0, 0, 0.5);"></div>
+                                </a>
+                            </div>
+                                <div class="absolute bottom-4 left-4 text-gray-100">
                                     <p class="text-sm"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
                                     <h3 class="mt-1 text-xl font-semibold">
                                         <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
-                                        class="hover:text-red-400 transition duration-300 ease-in-out">
+                                        class="hover:text-yellow-600 transition duration-300 ease-in-out">
                                             <?= esc($item['NAMA_BERITA']); ?>
                                         </a>
                                     </h3>
