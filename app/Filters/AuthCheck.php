@@ -17,7 +17,7 @@ class AuthCheck implements FilterInterface
         // Cek jika user belum login atau tidak memiliki token
         if (!$session->get('isLoggedIn') || !$session->get('USER_TOKEN')) {
             $session->destroy();
-            return redirect()->to('/login')->with('error', 'Sesi Anda tidak valid atau telah berakhir.');
+            return redirect()->to('/')->with('error', 'Sesi Anda tidak valid atau telah berakhir.');
         }
 
         // Ambil user dari database berdasarkan username dan validasi token
@@ -29,7 +29,7 @@ class AuthCheck implements FilterInterface
         // Validasi USER_TOKEN
         if (!$user || $user['USER_TOKEN'] !== $userToken) {
             $session->destroy();
-            return redirect()->to('/login')->with('error', 'Sesi tidak valid atau telah berakhir.');
+            return redirect()->to('/')->with('error', 'Sesi tidak valid atau telah berakhir.');
         }
     }
 

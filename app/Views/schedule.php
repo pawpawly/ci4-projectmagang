@@ -57,6 +57,7 @@
         <?= csrf_field(); ?> 
             <input type="hidden" name="tanggal_reservasi" id="selectedDate">
 
+
             <!-- Grid untuk Form -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Nama -->
@@ -125,6 +126,11 @@
     </div>
 </div>
 
+<div class="mb-4">
+    <div class="g-recaptcha" data-sitekey="6Lex854qAAAAAOXI-dTJvt2LLR85jJF63NRXPePe"></div>
+</div>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
             <div class="flex justify-end">
                 <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
                 <button type="submit" id="submitBtn" class="px-4 py-2 bg-yellow-500 text-white rounded flex items-center justify-center">
@@ -151,6 +157,8 @@
 
 
 <script>
+
+    
    // Intersection Observer untuk menjalankan animasi saat elemen terlihat di layar
    const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -216,6 +224,19 @@ window.addEventListener('scroll', () => {
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
     </svg>`;
+
+    document.getElementById('reservationForm').addEventListener('submit', function (event) {
+    const recaptcha = document.querySelector('.g-recaptcha-response').value;
+
+    if (!recaptcha) {
+        event.preventDefault(); // Cegah form dikirim
+        Swal.fire({
+            icon: 'warning',
+            title: 'Captcha Tidak Valid',
+            text: 'Silakan centang kotak reCAPTCHA sebelum mengirim form.',
+        });
+    }
+});
 
     // Validasi field kosong
     if (!nama || !email || !noWhatsapp || !kegiatan || !jumlahAnggota || !file) {
@@ -424,16 +445,31 @@ window.addEventListener('scroll', () => {
     const dropzoneText = document.getElementById('dropzoneText');
 
 // Fungsi untuk memproses file yang diunggah
-function handleFiles(files) {
+function handleFiles(files, allowedFormats, maxSizeMB) {
     const file = files[0];
 
     if (file) {
-        // Cek ukuran file (maksimal 2MB)
-        if (file.size > 2 * 1024 * 1024) {
+        const fileExtension = file.name.split('.').pop().toLowerCase(); // Ekstensi file
+        const dropzoneText = document.getElementById('dropzoneText'); // Elemen untuk teks dropzone
+
+        // Validasi format file
+        if (!allowedFormats.includes(fileExtension)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Ukuran file yang Anda unggah melebihi 2MB.',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.'
+                title: 'Jenis File Tidak Valid',
+                text: `Hanya file dengan format ${allowedFormats.join(', ')} yang diperbolehkan.`,
+            });
+            fileInput.value = ''; // Reset input file
+            dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks
+            return;
+        }
+
+        // Validasi ukuran file
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: `Ukuran file yang Anda unggah melebihi ${maxSizeMB}MB.`,
+                text: `Silakan unggah file dengan ukuran maksimal ${maxSizeMB}MB.`,
             });
             fileInput.value = ''; // Reset input file
             dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks
@@ -447,13 +483,15 @@ function handleFiles(files) {
     }
 }
 
-// Fungsi untuk memanggil file input saat dropzone diklik
+// Tangani event klik pada dropzone
 dropzone.addEventListener('click', () => {
     fileInput.click(); // Membuka dialog file
 });
 
 // Update file yang dipilih melalui file input
-fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+fileInput.addEventListener('change', () => {
+    handleFiles(fileInput.files, ['pdf', 'png', 'jpg', 'jpeg'], 2); // Hanya menerima PDF, PNG, JPG dengan ukuran maksimal 2MB
+});
 
 // Tangani event drag-and-drop
 dropzone.addEventListener('dragover', (e) => {
@@ -470,11 +508,11 @@ dropzone.addEventListener('drop', (e) => {
     dropzone.classList.remove('bg-gray-200'); // Hapus efek hover setelah drop
     const files = e.dataTransfer.files; // Ambil file dari drop
     fileInput.files = files; // Set file input
-    handleFiles(files); // Update tampilan
+    handleFiles(files, ['pdf', 'png', 'jpg', 'jpeg'], 2); // Validasi file dengan format dan ukuran
 });
 
 // Reset saat file input dibatalkan
-fileInput.addEventListener('click', function() {
+fileInput.addEventListener('click', function () {
     if (!fileInput.files.length) {
         dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks saat Cancel
     }

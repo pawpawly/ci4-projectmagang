@@ -51,7 +51,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
-                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+                    <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
                 </div>
             </div>
             <?php if ($bukudigital['SAMPUL_BUKU']): ?>
@@ -68,7 +68,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
-                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+                    <p class="text-sm text-gray-500">Drop files here or click to upload (Max 40MB, PDF)</p>
                 </div>
             </div>
             <?php if ($bukudigital['PRODUK_BUKU']): ?>
@@ -169,66 +169,100 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// Handler untuk Dropzone Sampul Buku dan Produk Buku
 document.addEventListener('DOMContentLoaded', () => {
-    // Dropzone untuk Sampul Buku (maks 2MB)
+    // Fungsi setup Dropzone
+    function setupDropzone(dropzone, fileInput, maxFileSizeMB, allowedTypes, labelContent) {
+        const textElement = dropzone.querySelector('p');
+
+        // Event klik untuk membuka file picker
+        dropzone.addEventListener('click', () => fileInput.click());
+
+        // Event saat file di-drag ke dropzone
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('bg-gray-200'); // Highlight dropzone
+        });
+
+        // Event saat file keluar dari dropzone
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('bg-gray-200'); // Hapus highlight
+        });
+
+        // Event saat file di-drop ke dropzone
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('bg-gray-200');
+            const file = e.dataTransfer.files[0];
+            handleFile(file, fileInput, textElement, maxFileSizeMB, allowedTypes);
+        });
+
+        // Event file dipilih melalui file picker
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            handleFile(file, fileInput, textElement, maxFileSizeMB, allowedTypes);
+        });
+
+        // Fungsi untuk validasi file
+        function handleFile(file, input, textElement, maxSizeMB, allowedTypes) {
+            if (!file) return;
+
+            // Validasi tipe file
+            const fileType = file.type;
+            const allowed = allowedTypes.some((type) => fileType.includes(type));
+            if (!allowed) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Jenis File Tidak Valid',
+                    text: `Hanya file ${allowedTypes.join(', ')} yang diperbolehkan.`,
+                });
+                input.value = '';
+                resetDropzoneContent();
+                return;
+            }
+
+            // Validasi ukuran file
+            if (file.size > maxSizeMB * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ukuran File Terlalu Besar',
+                    text: `Ukuran file melebihi ${maxSizeMB}MB!`,
+                });
+                input.value = '';
+                resetDropzoneContent();
+                return;
+            }
+
+            // Set file ke input
+            input.files = createFileList(file);
+            textElement.textContent = `File Terpilih: ${file.name}`;
+            textElement.classList.remove('text-gray-500');
+            textElement.classList.add('text-green-500');
+        }
+
+        // Fungsi untuk mereset dropzone
+        function resetDropzoneContent() {
+            textElement.textContent = labelContent;
+            textElement.classList.add('text-gray-500');
+            textElement.classList.remove('text-green-500');
+        }
+
+        // Fungsi untuk membuat FileList baru
+        function createFileList(file) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            return dataTransfer.files;
+        }
+    }
+
+    // Inisialisasi Dropzone Sampul Buku (hanya .jpg, .jpeg, .png)
     const dropzoneSampul = document.getElementById('dropzoneSampul');
     const sampulBukuInput = document.getElementById('sampulBukuInput');
-    const dropzoneContentSampul = document.getElementById('dropzoneContentSampul');
+    setupDropzone(dropzoneSampul, sampulBukuInput, 2, ['jpeg', 'jpg', 'png'], 'Drop files here or click to upload');
 
-    dropzoneSampul.addEventListener('click', () => sampulBukuInput.click());
-    sampulBukuInput.addEventListener('change', () => {
-        const file = sampulBukuInput.files[0];
-        const textElement = dropzoneContentSampul.querySelector('p');
-        if (!file) {
-            resetDropzoneContent(textElement);
-        } else if (file.size > 2 * 1024 * 1024) { // 2MB limit for Sampul Buku
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran Sampul Buku Terlalu Besar',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-            });
-            sampulBukuInput.value = ''; // Reset file input
-            resetDropzoneContent(textElement);
-        } else {
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        }
-    });
-
-    // Dropzone untuk Produk Buku (maks 40MB)
+    // Inisialisasi Dropzone File Produk Buku (hanya .pdf)
     const dropzoneFile = document.getElementById('dropzoneFile');
     const fileBukuInput = document.getElementById('fileBukuInput');
-    const dropzoneContentFile = document.getElementById('dropzoneContentFile');
-
-    dropzoneFile.addEventListener('click', () => fileBukuInput.click());
-    fileBukuInput.addEventListener('change', () => {
-        const file = fileBukuInput.files[0];
-        const textElement = dropzoneContentFile.querySelector('p');
-        if (!file) {
-            resetDropzoneContent(textElement);
-        } else if (file.size > 40 * 1024 * 1024) { // 40MB limit for Produk Buku
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran File Produk Buku Terlalu Besar',
-                text: 'Silakan unggah file dengan ukuran maksimal 40MB.',
-            });
-            fileBukuInput.value = ''; // Reset file input
-            resetDropzoneContent(textElement);
-        } else {
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        }
-    });
-
-    // Fungsi untuk reset konten dropzone
-    function resetDropzoneContent(textElement) {
-        textElement.textContent = 'Drop files here or click to upload';
-        textElement.classList.add('text-gray-500');
-        textElement.classList.remove('text-green-500');
-    }
+    setupDropzone(dropzoneFile, fileBukuInput, 40, ['pdf'], 'Drop files here or click to upload');
 });
 
 </script>
