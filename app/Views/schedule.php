@@ -121,7 +121,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload</p>
+            <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload (Max 2MB, PDF, PNG/JPG)</p>
         </div>
     </div>
 </div>
@@ -230,11 +230,6 @@ window.addEventListener('scroll', () => {
 
     if (!recaptcha) {
         event.preventDefault(); // Cegah form dikirim
-        Swal.fire({
-            icon: 'warning',
-            title: 'Captcha Tidak Valid',
-            text: 'Silakan centang kotak reCAPTCHA sebelum mengirim form.',
-        });
     }
 });
 
@@ -460,7 +455,7 @@ function handleFiles(files, allowedFormats, maxSizeMB) {
                 text: `Hanya file dengan format ${allowedFormats.join(', ')} yang diperbolehkan.`,
             });
             fileInput.value = ''; // Reset input file
-            dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks
+            dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PDF, PNG/JPG)'; // Reset teks
             return;
         }
 
@@ -472,14 +467,14 @@ function handleFiles(files, allowedFormats, maxSizeMB) {
                 text: `Silakan unggah file dengan ukuran maksimal ${maxSizeMB}MB.`,
             });
             fileInput.value = ''; // Reset input file
-            dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks
+            dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PDF, PNG/JPG)'; // Reset teks
         } else {
             // Menampilkan nama file yang dipilih
             dropzoneText.innerHTML = `<span class="text-green-500">File Terpilih: ${file.name}</span>`;
         }
     } else {
         // Reset jika tidak ada file
-        dropzoneText.textContent = 'Drop files here or click to upload';
+        dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PDF, PNG/JPG)';
     }
 }
 
@@ -514,7 +509,7 @@ dropzone.addEventListener('drop', (e) => {
 // Reset saat file input dibatalkan
 fileInput.addEventListener('click', function () {
     if (!fileInput.files.length) {
-        dropzoneText.textContent = 'Drop files here or click to upload'; // Reset teks saat Cancel
+        dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PDF, PNG/JPG)'; // Reset teks saat Cancel
     }
 });
 

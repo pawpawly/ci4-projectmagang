@@ -251,10 +251,7 @@
             </div>
         </div>
     </section>
-
-
-
-
+    
     <!-- Saran Section -->
     <section class="py-12" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">>
         <div class="container mx-auto px-8">
@@ -281,6 +278,11 @@
             <label for="KOMENTAR_SARAN" class="block text-gray-900 text-lg font-semibold">Saran*</label>
             <textarea id="KOMENTAR_SARAN" name="KOMENTAR_SARAN" rows="5" autocomplete="off" class="mt-2 block w-full p-4 border border-gray-400 rounded-md resize-none overflow-y-auto focus:ring-2 focus:ring-yellow-500 focus:outline-none hover:shadow-md transition-shadow duration-200" placeholder="Tulis saran Anda di sini..."></textarea>
         </div>
+
+          <!-- Tambahkan reCAPTCHA -->
+    <div class="g-recaptcha" data-sitekey="6Lex854qAAAAAOXI-dTJvt2LLR85jJF63NRXPePe"></div>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
         <div class="text-center">
             <button type="submit" id="submitBtn" class="px-8 py-3 bg-gray-900 text-yellow-500 font-bold rounded-lg hover:bg-gray-600 hover:shadow-lg transition duration-300">Kirim</button>
         </div>
@@ -589,12 +591,29 @@ window.addEventListener('scroll', () => {
                 rightArrow.addEventListener('click', () => swiperEvent.slideNext());
             });
         
-            document.getElementById('saranForm').addEventListener('submit', function(event) {
+    document.getElementById('saranForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
     const nama = document.getElementById('NAMA_SARAN').value.trim();
     const email = document.getElementById('EMAIL_SARAN').value.trim();
     const saran = document.getElementById('KOMENTAR_SARAN').value.trim();
+
+    document.getElementById('saranForm').addEventListener('submit', function (e) {
+    const recaptchaResponse = grecaptcha.getResponse(); // Ambil respons reCAPTCHA
+    const captchaError = document.getElementById('captchaError');
+
+    if (!recaptchaResponse) {
+        e.preventDefault(); // Cegah pengiriman form
+        captchaError.classList.remove('hidden'); // Tampilkan pesan error
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: 'Verifikasi CAPTCHA diperlukan. Silakan centang reCAPTCHA.',
+        });
+    } else {
+        captchaError.classList.add('hidden'); // Sembunyikan pesan error jika valid
+    }
+});
 
     if (!nama || !email || !saran) {
         Swal.fire({
@@ -608,7 +627,7 @@ window.addEventListener('scroll', () => {
 
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerText = "Mengirim...";
+    submitBtn.innerHTML = 'Mengirim... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
 
     fetch('<?= site_url("saran/saveSaran") ?>', {
         method: 'POST',
@@ -619,36 +638,33 @@ window.addEventListener('scroll', () => {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        if (!data.success) {
             Swal.fire({
-                title: 'Berhasil!',
-                text: 'Saran berhasil dikirim!',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                window.location.href = './'; // Kembali ke base URL
+                icon: data.icon || 'error', // Gunakan ikon dari backend
+                title: 'Gagal!',
+                text: data.message
             });
         } else {
             Swal.fire({
-                title: 'Gagal!',
-                text: data.message || 'Gagal mengirim saran.',
-                icon: 'error',
-                confirmButtonText: 'OK'
+                icon: 'success',
+                title: 'Berhasil!',
+                text: data.message
+            }).then(() => {
+                window.location.reload();
             });
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Kirim";
         }
     })
     .catch(error => {
         Swal.fire({
-            title: 'Error!',
-            text: 'Terjadi kesalahan pada server.',
             icon: 'error',
-            confirmButtonText: 'OK'
+            title: 'Error!',
+            text: 'Terjadi kesalahan pada server.'
         });
         console.error('Error:', error);
+    })
+    .finally(() => {
         submitBtn.disabled = false;
-        submitBtn.innerText = "Kirim";
+        submitBtn.innerHTML = "Kirim";
     });
 });
 

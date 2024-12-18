@@ -41,12 +41,6 @@ public function storeReservasi()
         'g-recaptcha-response' => 'required' // Tambahkan validasi CAPTCHA
     ]);
 
-    if (!$validation->withRequest($this->request)->run()) {
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Validation failed: ' . json_encode($validation->getErrors()),
-        ]);
-    }
 
     // Validasi reCAPTCHA
     $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
