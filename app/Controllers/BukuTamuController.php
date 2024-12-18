@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
+use App\Models\BukuTamuModel;
 
 class BukuTamuController extends Controller
 {

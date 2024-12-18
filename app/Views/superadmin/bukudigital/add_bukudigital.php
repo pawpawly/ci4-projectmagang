@@ -26,15 +26,15 @@
     <label for="tahun_buku" class="block text-sm font-medium text-gray-700">Tahun Terbit</label>
     <input 
         type="text" 
-        maxlength="4" 
         id="tahun_buku" 
         name="tahun_buku" 
+        maxlength="4" 
         class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none" 
         placeholder="Masukkan tahun terbit" 
-        pattern="\d*" 
-        inputmode="numeric" 
-        required>
+        required
+        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)">
 </div>
+
 
     <div class="mb-4">
         <label for="sinopsis_buku" class="block text-sm font-medium text-gray-700">Sinopsis</label>
@@ -53,7 +53,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
         </div>
     </div>
 </div>
@@ -68,7 +68,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            <p class="text-sm text-gray-500">Drop files here or click to upload (Max 40MB, PDF)</p>
         </div>
     </div>
 </div>
@@ -89,71 +89,111 @@ document.addEventListener('DOMContentLoaded', () => {
     const sampulInput = document.getElementById('sampulBukuInput');
     const fileInput = document.getElementById('fileBukuInput');
     const submitButton = document.getElementById('submitButton');
-    const spinner = `<svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg>`;
 
     const dropzoneSampul = document.getElementById('dropzoneSampul');
     const dropzoneContentSampul = document.getElementById('dropzoneContentSampul');
     const dropzoneFile = document.getElementById('dropzoneFile');
     const dropzoneContentFile = document.getElementById('dropzoneContentFile');
 
-    // Handle Sampul Dropzone
-    dropzoneSampul.addEventListener('click', () => sampulInput.click());
-    sampulInput.addEventListener('change', () => {
-        const file = sampulInput.files[0];
-        const textElement = dropzoneContentSampul.querySelector('p');
-        if (!file) {
-            resetDropzoneContent(textElement);
-        } else if (file.size > 2 * 1024 * 1024) { // 2MB limit
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran file Sampul Buku melebihi 2MB',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-            });
-            sampulInput.value = ''; // Reset file input
-            resetDropzoneContent(textElement);
-        } else {
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        }
-    });
+    const spinner = `<svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>`;
 
-    // Handle File Dropzone
-    dropzoneFile.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', () => {
-        const file = fileInput.files[0];
-        const textElement = dropzoneContentFile.querySelector('p');
-        if (!file) {
-            resetDropzoneContent(textElement);
-        } else if (file.size > 40 * 1024 * 1024) { // 40MB limit
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran file Produk Buku melebihi 40MB',
-                text: 'Silakan unggah file dengan ukuran maksimal 40MB.',
-            });
-            fileInput.value = ''; // Reset file input
-            resetDropzoneContent(textElement);
-        } else {
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        }
-    });
-
-    // Reset Dropzone Content
-    function resetDropzoneContent(textElement) {
-        textElement.textContent = 'Drop files here or click to upload';
+    // Fungsi Reset Dropzone Content
+    function resetDropzoneContent(textElement, labelContent) {
+        textElement.textContent = labelContent;
         textElement.classList.add('text-gray-500');
         textElement.classList.remove('text-green-500');
     }
 
-    // Allow only numbers for Tahun Terbit
-    document.getElementById('tahun_buku').addEventListener('input', function () {
-        this.value = this.value.replace(/[^0-9]/g, ''); // Hanya izinkan angka
-    });
+    // Fungsi Validasi File
+    function validateFile(file, allowedTypes, sizeLimitMB) {
+        const fileType = file.name.split('.').pop().toLowerCase(); // Ambil ekstensi file
+        if (!allowedTypes.includes(fileType)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Jenis File Tidak Valid',
+                text: `Hanya file ${allowedTypes.join(', ')} yang diperbolehkan.`,
+            });
+            return false;
+        }
+        if (file.size > sizeLimitMB * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Terlalu Besar',
+                text: `Ukuran file melebihi ${sizeLimitMB}MB!`,
+            });
+            return false;
+        }
+        return true;
+    }
+
+    // Fungsi Assign File ke Input
+    function assignFileToInput(file, inputElement) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        inputElement.files = dataTransfer.files;
+    }
+
+    // Dropzone Handler
+    function setupDropzone(dropzone, inputElement, textElement, allowedTypes, sizeLimitMB, labelContent) {
+        dropzone.addEventListener('click', () => inputElement.click());
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('bg-gray-200');
+        });
+
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('bg-gray-200'));
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('bg-gray-200');
+
+            const file = e.dataTransfer.files[0];
+            if (file && validateFile(file, allowedTypes, sizeLimitMB)) {
+                assignFileToInput(file, inputElement);
+                textElement.textContent = `File Terpilih: ${file.name}`;
+                textElement.classList.remove('text-gray-500');
+                textElement.classList.add('text-green-500');
+            } else {
+                resetDropzoneContent(textElement, labelContent);
+            }
+        });
+
+        inputElement.addEventListener('change', () => {
+            const file = inputElement.files[0];
+            if (file && validateFile(file, allowedTypes, sizeLimitMB)) {
+                textElement.textContent = `File Terpilih: ${file.name}`;
+                textElement.classList.remove('text-gray-500');
+                textElement.classList.add('text-green-500');
+            } else {
+                resetDropzoneContent(textElement, labelContent);
+                inputElement.value = '';
+            }
+        });
+    }
+
+    // Setup Dropzone Sampul Buku
+    setupDropzone(
+        dropzoneSampul,
+        sampulInput,
+        dropzoneContentSampul.querySelector('p'),
+        ['png', 'jpg', 'jpeg'],
+        2,
+        'Drop files here or click to upload (Max 2MB, PNG/JPG)'
+    );
+
+    // Setup Dropzone File Buku
+    setupDropzone(
+        dropzoneFile,
+        fileInput,
+        dropzoneContentFile.querySelector('p'),
+        ['pdf'],
+        40,
+        'Drop files here or click to upload (Max 40MB, PDF)'
+    );
 
     // Form Submission Validation
     form.addEventListener('submit', (e) => {
@@ -200,13 +240,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         })
-        .catch((error) => {
+        .catch(() => {
             Swal.fire({
                 title: 'Error!',
                 text: 'Terjadi kesalahan pada server.',
                 icon: 'error',
             });
-            console.error(error);
         })
         .finally(() => {
             submitButton.disabled = false;

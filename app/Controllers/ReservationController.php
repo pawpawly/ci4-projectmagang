@@ -37,7 +37,8 @@ public function storeReservasi()
         'kegiatan_reservasi'   => 'required|max_length[255]',
         'jmlpengunjung_reservasi' => 'required|integer',
         'tanggal_reservasi'    => 'required|valid_date[Y-m-d]',
-        'surat_reservasi'      => 'uploaded[surat_reservasi]|max_size[surat_reservasi,2024]|mime_in[surat_reservasi,application/pdf,image/png,image/jpeg,image/jpg]'
+        'surat_reservasi'      => 'uploaded[surat_reservasi]|max_size[surat_reservasi,2024]|mime_in[surat_reservasi,application/pdf,image/png,image/jpeg,image/jpg]',
+        'g-recaptcha-response' => 'required' // Tambahkan validasi CAPTCHA
     ]);
 
     if (!$validation->withRequest($this->request)->run()) {
@@ -47,12 +48,27 @@ public function storeReservasi()
         ]);
     }
 
+    // Validasi reCAPTCHA
+    $recaptchaResponse = $this->request->getPost('g-recaptcha-response');
+    $secretKey = '6Lex854qAAAAAOw4Pkbyc66-dSXlbrS3JZqfoZsv'; // Ganti dengan Secret Key Anda
+    $url = "https://www.google.com/recaptcha/api/siteverify";
+
+    // Kirim permintaan ke Google
+    $response = file_get_contents($url . "?secret={$secretKey}&response={$recaptchaResponse}");
+    $responseKeys = json_decode($response, true);
+
+    if (!$responseKeys['success']) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'CAPTCHA tidak valid, silakan coba lagi.',
+        ]);
+    }
+
     // File handling for "surat_reservasi"
     $suratFile = $this->request->getFile('surat_reservasi');
     $suratFileName = $suratFile->getRandomName();
 
     try {
-        // Move the file to the designated folder
         $suratFile->move(FCPATH . 'uploads/surat_kunjungan', $suratFileName);
     } catch (\Exception $e) {
         return $this->response->setJSON([
@@ -70,33 +86,22 @@ public function storeReservasi()
         'KEGIATAN_RESERVASI' => $this->request->getPost('kegiatan_reservasi'),
         'JMLPENGUNJUNG_RESERVASI' => $this->request->getPost('jmlpengunjung_reservasi'),
         'TANGGAL_RESERVASI' => $this->request->getPost('tanggal_reservasi'),
-        'STATUS_RESERVASI' => 'pending', // default status
+        'STATUS_RESERVASI' => 'pending',
         'SURAT_RESERVASI' => $suratFileName,
     ];
 
     // Attempt to insert data into the database
     try {
-        $inserted = $this->reservasiModel->insert($data);
-        if ($inserted === false) {
-            // Log the error if insertion fails
-            log_message('error', 'Database error: ' . json_encode($this->reservasiModel->errors()));
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Failed to save reservation. Database error: ' . json_encode($this->reservasiModel->errors()),
-            ]);
-        }
-
+        $this->reservasiModel->insert($data);
         return $this->response->setJSON([
             'success' => true,
             'message' => 'Reservasi berhasil ditambahkan.',
         ]);
     } catch (\Exception $e) {
-        log_message('error', 'Database exception: ' . $e->getMessage());
         return $this->response->setJSON([
             'success' => false,
-            'message' => 'Failed to save reservation. Exception: ' . $e->getMessage(),
+            'message' => 'Database error: ' . $e->getMessage(),
         ]);
     }
 }
-
-}    
+}
