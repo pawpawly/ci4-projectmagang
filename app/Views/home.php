@@ -35,17 +35,79 @@
         </div>
     </section>
 
+    <!-- ==================================================================================== -->
+    <section class="py-12 bg-gray-200">
+    <div class="container mx-auto px-8 flex flex-col md:flex-row items-center justify-between">
+        <!-- Bagian Kiri: Tulisan Informasi -->
+        <div class="w-full md:w-1/2 text-left mb-8 md:mb-0 flex justify-center md:justify-start md:pl-16 lg:pl-32">
+            <div class="max-w-lg">
+                <!-- Judul -->
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 leading-snug">
+                    Halo Dingsanak,
+                </h1>
+                <p class="text-lg text-gray-800 mt-10">
+                    Selamat datang di <strong class="font-bold ">Museum Kayuh Baimbai!</strong><br>
+                    Jelajahi sejarah masa lalu, masa kini, dan masa depan kebudayaan Banjarmasin.
+                </p>
+                <p class="text-base text-gray-800 mt-4">
+                    Kunjungan Museum Kayuh Baimbai Terbuka Untuk Siapa Saja
+                    <strong class="text-green-600">Gratis!!</strong>
+                </p>
+
+                <!-- Informasi Jam Operasional -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Kotak 1 -->
+                    <div class="border-2 border-gray-300 rounded-lg p-4 text-center">
+                        <p class="text-gray-600 text-sm mb-2">Senin - Jumat</p>
+                        <p class="text-xl font-bold text-yellow-500">08:00 - 15.00 WITA</p>
+                    </div>
+                    <!-- Kotak 2 -->
+                    <div class="border-2 border-gray-300 rounded-lg p-6 text-center">
+                        <p class="text-gray-600 text-sm mb-2">Hari Sabtu, Minggu dan Hari Libur Nasional <strong class="text-red-500">Museum Tutup</strong>.</p>
+                    </div>
+                </div>
+
+                <!-- Catatan -->
+                <div class="mt-4 text-gray-700 text-sm">
+                    <p>Perhatian: Jam kunjungan museum dapat berubah sewaktu-waktu sesuai situasi dan kondisi yang ada.</p>
+                </div>
+
+                <!-- Tombol Reservasi -->
+                <div class="mt-6 text-center md:text-left">
+                    <a href="<?= site_url('schedule');?>" class="inline-block bg-gray-900 text-yellow-500 py-2 px-6 rounded-lg font-semibold shadow-lg hover:bg-gray-600 transition duration-300">
+                        Reservasi Kunjungan
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bagian Kanan: Gambar Animasi -->
+        <div class="w-full md:w-1/2 flex justify-center">
+            <div id="lottie-anim" class="w-full h-[400px] md:h-[600px]"></div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+<script>
+    // Memuat file JSON menggunakan Lottie
+    document.addEventListener("DOMContentLoaded", function () {
+        lottie.loadAnimation({
+            container: document.getElementById("lottie-anim"), // ID container
+            renderer: "svg",             // Tipe renderer (SVG, canvas, html)
+            loop: true,                  // Animasi diulang terus menerus
+            autoplay: true,              // Animasi mulai otomatis
+            path: "<?= base_url('js/female-clouds.json'); ?>" // Path ke file JSON
+        });
+    });
+</script>
+
+
 <!-- ==================================================================================== -->
 
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
-<!-- Section Koleksi -->
 <!-- Section Koleksi -->
 <section class="py-12 bg-gray-200">
     <div class="container mx-auto px-8">
@@ -253,7 +315,7 @@
     </section>
     
     <!-- Saran Section -->
-    <section class="py-12" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">>
+    <section class="py-12" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">
         <div class="container mx-auto px-8">
             <div class="relative text-center mb-12">
                 <h2 class="event-overlay text-6xl font-extrabold text-gray-200 mb-2">SARAN</h2>
