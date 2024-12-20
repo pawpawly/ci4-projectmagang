@@ -40,7 +40,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
-                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+                    <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
                 </div>
             </div>
         </div>
@@ -126,87 +126,104 @@ document.getElementById('koleksiForm').addEventListener('submit', function (e) {
     });
 });
 
+const dropzoneKoleksi = document.getElementById('dropzoneKoleksi');
+const fileInputKoleksi = document.getElementById('fotoKoleksi');
+const dropzoneKoleksiContent = document.getElementById('dropzoneKoleksiContent');
 
+function handleFilesKoleksi(files) {
+    if (files.length > 0) {
+        const file = files[0];
+        const fileName = file.name;
 
+        // Validasi jenis file
+        const allowedExtensions = ['png', 'jpg', 'jpeg'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
 
-    const dropzoneKoleksi = document.getElementById('dropzoneKoleksi');
-    const fileInputKoleksi = document.getElementById('fotoKoleksi');
-    const dropzoneKoleksiContent = document.getElementById('dropzoneKoleksiContent');
-
-    function handleFilesKoleksi(files) {
-        if (files.length > 0) {
-            const file = files[0];
-            const fileName = file.name;
-
-            // Validasi ukuran file (maksimal 2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ukuran file melebihi 2MB',
-                    text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-                });
-                fileInputKoleksi.value = ''; // Reset file input
-                dropzoneKoleksiContent.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
-                    </svg>
-                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
-                `;
-                dropzoneKoleksi.classList.remove('bg-green-100');
-                return; 
-            }
-
-            dropzoneKoleksiContent.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
-                </svg>
-                <p class="text-sm text-green-500">File Terpilih: ${fileName}</p>
-            `;
-            dropzoneKoleksi.classList.add('bg-green-100');
-        } else {
-            dropzoneKoleksiContent.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
-                </svg>
-                <p class="text-sm text-gray-500">Drop files here or click to upload</p>
-            `;
-            dropzoneKoleksi.classList.remove('bg-green-100');
+        if (!allowedExtensions.includes(fileExtension)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Jenis File Tidak Valid!',
+                text: `Hanya file dengan format ${allowedExtensions.join(', ').toUpperCase()} yang diperbolehkan.`,
+            });
+            resetDropzone();
+            return;
         }
-    }
 
-    function resetDropzone() {
-        fileInputKoleksi.value = '';
+        // Validasi ukuran file (maksimal 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Terlalu Besar!',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            resetDropzone();
+            return;
+        }
+
+        // Tetapkan file ke elemen input
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInputKoleksi.files = dataTransfer.files;
+
+        // Jika validasi berhasil
         dropzoneKoleksiContent.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            <p class="text-sm text-green-500">File Terpilih: ${fileName}</p>
         `;
-        dropzoneKoleksi.classList.remove('bg-green-100');
+        dropzoneKoleksi.classList.add('bg-green-100');
+    } else {
+        resetDropzone();
     }
+}
 
-    dropzoneKoleksi.addEventListener('click', () => {
-        fileInputKoleksi.click();
-    });
+function resetDropzone() {
+    fileInputKoleksi.value = '';
+    dropzoneKoleksiContent.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+        </svg>
+        <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
+    `;
+    dropzoneKoleksi.classList.remove('bg-green-100');
+}
 
-    fileInputKoleksi.addEventListener('change', (event) => {
-        handleFilesKoleksi(event.target.files);
-    });
+// Event listeners
+dropzoneKoleksi.addEventListener('click', () => {
+    fileInputKoleksi.click();
+});
 
-    dropzoneKoleksi.addEventListener('dragover', (event) => {
-        event.preventDefault();
-        dropzoneKoleksi.classList.add('bg-green-50');
-    });
+fileInputKoleksi.addEventListener('change', (event) => {
+    handleFilesKoleksi(event.target.files);
+});
 
-    dropzoneKoleksi.addEventListener('dragleave', () => {
-        dropzoneKoleksi.classList.remove('bg-green-50');
-    });
+dropzoneKoleksi.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropzoneKoleksi.classList.add('bg-green-50');
+});
 
-    dropzoneKoleksi.addEventListener('drop', (event) => {
-        event.preventDefault();
-        dropzoneKoleksi.classList.remove('bg-green-50');
-        handleFilesKoleksi(event.dataTransfer.files);
-    });
+dropzoneKoleksi.addEventListener('dragleave', () => {
+    dropzoneKoleksi.classList.remove('bg-green-50');
+});
+
+dropzoneKoleksi.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropzoneKoleksi.classList.remove('bg-green-50');
+
+    const files = event.dataTransfer.files;
+
+    // Tetapkan file ke elemen input
+    const dataTransfer = new DataTransfer();
+    for (const file of files) {
+        dataTransfer.items.add(file);
+    }
+    fileInputKoleksi.files = dataTransfer.files;
+
+    handleFilesKoleksi(files);
+});
+
+
 </script>
 
 <?= $this->endSection() ?>

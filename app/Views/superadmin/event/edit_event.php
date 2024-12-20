@@ -57,7 +57,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
-                    <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload</p>
+                    <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
                 </div>
             </div>
             <?php if (!empty($event['FOTO_EVENT'])): ?>
@@ -162,59 +162,84 @@
     });
 
     const dropzoneEditEvent = document.getElementById('dropzoneEditEvent');
-    const fileInputEventEdit = document.getElementById('posterEventInputEdit');
-    const dropzoneText = document.getElementById('dropzoneText');
-    const dropzoneContentEditEvent = document.getElementById('dropzoneContentEditEvent');
+const fileInputEventEdit = document.getElementById('posterEventInputEdit');
+const dropzoneText = document.getElementById('dropzoneText');
+const dropzoneContentEditEvent = document.getElementById('dropzoneContentEditEvent');
 
-    dropzoneEditEvent.addEventListener('click', () => fileInputEventEdit.click());
+// Fungsi untuk menangani file yang diunggah
+function handleFilesEventEdit(files) {
+    if (files.length > 0) {
+        const file = files[0];
 
-    fileInputEventEdit.addEventListener('change', () => handleFilesEventEdit(fileInputEventEdit.files));
+        // Validasi jenis file
+        const allowedExtensions = ['png', 'jpg', 'jpeg'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
 
-    function handleFilesEventEdit(files) {
-        if (files.length > 0) {
-            const file = files[0];
-            if (file.size > 2 * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ukuran file terlalu besar!',
-                    text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-                });
-                fileInputEventEdit.value = '';
-                dropzoneText.textContent = 'Drop files here or click to upload';
-            } else {
-                dropzoneText.textContent = `File Terpilih: ${file.name}`;
-                dropzoneText.classList.remove('text-gray-500');
-                dropzoneText.classList.add('text-green-500');
-            }
-        } else {
-            dropzoneText.textContent = 'Drop files here or click to upload';
-            dropzoneText.classList.remove('text-green-500');
-            dropzoneText.classList.add('text-gray-500');
+        if (!allowedExtensions.includes(fileExtension)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Jenis File Tidak Valid!',
+                text: `Hanya file dengan format ${allowedExtensions.join(', ').toUpperCase()} yang diperbolehkan.`,
+            });
+            fileInputEventEdit.value = ''; // Reset file input
+            resetDropzoneContent(); // Reset tampilan dropzone
+            return;
         }
+
+        // Validasi ukuran file
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran file terlalu besar!',
+                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+            });
+            fileInputEventEdit.value = ''; // Reset file input
+            resetDropzoneContent(); // Reset tampilan dropzone
+            return;
+        }
+
+        // Jika validasi berhasil
+        dropzoneText.textContent = `File Terpilih: ${file.name}`;
+        dropzoneText.classList.remove('text-gray-500');
+        dropzoneText.classList.add('text-green-500');
+    } else {
+        resetDropzoneContent();
     }
+}
 
-    dropzoneEditEvent.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzoneEditEvent.classList.add('bg-gray-100');
-    });
+// Fungsi untuk mereset dropzone
+function resetDropzoneContent() {
+    dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PNG/JPG)';
+    dropzoneText.classList.add('text-gray-500');
+    dropzoneText.classList.remove('text-green-500');
+}
 
-    dropzoneEditEvent.addEventListener('dragleave', () => {
-        dropzoneEditEvent.classList.remove('bg-gray-100');
-    });
+// Event listeners
+dropzoneEditEvent.addEventListener('click', () => fileInputEventEdit.click());
 
-    dropzoneEditEvent.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzoneEditEvent.classList.remove('bg-gray-100');
-        const files = e.dataTransfer.files;
-        fileInputEventEdit.files = files;
-        handleFilesEventEdit(files);
-    });
+fileInputEventEdit.addEventListener('change', () => handleFilesEventEdit(fileInputEventEdit.files));
 
-    fileInputEventEdit.addEventListener('click', () => {
-        dropzoneText.textContent = 'Drop files here or click to upload';
-        dropzoneText.classList.remove('text-green-500');
-        dropzoneText.classList.add('text-gray-500');
-    });
+dropzoneEditEvent.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzoneEditEvent.classList.add('bg-gray-100');
+});
+
+dropzoneEditEvent.addEventListener('dragleave', () => {
+    dropzoneEditEvent.classList.remove('bg-gray-100');
+});
+
+dropzoneEditEvent.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzoneEditEvent.classList.remove('bg-gray-100');
+    const files = e.dataTransfer.files;
+    fileInputEventEdit.files = files;
+    handleFilesEventEdit(files);
+});
+
+fileInputEventEdit.addEventListener('click', () => {
+    resetDropzoneContent();
+});
+
 </script>
 
 <?= $this->endSection() ?>

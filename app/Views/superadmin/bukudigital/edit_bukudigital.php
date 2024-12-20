@@ -44,7 +44,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Sampul Buku (Foto) <i>Max 2MB</i> <p><i>(Abaikan Jika Tidak Mengganti Sampul Foto)</i></p></label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Sampul Buku <i>(Max 2MB)</i> <p><i>(Abaikan Jika Tidak Mengganti Sampul Foto)</i></p></label>
             <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneSampul">
                 <input type="file" name="sampul_buku" id="sampulBukuInput" accept=".jpg,.jpeg,.png" class="hidden">
                 <div id="dropzoneContentSampul" class="flex flex-col justify-center items-center space-y-2">
@@ -61,7 +61,7 @@
         </div>
 
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">File Buku (PDF) <i>Max 40MB</i> <p><i>(Abaikan Jika Tidak Mengganti Buku)</i></p> </label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">File Buku <i>(Max 40MB)</i> <p><i>(Abaikan Jika Tidak Mengganti Buku)</i></p> </label>
             <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneFile">
                 <input type="file" name="produk_buku" id="fileBukuInput" accept=".pdf" class="hidden">
                 <div id="dropzoneContentFile" class="flex flex-col justify-center items-center space-y-2">
@@ -166,104 +166,116 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Fungsi setup Dropzone
-    function setupDropzone(dropzone, fileInput, maxFileSizeMB, allowedTypes, labelContent) {
-        const textElement = dropzone.querySelector('p');
+    const sampulInput = document.getElementById('sampulBukuInput');
+    const fileInput = document.getElementById('fileBukuInput');
+    const dropzoneSampul = document.getElementById('dropzoneSampul');
+    const dropzoneContentSampul = document.getElementById('dropzoneContentSampul');
+    const dropzoneFile = document.getElementById('dropzoneFile');
+    const dropzoneContentFile = document.getElementById('dropzoneContentFile');
 
-        // Event klik untuk membuka file picker
-        dropzone.addEventListener('click', () => fileInput.click());
+    // Fungsi Reset Dropzone Content
+    function resetDropzoneContent(textElement, labelContent) {
+        textElement.textContent = labelContent;
+        textElement.classList.add('text-gray-500');
+        textElement.classList.remove('text-green-500');
+    }
 
-        // Event saat file di-drag ke dropzone
+    // Fungsi Validasi File
+    function validateFile(file, allowedTypes, sizeLimitMB) {
+        const fileType = file.name.split('.').pop().toLowerCase(); // Ambil ekstensi file
+        if (!allowedTypes.includes(fileType)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Jenis File Tidak Valid',
+                text: `Hanya file ${allowedTypes.join(', ')} yang diperbolehkan.`,
+            });
+            return false;
+        }
+        if (file.size > sizeLimitMB * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Terlalu Besar',
+                text: `Ukuran file melebihi ${sizeLimitMB}MB!`,
+            });
+            return false;
+        }
+        return true;
+    }
+
+    // Fungsi Assign File ke Input
+    function assignFileToInput(file, inputElement) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        inputElement.files = dataTransfer.files;
+    }
+
+    // Dropzone Handler
+    function setupDropzone(dropzone, inputElement, textElement, allowedTypes, sizeLimitMB, labelContent) {
+        dropzone.addEventListener('click', () => inputElement.click());
+
         dropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropzone.classList.add('bg-gray-200'); // Highlight dropzone
+            dropzone.classList.add('bg-gray-200');
         });
 
-        // Event saat file keluar dari dropzone
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('bg-gray-200'); // Hapus highlight
-        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('bg-gray-200'));
 
-        // Event saat file di-drop ke dropzone
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropzone.classList.remove('bg-gray-200');
+
             const file = e.dataTransfer.files[0];
-            handleFile(file, fileInput, textElement, maxFileSizeMB, allowedTypes);
+            if (file && validateFile(file, allowedTypes, sizeLimitMB)) {
+                assignFileToInput(file, inputElement);
+                textElement.textContent = `File Terpilih: ${file.name}`;
+                textElement.classList.remove('text-gray-500');
+                textElement.classList.add('text-green-500');
+            } else {
+                resetDropzoneContent(textElement, labelContent);
+            }
         });
 
-        // Event file dipilih melalui file picker
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-            handleFile(file, fileInput, textElement, maxFileSizeMB, allowedTypes);
+        inputElement.addEventListener('change', () => {
+            const file = inputElement.files[0];
+            if (file && validateFile(file, allowedTypes, sizeLimitMB)) {
+                textElement.textContent = `File Terpilih: ${file.name}`;
+                textElement.classList.remove('text-gray-500');
+                textElement.classList.add('text-green-500');
+            } else {
+                resetDropzoneContent(textElement, labelContent);
+                inputElement.value = '';
+            }
         });
 
-        // Fungsi untuk validasi file
-        function handleFile(file, input, textElement, maxSizeMB, allowedTypes) {
-            if (!file) return;
-
-            // Validasi tipe file
-            const fileType = file.type;
-            const allowed = allowedTypes.some((type) => fileType.includes(type));
-            if (!allowed) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Jenis File Tidak Valid',
-                    text: `Hanya file ${allowedTypes.join(', ')} yang diperbolehkan.`,
-                });
-                input.value = '';
-                resetDropzoneContent();
-                return;
-            }
-
-            // Validasi ukuran file
-            if (file.size > maxSizeMB * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ukuran File Terlalu Besar',
-                    text: `Ukuran file melebihi ${maxSizeMB}MB!`,
-                });
-                input.value = '';
-                resetDropzoneContent();
-                return;
-            }
-
-            // Set file ke input
-            input.files = createFileList(file);
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        }
-
-        // Fungsi untuk mereset dropzone
-        function resetDropzoneContent() {
-            textElement.textContent = labelContent;
-            textElement.classList.add('text-gray-500');
-            textElement.classList.remove('text-green-500');
-        }
-
-        // Fungsi untuk membuat FileList baru
-        function createFileList(file) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            return dataTransfer.files;
-        }
+        inputElement.addEventListener('click', (e) => {
+            e.target.value = ''; // Reset input file saat klik untuk memastikan event 'change' dipicu.
+            resetDropzoneContent(textElement, labelContent); // Reset dropzone saat batal.
+        });
     }
 
-    // Inisialisasi Dropzone Sampul Buku (hanya .jpg, .jpeg, .png)
-    const dropzoneSampul = document.getElementById('dropzoneSampul');
-    const sampulBukuInput = document.getElementById('sampulBukuInput');
-    setupDropzone(dropzoneSampul, sampulBukuInput, 2, ['jpeg', 'jpg', 'png'], 'Drop files here or click to upload');
+    // Setup Dropzone Sampul Buku
+    setupDropzone(
+        dropzoneSampul,
+        sampulInput,
+        dropzoneContentSampul.querySelector('p'),
+        ['png', 'jpg', 'jpeg'],
+        2,
+        'Drop files here or click to upload (Max 2MB, PNG/JPG)'
+    );
 
-    // Inisialisasi Dropzone File Produk Buku (hanya .pdf)
-    const dropzoneFile = document.getElementById('dropzoneFile');
-    const fileBukuInput = document.getElementById('fileBukuInput');
-    setupDropzone(dropzoneFile, fileBukuInput, 40, ['pdf'], 'Drop files here or click to upload');
+    // Setup Dropzone File Buku
+    setupDropzone(
+        dropzoneFile,
+        fileInput,
+        dropzoneContentFile.querySelector('p'),
+        ['pdf'],
+        40,
+        'Drop files here or click to upload (Max 40MB, PDF)'
+    );
 });
+
+
 
 </script>
 

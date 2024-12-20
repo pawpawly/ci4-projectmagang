@@ -44,7 +44,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
         </div>
     </div>
     <?php if ($koleksi['FOTO_KOLEKSI']): ?>
@@ -129,77 +129,87 @@
         });
     });
 
-    // Mengatur drag-and-drop untuk input file
-    const dropzoneKoleksiEdit = document.getElementById('dropzoneKoleksiEdit');
-    const fileInput = document.getElementById('fotoKoleksiEdit');
-    const dropzoneContentFile = document.getElementById('dropzoneKoleksiContentEdit');
+// Mengatur drag-and-drop untuk input file
+const dropzoneKoleksiEdit = document.getElementById('dropzoneKoleksiEdit');
+const fileInput = document.getElementById('fotoKoleksiEdit');
+const dropzoneContentFile = document.getElementById('dropzoneKoleksiContentEdit');
 
-    dropzoneKoleksiEdit.addEventListener('click', () => fileInput.click());
+// Fungsi untuk memperbarui tampilan file yang dipilih
+function handleFilesKoleksiEdit(files) {
+    const textElement = dropzoneContentFile.querySelector('p');
+    const file = files[0];
 
-    fileInput.addEventListener('change', () => {
-        const file = fileInput.files[0];
-        const textElement = dropzoneContentFile.querySelector('p');
+    // Validasi jenis file
+    const allowedExtensions = ['png', 'jpg', 'jpeg'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
 
-        if (!file) {
-            resetDropzoneContent(textElement);
-        } else if (file.size > 2 * 1024 * 1024) { // 2MB limit
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran file Koleksi melebihi 2MB',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-            });
-            fileInput.value = ''; // Reset file input
-            resetDropzoneContent(textElement);
-        } else {
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        }
-    });
-
-    function resetDropzoneContent(textElement) {
-        textElement.textContent = 'Drop files here or click to upload';
-        textElement.classList.add('text-gray-500');
-        textElement.classList.remove('text-green-500');
+    if (!allowedExtensions.includes(fileExtension)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Jenis File Tidak Valid!',
+            text: `Hanya file dengan format ${allowedExtensions.join(', ').toUpperCase()} yang diperbolehkan.`,
+        });
+        fileInput.value = ''; // Reset file input jika jenis file tidak valid
+        resetDropzoneContent(textElement);
+        return;
     }
 
-    // Menangani efek drag-and-drop
-    dropzoneKoleksiEdit.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzoneKoleksiEdit.classList.add('bg-gray-100'); // Efek hover saat dragover
-    });
-
-    dropzoneKoleksiEdit.addEventListener('dragleave', () => {
-        dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Menghapus efek hover saat drag leave
-    });
-
-    dropzoneKoleksiEdit.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Menghapus efek hover setelah drop
-        const files = e.dataTransfer.files; // Ambil file dari drop
-        fileInput.files = files; // Set file input dengan file yang di-drop
-        handleFilesKoleksiEdit(files); // Update tampilan dengan file yang dipilih
-    });
-
-    // Fungsi untuk memperbarui tampilan file yang dipilih
-    function handleFilesKoleksiEdit(files) {
-        const textElement = dropzoneContentFile.querySelector('p');
-        const file = files[0];
-
-        if (file && file.size <= 2 * 1024 * 1024) { // 2MB limit
-            textElement.textContent = `File Terpilih: ${file.name}`;
-            textElement.classList.remove('text-gray-500');
-            textElement.classList.add('text-green-500');
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran file Koleksi melebihi 2MB',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-            });
-            fileInput.value = ''; // Reset file input jika file melebihi ukuran
-            resetDropzoneContent(textElement);
-        }
+    // Validasi ukuran file
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        Swal.fire({
+            icon: 'error',
+            title: 'Ukuran File Terlalu Besar!',
+            text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+        });
+        fileInput.value = ''; // Reset file input jika file melebihi ukuran
+        resetDropzoneContent(textElement);
+        return;
     }
+
+    // Jika validasi berhasil
+    textElement.textContent = `File Terpilih: ${file.name}`;
+    textElement.classList.remove('text-gray-500');
+    textElement.classList.add('text-green-500');
+}
+
+// Fungsi untuk mereset tampilan dropzone
+function resetDropzoneContent(textElement) {
+    textElement.textContent = 'Drop files here or click to upload (Max 2MB, PNG/JPG)';
+    textElement.classList.add('text-gray-500');
+    textElement.classList.remove('text-green-500');
+}
+
+// Event listener untuk klik pada dropzone
+dropzoneKoleksiEdit.addEventListener('click', () => fileInput.click());
+
+// Event listener untuk perubahan file pada input
+fileInput.addEventListener('change', () => {
+    const files = fileInput.files;
+    if (files.length > 0) {
+        handleFilesKoleksiEdit(files);
+    } else {
+        resetDropzoneContent(dropzoneContentFile.querySelector('p'));
+    }
+});
+
+// Event listener untuk drag-and-drop
+dropzoneKoleksiEdit.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzoneKoleksiEdit.classList.add('bg-gray-100'); // Efek hover saat dragover
+});
+
+dropzoneKoleksiEdit.addEventListener('dragleave', () => {
+    dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Menghapus efek hover saat drag leave
+});
+
+dropzoneKoleksiEdit.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzoneKoleksiEdit.classList.remove('bg-gray-100'); // Menghapus efek hover setelah drop
+    const files = e.dataTransfer.files; // Ambil file dari drop
+    fileInput.files = files; // Set file input dengan file yang di-drop
+    handleFilesKoleksiEdit(files); // Update tampilan dengan file yang dipilih
+});
+
 </script>
 
 

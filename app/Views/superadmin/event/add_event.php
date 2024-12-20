@@ -55,7 +55,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
-                    <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload</p>
+                    <p class="text-sm text-gray-500" id="dropzoneText">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
                 </div>
             </div>
         </div>
@@ -73,57 +73,83 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    const dropzoneEvent = document.getElementById('dropzoneEvent');
-    const fileInputEvent = document.getElementById('posterEventInput');
-    const dropzoneText = document.getElementById('dropzoneText');
-    const dropzoneEventContent = document.getElementById('dropzoneEventContent');
+const dropzoneEvent = document.getElementById('dropzoneEvent');
+const fileInputEvent = document.getElementById('posterEventInput');
+const dropzoneText = document.getElementById('dropzoneText');
 
-    // Fungsi untuk menampilkan file yang diunggah
-    function handleFilesEvent(files) {
-        if (files.length > 0) {
-            const file = files[0];
+// Fungsi untuk menangani file yang diunggah
+function handleFilesEvent(files) {
+    if (files.length > 0) {
+        const file = files[0];
 
-            if (file.size > 2 * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ukuran File Terlalu Besar!',
-                    text: 'File poster acara harus memiliki ukuran maksimal 2MB.',
-                });
-                fileInputEvent.value = '';
-                dropzoneText.textContent = 'Drop files here or click to upload';
-            } else {
-                dropzoneText.textContent = `File Terpilih: ${file.name}`;
-                dropzoneText.classList.remove('text-gray-500');
-                dropzoneText.classList.add('text-green-500');
-            }
+        // Validasi jenis file berdasarkan ekstensi
+        const allowedExtensions = ['png', 'jpg', 'jpeg'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Jenis File Tidak Valid!',
+                text: `File poster hanya diperbolehkan berformat: ${allowedExtensions.join(', ').toUpperCase()}.`,
+            });
+            fileInputEvent.value = ''; // Reset file input
+            resetDropzoneContent();
+            return;
         }
+
+        // Validasi ukuran file
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ukuran File Terlalu Besar!',
+                text: 'File poster acara harus memiliki ukuran maksimal 2MB.',
+            });
+            fileInputEvent.value = ''; // Reset file input
+            resetDropzoneContent();
+            return;
+        }
+
+        // Jika validasi berhasil
+        dropzoneText.textContent = `File Terpilih: ${file.name}`;
+        dropzoneText.classList.remove('text-gray-500');
+        dropzoneText.classList.add('text-green-500');
     }
+}
 
-    dropzoneEvent.addEventListener('click', () => fileInputEvent.click());
-    fileInputEvent.addEventListener('change', () => handleFilesEvent(fileInputEvent.files));
+// Fungsi untuk mereset dropzone
+function resetDropzoneContent() {
+    dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PNG/JPG)';
+    dropzoneText.classList.add('text-gray-500');
+    dropzoneText.classList.remove('text-green-500');
+}
 
-    dropzoneEvent.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzoneEvent.classList.add('bg-gray-100');
-    });
+// Event Listener
+dropzoneEvent.addEventListener('click', () => fileInputEvent.click());
 
-    dropzoneEvent.addEventListener('dragleave', () => {
-        dropzoneEvent.classList.remove('bg-gray-100');
-    });
+fileInputEvent.addEventListener('change', () => handleFilesEvent(fileInputEvent.files));
 
-    dropzoneEvent.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzoneEvent.classList.remove('bg-gray-100');
-        const files = e.dataTransfer.files;
-        fileInputEvent.files = files;
-        handleFilesEvent(files);
-    });
+dropzoneEvent.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzoneEvent.classList.add('bg-gray-100');
+});
 
-    fileInputEvent.addEventListener('click', () => {
-        dropzoneText.textContent = 'Drop files here or click to upload';
-        dropzoneText.classList.remove('text-green-500');
-        dropzoneText.classList.add('text-gray-500');
-    });
+dropzoneEvent.addEventListener('dragleave', () => {
+    dropzoneEvent.classList.remove('bg-gray-100');
+});
+
+dropzoneEvent.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzoneEvent.classList.remove('bg-gray-100');
+    const files = e.dataTransfer.files;
+    fileInputEvent.files = files;
+    handleFilesEvent(files);
+});
+
+fileInputEvent.addEventListener('click', () => {
+    resetDropzoneContent();
+});
+
+
 
     document.querySelector('form').addEventListener('submit', function (e) {
     e.preventDefault();
