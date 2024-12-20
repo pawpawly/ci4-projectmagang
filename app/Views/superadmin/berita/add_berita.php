@@ -41,7 +41,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
-                    <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+                    <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
                 </div>
             </div>
         </div>
@@ -69,6 +69,19 @@ const dropzoneContent = document.getElementById('dropzoneContent');
 function handleFiles(files) {
     if (files.length > 0) {
         const file = files[0];
+        const allowedExtensions = ['png', 'jpg', 'jpeg']; // Format yang diperbolehkan
+        const fileExtension = file.name.split('.').pop().toLowerCase(); // Ambil ekstensi file
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Format file tidak valid',
+                text: `Hanya file dengan format ${allowedExtensions.join(', ')} yang diperbolehkan.`,
+            });
+            fileInput.value = ''; // Reset file input
+            resetDropzoneContent(); // Reset tampilan dropzone
+            return;
+        }
 
         if (file.size > 2 * 1024 * 1024) { // Jika file lebih besar dari 2MB
             Swal.fire({
@@ -77,28 +90,30 @@ function handleFiles(files) {
                 text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
             });
             fileInput.value = ''; // Reset file input
-            dropzoneContent.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
-                </svg>
-                <p class="text-sm text-gray-500">Drop files here or click to upload</p>
-            `;
-        } else {
-            dropzoneContent.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
-                </svg>
-                <p class="text-sm text-green-500">File Terpilih: ${file.name}</p>
-            `;
+            resetDropzoneContent(); // Reset tampilan dropzone
+            return;
         }
-    } else {
+
+        // Jika file valid, tampilkan nama file
         dropzoneContent.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
             </svg>
-            <p class="text-sm text-gray-500">Drop files here or click to upload</p>
+            <p class="text-sm text-green-500">File Terpilih: ${file.name}</p>
         `;
+    } else {
+        resetDropzoneContent(); // Reset jika tidak ada file
     }
+}
+
+// Fungsi untuk mereset konten dropzone
+function resetDropzoneContent() {
+    dropzoneContent.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
+        </svg>
+        <p class="text-sm text-gray-500">Drop files here or click to upload (Max 2MB, PNG/JPG)</p>
+    `;
 }
 
 // Klik pada dropzone membuka file input
@@ -124,6 +139,7 @@ dropzone.addEventListener('drop', (e) => {
     fileInput.files = files; // Set file input
     handleFiles(files); // Update tampilan
 });
+
 
 // Submit form
 // Submit form

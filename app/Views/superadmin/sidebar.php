@@ -196,12 +196,6 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- Dropdown Menu -->
         <ul id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-600 shadow-lg rounded-lg">
             <li class="hover:bg-gray-400 font-semibold cursor-pointer">
-                <!-- Menampilkan Token (Debugging) -->
-                <div class="text-xs px-4 py-2 text-white text-center">
-                    Token: <?= esc(session()->get('USER_TOKEN')); ?>
-                </div>
-            </li>
-            <li class="hover:bg-gray-400 font-semibold cursor-pointer">
                 <a href="<?= site_url('logout'); ?>" class="block px-4 py-2 text-white text-center">
                     Log Out
                 </a>
