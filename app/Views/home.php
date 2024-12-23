@@ -198,7 +198,7 @@
                                     <h3 class="text-lg font-semibold truncate mt-2"><?= esc($event['NAMA_EVENT']); ?></h3>
                                     <p class="text-gray-600"><?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?></p>
                                     <p class="text-sm text-gray-500 mt-2 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
-                                    <a href="<?= site_url('event/' . urlencode($event['NAMA_EVENT'])); ?>" 
+                                    <a href="<?= site_url('event/' . $event['ID_EVENT']); ?>"
                                     class="block mt-4 bg-gray-900 text-yellow-500 text-center font-semibold py-2 rounded-lg hover:bg-gray-600 text-xs">
                                     Baca Selengkapnya
                                     </a>
@@ -241,7 +241,7 @@
                                 <div class="absolute bottom-4 left-4 text-gray-100">
                                     <p class="text-sm"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
                                     <h3 class="mt-1 text-xl font-semibold">
-                                        <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
+                                    <a href="<?= site_url('berita/' . $item['ID_BERITA']); ?>"
                                         class="hover:text-yellow-600 transition duration-300 ease-in-out">
                                             <?= esc($item['NAMA_BERITA']); ?>
                                         </a>

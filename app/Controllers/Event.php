@@ -39,30 +39,28 @@ class Event extends Controller
     }
     
 
-    public function detail($nama_event)
+    public function detail($id_event)
     {
         $db = \Config\Database::connect();
     
         // Ambil tanggal hari ini
         $today = date('Y-m-d');
     
-        // Ambil event berdasarkan nama event dan join kategori event
+        // Ambil event berdasarkan ID event
         $builder = $db->table('event');
         $builder->select('event.*, kategori_event.KATEGORI_KEVENT');
         $builder->join('kategori_event', 'event.ID_KEVENT = kategori_event.ID_KEVENT', 'left');
-        $builder->where('event.NAMA_EVENT', urldecode($nama_event));
-        $builder->where('event.TANGGAL_EVENT >=', $today); // Pastikan event belum lewat
-        $event = $builder->get()->getRowArray(); // Ambil satu hasil sebagai array
+        $builder->where('event.ID_EVENT', $id_event);
+        $builder->where('event.TANGGAL_EVENT >=', $today);
+        $event = $builder->get()->getRowArray();
     
         if (!$event) {
-            // Kembalikan 404 jika tidak ditemukan atau sudah lewat
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Event ' . $nama_event . ' tidak ditemukan atau sudah berakhir');
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Event dengan ID ' . $id_event . ' tidak ditemukan atau sudah berakhir');
         }
     
-        // Kirim data ke view detail
         return view('event/detail', [
             'event' => $event,
             'title' => 'Detail Event'
         ]);
-    }    
+    }
 }

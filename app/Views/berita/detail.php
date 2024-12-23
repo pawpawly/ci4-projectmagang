@@ -34,13 +34,13 @@
                 <ul class="space-y-4">
                     <?php foreach ($latestPosts as $post): ?>
                         <li class="flex gap-4 items-center">
-                            <a href="<?= site_url('berita/' . urlencode($post['NAMA_BERITA'])); ?>" class="block">
+                            <a href="<?= site_url('berita/' . $post['ID_BERITA']); ?>" class="block">
                                 <img src="<?= base_url('uploads/berita/' . $post['FOTO_BERITA']); ?>" 
                                      alt="<?= esc($post['NAMA_BERITA']); ?>" 
                                      class="w-20 h-20 object-cover rounded-md">
                             </a>
                             <div class="flex-1">
-                                <a href="<?= site_url('berita/' . urlencode($post['NAMA_BERITA'])); ?>" 
+                                <a href="<?= site_url('berita/' . $post['ID_BERITA']); ?>"
                                    class="text-lg font-semibold hover:text-yellow-400 hover:underline transition duration-200 ease-in-out line-clamp-2">
                                     <?= esc($post['NAMA_BERITA']); ?>
                                 </a>
@@ -57,10 +57,8 @@
 </div>
 
 <script>
-    // Fungsi untuk mengatur posisi scroll ke atas saat halaman di-refresh
     window.onbeforeunload = function () {
         window.scrollTo(0, 0);
     };
-    
 </script>
 <?= $this->endSection() ?>
