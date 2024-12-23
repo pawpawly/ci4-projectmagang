@@ -988,11 +988,33 @@ public function deleteUser($username)
     public function saveEvent()
     {
         $session = session();
-
+    
         if ($session->get('LEVEL_USER') !== '2') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
+    
+        // Ambil input tanggal event
+        $tanggalEvent = date('Y-m-d', strtotime($this->request->getPost('tanggal_event')));
+        
+        // Cek konflik dengan reservasi yang sudah ada
+        $existingReservation = $this->db->table('reservasi')
+            ->where('TANGGAL_RESERVASI', $tanggalEvent)
+            ->get()
+            ->getRow();
+    
+        // Cek konflik dengan event yang sudah ada
+        $existingEvent = $this->eventModel
+            ->where('TANGGAL_EVENT', $tanggalEvent)
+            ->first();
+    
+        // Jika ada konflik
+        if ($existingReservation || $existingEvent) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Tanggal tersebut sudah ada event atau reservasi yang terjadwal.'
+            ]);
+        }
+    
         // Proses upload poster
         $poster = $this->request->getFile('poster_event');
         $posterName = '';
@@ -1007,7 +1029,7 @@ public function deleteUser($username)
             'USERNAME' => session()->get('username'),
             'NAMA_EVENT' => $this->request->getPost('nama_event'),
             'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-            'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
+            'TANGGAL_EVENT' => $tanggalEvent,
             'JAM_EVENT' => $this->request->getPost('jam_event'),
             'FOTO_EVENT' => $posterName,
         ];
@@ -1020,7 +1042,6 @@ public function deleteUser($username)
             'message' => 'Event berhasil ditambahkan.'
         ]);
     }
-    
     
     public function editEvent($id_event)
     {
@@ -1043,58 +1064,80 @@ public function deleteUser($username)
         ]);
     }
 
-    public function updateEvent()
-    {
-        $session = session();
+public function updateEvent()
+{
+    $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
-            return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-        }
-
-        $id_event = $this->request->getPost('id_event');
-    
-        // Data untuk di-update
-        $data = [
-            'ID_KEVENT' => $this->request->getPost('kategori_id'),
-            'NAMA_EVENT' => $this->request->getPost('nama_event'),
-            'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-            'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
-            'JAM_EVENT' => $this->request->getPost('jam_event')
-        ];
-    
-        // Cek apakah ada file foto yang diunggah
-        $file = $this->request->getFile('foto_event');
-        if ($file && $file->isValid() && !$file->hasMoved()) {
-            // Hapus foto lama jika ada
-            $oldEvent = $this->eventModel->find($id_event);
-            if (!empty($oldEvent['FOTO_EVENT'])) {
-                $oldPosterPath = FCPATH . 'uploads/poster/' . $oldEvent['FOTO_EVENT'];
-                if (is_file($oldPosterPath)) {
-                    unlink($oldPosterPath);
-                }
-            }
-    
-            // Simpan foto baru
-            $newName = $file->getRandomName();
-            $file->move(FCPATH . 'uploads/poster/', $newName);
-            $data['FOTO_EVENT'] = $newName;
-        }
-    
-        try {
-            // Update data event di database
-            $this->eventModel->update($id_event, $data);
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Event berhasil diperbarui.'
-            ]);
-        } catch (\Exception $e) {
-            log_message('error', $e->getMessage());
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Gagal memperbarui event.'
-            ]);
-        }
+    if ($session->get('LEVEL_USER') !== '2') {
+        return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
+
+    $id_event = $this->request->getPost('id_event');
+    $tanggalEvent = date('Y-m-d', strtotime($this->request->getPost('tanggal_event')));
+
+    // Validasi Konflik dengan Reservasi
+    $existingReservation = $this->db->table('reservasi')
+        ->where('TANGGAL_RESERVASI', $tanggalEvent)
+        ->get()
+        ->getRow();
+
+    // Validasi Konflik dengan Event Lain (selain event yang sedang diupdate)
+    $existingEvent = $this->eventModel
+        ->where('TANGGAL_EVENT', $tanggalEvent)
+        ->where('ID_EVENT !=', $id_event) // Abaikan event yang sedang diupdate
+        ->first();
+
+    // Jika terjadi konflik, kirim respon error
+    if ($existingReservation || $existingEvent) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Tanggal tersebut sudah ada event atau reservasi yang terjadwal.'
+        ]);
+    }
+
+    // Data untuk di-update
+    $data = [
+        'ID_KEVENT' => $this->request->getPost('kategori_id'),
+        'NAMA_EVENT' => $this->request->getPost('nama_event'),
+        'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
+        'TANGGAL_EVENT' => $tanggalEvent,
+        'JAM_EVENT' => $this->request->getPost('jam_event'),
+    ];
+
+    // Cek apakah ada file foto yang diunggah
+    $file = $this->request->getFile('foto_event');
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        // Hapus foto lama jika ada
+        $oldEvent = $this->eventModel->find($id_event);
+        if (!empty($oldEvent['FOTO_EVENT'])) {
+            $oldPosterPath = FCPATH . 'uploads/poster/' . $oldEvent['FOTO_EVENT'];
+            if (is_file($oldPosterPath)) {
+                unlink($oldPosterPath);
+            }
+        }
+
+        // Simpan foto baru
+        $newName = $file->getRandomName();
+        $file->move(FCPATH . 'uploads/poster/', $newName);
+        $data['FOTO_EVENT'] = $newName;
+    }
+
+    try {
+        // Update data event di database
+        $this->eventModel->update($id_event, $data);
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Event berhasil diperbarui.'
+        ]);
+    } catch (\Exception $e) {
+        log_message('error', $e->getMessage());
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Gagal memperbarui event.'
+        ]);
+    }
+}
+
     
     
     

@@ -5,7 +5,8 @@
     <h1 class="text-2xl font-bold mb-6">Tambah Event</h1>
 
     <form id="eventForm" action="<?= site_url('superadmin/event/save') ?>" method="POST" autocomplete="off" enctype="multipart/form-data">
-    <?= csrf_field(); ?>
+        <?= csrf_field(); ?>
+
         <div class="mb-4">
             <label for="nama_event" class="block text-sm font-medium text-gray-700">Nama Event</label>
             <input type="text" maxlength="255" id="nama_event" name="nama_event" autocomplete="off" placeholder="Masukkan Nama Event"
@@ -27,11 +28,12 @@
         </div>
 
         <div class="mb-4">
-            <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
-            <input type="date" id="tanggal_event" name="tanggal_event" autocomplete="off"
-                   value="<?= old('tanggal_event') ?>"
-                   class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
-        </div>
+    <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
+    <input type="text" id="tanggal_event" name="tanggal_event" 
+           placeholder="Pilih Tanggal" 
+           class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none">
+</div>
+
 
         <div class="mb-4">
             <label for="jam_event" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
@@ -49,9 +51,8 @@
         <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-2">Poster Acara <i>(Max 2MB)</i></label>
             <div class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-100 transition relative" id="dropzoneEvent">
-                <input type="file" name="poster_event" id="posterEventInput" accept=".jpg,.jpeg,.png" class="hidden" >
+                <input type="file" name="poster_event" id="posterEventInput" accept=".jpg,.jpeg,.png" class="hidden">
                 <div id="dropzoneEventContent" class="flex flex-col justify-center items-center space-y-2">
-                    <!-- Ikon upload -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16l-4-4m0 0l-4 4m4-4v12M4 4h16" />
                     </svg>
@@ -60,7 +61,6 @@
             </div>
         </div>
 
-        <!-- Tombol Simpan -->
         <div class="mt-6 flex justify-end space-x-4">
             <a href="<?= site_url('superadmin/event/manage'); ?>"
                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Batal</a>
@@ -70,9 +70,16 @@
     </form>
 </div>
 
+
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
 <script>
+// Dropzone Setup
 const dropzoneEvent = document.getElementById('dropzoneEvent');
 const fileInputEvent = document.getElementById('posterEventInput');
 const dropzoneText = document.getElementById('dropzoneText');
@@ -116,27 +123,23 @@ function handleFilesEvent(files) {
     }
 }
 
-// Fungsi untuk mereset dropzone
+// Fungsi untuk mereset konten dropzone
 function resetDropzoneContent() {
     dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PNG/JPG)';
     dropzoneText.classList.add('text-gray-500');
     dropzoneText.classList.remove('text-green-500');
 }
 
-// Event Listener
+// Event Listener untuk dropzone
 dropzoneEvent.addEventListener('click', () => fileInputEvent.click());
-
 fileInputEvent.addEventListener('change', () => handleFilesEvent(fileInputEvent.files));
-
 dropzoneEvent.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropzoneEvent.classList.add('bg-gray-100');
 });
-
 dropzoneEvent.addEventListener('dragleave', () => {
     dropzoneEvent.classList.remove('bg-gray-100');
 });
-
 dropzoneEvent.addEventListener('drop', (e) => {
     e.preventDefault();
     dropzoneEvent.classList.remove('bg-gray-100');
@@ -145,13 +148,33 @@ dropzoneEvent.addEventListener('drop', (e) => {
     handleFilesEvent(files);
 });
 
-fileInputEvent.addEventListener('click', () => {
-    resetDropzoneContent();
+flatpickr("#tanggal_event", {
+    enableTime: true,        // Aktifkan pilihan waktu
+    dateFormat: "Y-m-d H:i", // Format tanggal dan waktu
+    minDate: "today",        // Tanggal minimal hari ini
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr("#tanggal_event", {
+        dateFormat: "d-m-Y", // Format tanggal (YYYY-MM-DD)
+        minDate: "today",    // Batasi tanggal ke hari ini dan setelahnya
+        onChange: function (selectedDates, dateStr, instance) {
+            // Validasi tambahan (jika diperlukan)
+            if (new Date(dateStr) < new Date()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Tanggal Tidak Valid!',
+                    text: 'Tidak boleh memilih tanggal masa lalu.',
+                    confirmButtonText: 'OK'
+                });
+                instance.clear(); // Hapus nilai dari input
+            }
+        }
+    });
 });
 
 
-
-    document.querySelector('form').addEventListener('submit', function (e) {
+document.querySelector('form').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const fileInput = document.getElementById('posterEventInput');
@@ -160,6 +183,7 @@ fileInputEvent.addEventListener('click', () => {
     const tanggalEvent = document.getElementById('tanggal_event').value;
     const jamEvent = document.getElementById('jam_event').value;
     const deskripsiEvent = document.getElementById('deskripsi_event').value;
+    const submitButton = document.querySelector('button[type="submit"]');
     const formData = new FormData(this);
 
     // Validasi jika ada field yang kosong
@@ -173,23 +197,36 @@ fileInputEvent.addEventListener('click', () => {
         return;
     }
 
-    const today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+// Validasi input tanggal
+document.getElementById('tanggal_event').addEventListener('change', function (e) {
+    const selectedDate = this.value; // Ambil nilai input tanggal
+    const today = new Date().toISOString().split('T')[0]; // Tanggal hari ini dalam format YYYY-MM-DD
 
-    // Validasi Tanggal Tidak Boleh Masa Lalu
-    if (tanggalEvent < today) {
+    // Periksa jika tanggal belum lengkap (panjang format YYYY-MM-DD adalah 10 karakter)
+    if (selectedDate.length < 10) {
+        return; // Jangan lakukan validasi jika tanggal belum lengkap
+    }
+
+    // Validasi: Tanggal tidak boleh di masa lalu
+    if (selectedDate < today) {
         Swal.fire({
             icon: 'error',
             title: 'Tanggal Tidak Valid!',
             text: 'Tidak boleh memilih tanggal masa lalu.',
             confirmButtonText: 'OK'
+        }).then(() => {
+            this.value = ''; // Kosongkan nilai input
+            this.focus();    // Fokus kembali ke input tanggal
         });
-        return;
     }
+});
 
-    const submitButton = document.querySelector('button[type="submit"]');
+
+    // Disable tombol dan tampilkan spinner saat menyimpan
     submitButton.disabled = true;
     submitButton.innerHTML = 'Menyimpan... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
 
+    // Proses pengiriman data
     fetch('<?= site_url('superadmin/event/save') ?>', {
         method: 'POST',
         body: formData,
@@ -199,41 +236,42 @@ fileInputEvent.addEventListener('click', () => {
     })
     .then(response => response.json())
     .then(data => {
-        // Pastikan spinner tetap ada setelah penyimpanan berhasil
-        submitButton.disabled = true;
-        submitButton.innerHTML = 'Menyimpan... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
-
         if (!data.success) {
+            // Jika gagal validasi
             Swal.fire({
                 icon: 'warning',
                 title: 'Oops!',
                 text: data.message,
                 confirmButtonText: 'OK'
             });
+            // Pulihkan tombol
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Simpan';
         } else {
+            // Jika berhasil
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
                 text: data.message,
                 confirmButtonText: 'OK'
             }).then(() => {
-                // Redirect setelah sukses
                 window.location.href = '<?= site_url('superadmin/event/manage') ?>';
             });
         }
     })
     .catch(error => {
-        submitButton.disabled = false;
-        submitButton.innerHTML = 'Simpan';
-
+        // Jika terjadi kesalahan server
         Swal.fire({
             icon: 'error',
             title: 'Error!',
             text: 'Terjadi kesalahan pada server.',
             confirmButtonText: 'OK'
         });
+        // Pulihkan tombol
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Simpan';
     });
 });
-
 </script>
+
 <?= $this->endSection() ?>

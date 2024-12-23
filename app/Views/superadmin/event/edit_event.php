@@ -30,11 +30,12 @@
         </div>
 
         <div class="mb-4">
-            <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
-            <input type="date" id="tanggal_event" name="tanggal_event" autocomplete="off"
-                class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
-                value="<?= date('Y-m-d', strtotime(old('tanggal_event', $event['TANGGAL_EVENT']))); ?>">
-        </div>
+    <label for="tanggal_event" class="block text-sm font-medium text-gray-700">Tanggal Event</label>
+    <input type="text" id="tanggal_event" name="tanggal_event" placeholder="Pilih Tanggal Event"
+        class="mt-1 px-4 py-2 w-full border rounded-md focus:ring-2 focus:ring-[#2C1011] focus:outline-none"
+        value="<?= date('Y-m-d', strtotime(old('tanggal_event', $event['TANGGAL_EVENT']))); ?>">
+</div>
+
 
         <div class="mb-4">
             <label for="jam_event" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
@@ -74,12 +75,30 @@
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.getElementById('eventForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent the default form submission
+    document.addEventListener('DOMContentLoaded', function () {
+    // Inisialisasi Flatpickr dengan format d-m-Y
+    flatpickr("#tanggal_event", {
+        dateFormat: "d-m-Y", // Format tanggal d-m-Y
+        defaultDate: "<?= date('d-m-Y', strtotime(old('tanggal_event', $event['TANGGAL_EVENT']))); ?>", // Tanggal default
+        minDate: "today", // Batasi tanggal ke hari ini dan setelahnya
+        locale: {
+            firstDayOfWeek: 1 // Mulai minggu dengan hari Senin
+        },
+        onChange: function (selectedDates, dateStr) {
+            console.log("Tanggal dipilih:", dateStr); // Log tanggal yang dipilih
+        }
+    });
+
+    const form = document.getElementById('eventForm');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Batalkan pengiriman form default
 
         const namaEvent = document.getElementById('nama_event').value;
         const kategoriAcara = document.getElementById('kategori_id').value;
@@ -87,21 +106,7 @@
         const jamEvent = document.getElementById('jam_event').value;
         const deskripsiEvent = document.getElementById('deskripsi_event').value;
 
-        // Get today's date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0];
-
-        // Validasi Tanggal Tidak Boleh Masa Lalu
-        if (tanggalEvent < today) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Tanggal Tidak Valid!',
-                text: 'Tidak boleh memilih tanggal masa lalu.',
-                confirmButtonText: 'OK'
-            });
-            return; // Prevent form submission
-        }
-
-        // Check if any required fields are empty
+        // Validasi jika ada field kosong
         if (!namaEvent || !kategoriAcara || !tanggalEvent || !jamEvent || !deskripsiEvent) {
             Swal.fire({
                 icon: 'warning',
@@ -109,15 +114,35 @@
                 text: 'Semua field wajib diisi!',
                 confirmButtonText: 'OK'
             });
-            return; // Prevent form submission
+            return; // Batalkan pengiriman form
         }
 
-        const submitButton = document.getElementById('submitButton');
-        const formData = new FormData(this);
+        // Konversi tanggal dari d-m-Y ke YYYY-MM-DD untuk validasi
+        const [day, month, year] = tanggalEvent.split('-');
+        const formattedDate = `${year}-${month}-${day}`; // Format ulang jadi YYYY-MM-DD
 
-        // Disable submit button and show loading spinner
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+
+        // Validasi Tanggal Tidak Boleh di Masa Lalu
+        if (formattedDate < today) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Tanggal Tidak Valid!',
+                text: 'Tidak boleh memilih tanggal masa lalu.',
+                confirmButtonText: 'OK'
+            });
+            return; // Batalkan pengiriman form
+        }
+
+        // Jika semua validasi berhasil
+        const submitButton = document.getElementById('submitButton');
+        const formData = new FormData(form);
+
+        // Tampilkan spinner loading
         submitButton.disabled = true;
-        submitButton.innerHTML = 'Menyimpan... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
+        submitButton.innerHTML =
+            'Menyimpan... <svg class="animate-spin h-5 w-5 text-white inline-block ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>';
 
         fetch('<?= site_url('superadmin/event/update') ?>', {
             method: 'POST',
@@ -126,118 +151,121 @@
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops!',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    });
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Simpan Perubahan';
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '<?= site_url('superadmin/event/manage') ?>';
+                    });
+                }
+            })
+            .catch(error => {
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops!',
-                    text: data.message,
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan pada server.',
                     confirmButtonText: 'OK'
                 });
                 submitButton.disabled = false;
                 submitButton.innerHTML = 'Simpan Perubahan';
-            } else {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: data.message,
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = '<?= site_url('superadmin/event/manage') ?>';
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'Terjadi kesalahan pada server.',
-                confirmButtonText: 'OK'
+                console.error('Error:', error);
             });
-            submitButton.disabled = false;
-            submitButton.innerHTML = 'Simpan Perubahan';
-            console.error('Error:', error);
-        });
     });
 
+    // Dropzone
     const dropzoneEditEvent = document.getElementById('dropzoneEditEvent');
-const fileInputEventEdit = document.getElementById('posterEventInputEdit');
-const dropzoneText = document.getElementById('dropzoneText');
-const dropzoneContentEditEvent = document.getElementById('dropzoneContentEditEvent');
+    const fileInputEventEdit = document.getElementById('posterEventInputEdit');
+    const dropzoneText = document.getElementById('dropzoneText');
 
-// Fungsi untuk menangani file yang diunggah
-function handleFilesEventEdit(files) {
-    if (files.length > 0) {
-        const file = files[0];
+    // Fungsi untuk menangani file yang diunggah
+    function handleFilesEventEdit(files) {
+        if (files.length > 0) {
+            const file = files[0];
 
-        // Validasi jenis file
-        const allowedExtensions = ['png', 'jpg', 'jpeg'];
-        const fileExtension = file.name.split('.').pop().toLowerCase();
+            // Validasi jenis file
+            const allowedExtensions = ['png', 'jpg', 'jpeg'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
 
-        if (!allowedExtensions.includes(fileExtension)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Jenis File Tidak Valid!',
-                text: `Hanya file dengan format ${allowedExtensions.join(', ').toUpperCase()} yang diperbolehkan.`,
-            });
-            fileInputEventEdit.value = ''; // Reset file input
-            resetDropzoneContent(); // Reset tampilan dropzone
-            return;
+            if (!allowedExtensions.includes(fileExtension)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Jenis File Tidak Valid!',
+                    text: `Hanya file dengan format ${allowedExtensions.join(', ').toUpperCase()} yang diperbolehkan.`,
+                });
+                fileInputEventEdit.value = ''; // Reset file input
+                resetDropzoneContent();
+                return;
+            }
+
+            // Validasi ukuran file
+            if (file.size > 2 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ukuran File Terlalu Besar!',
+                    text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
+                });
+                fileInputEventEdit.value = ''; // Reset file input
+                resetDropzoneContent();
+                return;
+            }
+
+            // Jika validasi berhasil
+            dropzoneText.textContent = `File Terpilih: ${file.name}`;
+            dropzoneText.classList.remove('text-gray-500');
+            dropzoneText.classList.add('text-green-500');
+        } else {
+            resetDropzoneContent();
         }
-
-        // Validasi ukuran file
-        if (file.size > 2 * 1024 * 1024) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Ukuran file terlalu besar!',
-                text: 'Silakan unggah file dengan ukuran maksimal 2MB.',
-            });
-            fileInputEventEdit.value = ''; // Reset file input
-            resetDropzoneContent(); // Reset tampilan dropzone
-            return;
-        }
-
-        // Jika validasi berhasil
-        dropzoneText.textContent = `File Terpilih: ${file.name}`;
-        dropzoneText.classList.remove('text-gray-500');
-        dropzoneText.classList.add('text-green-500');
-    } else {
-        resetDropzoneContent();
     }
-}
 
-// Fungsi untuk mereset dropzone
-function resetDropzoneContent() {
-    dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PNG/JPG)';
-    dropzoneText.classList.add('text-gray-500');
-    dropzoneText.classList.remove('text-green-500');
-}
+    // Fungsi untuk mereset konten dropzone
+    function resetDropzoneContent() {
+        dropzoneText.textContent = 'Drop files here or click to upload (Max 2MB, PNG/JPG)';
+        dropzoneText.classList.add('text-gray-500');
+        dropzoneText.classList.remove('text-green-500');
+    }
 
-// Event listeners
-dropzoneEditEvent.addEventListener('click', () => fileInputEventEdit.click());
+    // Event listeners untuk Dropzone
+    dropzoneEditEvent.addEventListener('click', () => {
+        fileInputEventEdit.click(); // Simulasikan klik file input
+    });
 
-fileInputEventEdit.addEventListener('change', () => handleFilesEventEdit(fileInputEventEdit.files));
+    dropzoneEditEvent.addEventListener('dragover', (e) => {
+        e.preventDefault(); // Hindari perilaku default browser
+        dropzoneEditEvent.classList.add('bg-gray-100'); // Tambahkan efek saat drag
+    });
 
-dropzoneEditEvent.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzoneEditEvent.classList.add('bg-gray-100');
-});
+    dropzoneEditEvent.addEventListener('dragleave', () => {
+        dropzoneEditEvent.classList.remove('bg-gray-100'); // Hapus efek saat drag leave
+    });
 
-dropzoneEditEvent.addEventListener('dragleave', () => {
-    dropzoneEditEvent.classList.remove('bg-gray-100');
-});
+    dropzoneEditEvent.addEventListener('drop', (e) => {
+        e.preventDefault(); // Hindari perilaku default browser
+        dropzoneEditEvent.classList.remove('bg-gray-100'); // Hapus efek drag
 
-dropzoneEditEvent.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzoneEditEvent.classList.remove('bg-gray-100');
-    const files = e.dataTransfer.files;
-    fileInputEventEdit.files = files;
-    handleFilesEventEdit(files);
-});
+        const files = e.dataTransfer.files; // Ambil file dari event drop
+        fileInputEventEdit.files = files; // Tautkan file ke input
+        handleFilesEventEdit(files); // Validasi dan proses file
+    });
 
-fileInputEventEdit.addEventListener('click', () => {
-    resetDropzoneContent();
+    // Event listener untuk input file
+    fileInputEventEdit.addEventListener('change', () => {
+        handleFilesEventEdit(fileInputEventEdit.files); // Validasi file saat dipilih
+    });
 });
 
 </script>
