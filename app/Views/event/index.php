@@ -39,7 +39,7 @@
                         </div>
 
                         <div class="mt-4 flex justify-start"> <!-- Mengatur posisi tombol -->
-                            <a href="<?= site_url('event/' . urlencode($event['NAMA_EVENT'])); ?>" 
+                        <a href="<?= site_url('event/' . $event['ID_EVENT']); ?>"
                                class="bg-gray-900 text-yellow-500 py-2 px-6 rounded-lg hover:bg-gray-600">
                                 Baca Selengkapnya
                             </a>

@@ -14,7 +14,7 @@ $routes->post('saran/saveSaran', 'SaranController::saveSaran');
 
 $routes->group('berita', function ($routes) {
     $routes->get('/', 'Berita::index');
-    $routes->get('(:segment)', 'Berita::detail/$1');
+    $routes->get('(:num)', 'Berita::detail/$1');
 });
 $routes->group('koleksi', function ($routes) {
     $routes->get('/', 'Koleksi::index');  
@@ -27,7 +27,7 @@ $routes->group('bukudigital', function ($routes) {
 });
 $routes->group('event', function ($routes) {
     $routes->get('index', 'Event::index'); 
-    $routes->get('(:segment)', 'Event::detail/$1');  
+    $routes->get('(:num)', 'Event::detail/$1');
 });
 $routes->group('reservasi', function ($routes) {
     $routes->post('store', 'ReservationController::storeReservasi'); 

@@ -28,10 +28,10 @@ class Berita extends BaseController
     }
 
     
-    public function detail($slug)
+    public function detail($id_berita)
     {
-        // Cari berita berdasarkan slug
-        $berita = $this->beritaModel->where('NAMA_BERITA', $slug)->first();
+        // Cari berita berdasarkan ID
+        $berita = $this->beritaModel->where('ID_BERITA', $id_berita)->first();
     
         if (!$berita) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Berita tidak ditemukan');
@@ -39,7 +39,7 @@ class Berita extends BaseController
     
         // Ambil 3 berita terbaru kecuali berita yang sedang dibuka
         $latestPosts = $this->beritaModel
-            ->where('NAMA_BERITA !=', $slug)
+            ->where('ID_BERITA !=', $id_berita)
             ->orderBy('TANGGAL_BERITA', 'DESC')
             ->limit(3)
             ->findAll();
@@ -52,9 +52,5 @@ class Berita extends BaseController
     
         return view('berita/detail', $data);
     }
-    
-    
-    
-
 }
 

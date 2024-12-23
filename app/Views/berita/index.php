@@ -16,7 +16,7 @@
             <?php foreach ($berita as $item): ?>
                 <div class="forum-card group"> <!-- Tambahkan group untuk hover parent -->
                     <div class="forum-image-wrapper overflow-hidden rounded-lg transition-transform duration-300 ease-in-out">
-                        <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>">
+                    <a href="<?= site_url('berita/' . $item['ID_BERITA']); ?>">
                             <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
                                  alt="<?= esc($item['NAMA_BERITA']); ?>"
                                  class="w-full h-48 object-cover transition-transform hover:opacity-75 transition duration-200 group-hover:scale-110">
