@@ -104,7 +104,7 @@
     <?php endforeach; ?>
     <?php else: ?>
         <tr>
-            <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada kategori yang ditemukan.</td>
+            <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada koleksi yang ditemukan.</td>
         </tr>
     <?php endif; ?>
 </tbody>

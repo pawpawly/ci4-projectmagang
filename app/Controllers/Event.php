@@ -51,7 +51,6 @@ class Event extends Controller
         $builder->select('event.*, kategori_event.KATEGORI_KEVENT');
         $builder->join('kategori_event', 'event.ID_KEVENT = kategori_event.ID_KEVENT', 'left');
         $builder->where('event.ID_EVENT', $id_event);
-        $builder->where('event.TANGGAL_EVENT >=', $today);
         $event = $builder->get()->getRowArray();
     
         if (!$event) {
