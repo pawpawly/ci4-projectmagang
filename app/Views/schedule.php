@@ -132,8 +132,8 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
             <div class="flex justify-end">
-                <button type="button" id="closeModal" class="mr-4 px-4 py-2 border rounded">Batal</button>
-                <button type="submit" id="submitBtn" class="px-4 py-2 bg-yellow-500 text-white rounded flex items-center justify-center">
+                <button type="button" id="closeModal" class="mr-4 px-4 py-2 bg-gray-900 text-yellow-500 font-semibold rounded flex items-center justify-center">Batal</button>
+                <button type="submit" id="submitBtn" class="px-4 py-2 bg-yellow-500 text-gray-900 font-semibold rounded flex items-center justify-center">
                 <span id="btnText">Simpan</span>
                 <span id="spinnerContainer" class="ml-2 hidden"></span>
             </button>
@@ -616,7 +616,7 @@ const NewCalendar = (function() {
                         cancelButtonColor: '#424242',
                     }).then((result) => {
                         if (result.dismiss === Swal.DismissReason.confirm) {
-                            window.location.href = "<?= site_url(); ?>/event/" + encodeURIComponent(event.nama_event);
+                            window.location.href = "<?= site_url(); ?>/event/" + encodeURIComponent(event.id);
                         }
                     });
                 });

@@ -24,7 +24,7 @@
                     </div>
                     <p class="text-gray-600 mt-2"><?= formatTanggalIndonesia($item['TANGGAL_BERITA']); ?></p>
                     <h3 class="forum-title mt-1 text-lg font-semibold">
-                        <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>" 
+                        <a href="<?= site_url('berita/' . urlencode($item['ID_BERITA'])); ?>" 
                            class="text-black transition duration-300 ease-in-out group-hover:text-yellow-500 hover:underline">
                             <?= esc($item['NAMA_BERITA']); ?>
                         </a>
