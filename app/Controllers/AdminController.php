@@ -17,7 +17,7 @@ use App\Validation\CustomValidation;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class SuperAdminController extends Controller
+class AdminController extends Controller
 {
     protected $userModel;
     protected $beritaModel;
@@ -52,17 +52,15 @@ class SuperAdminController extends Controller
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     }
 
-    // ============================
-    // Manajemen Pengguna (CRUD)
-    // ============================
+
     public function dashboard()
     {
+        
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $userModel = new \App\Models\UserModel();
     
         // Ambil USER_TOKEN dan USERNAME dari sesi
@@ -74,6 +72,11 @@ class SuperAdminController extends Controller
                           ->where('USER_TOKEN', $userToken)
                           ->first();
         
+
+        if (!$session->get('isLoggedIn') || !$user) {
+            $session->destroy();
+            return redirect()->to(site_url('login'))->with('error', 'Sesi Anda tidak valid atau telah berakhir.');
+        }
     
         // Tangkap data statistik bulanan dan harian
         $year = $this->request->getGet('year') ?? date('Y');
@@ -125,7 +128,7 @@ class SuperAdminController extends Controller
         $upcomingEvents = $this->eventModel->where('TANGGAL_EVENT >=', date('Y-m-d'))->countAllResults();
     
         // Kirim data ke view dashboard
-        return view('superadmin/dashboard', [
+        return view('admin/dashboard', [
             'dataBulanan' => $dataBulanan,
             'dataHarian' => $dataHarian,
             'year' => $year,
@@ -136,253 +139,7 @@ class SuperAdminController extends Controller
             'upcomingEvents' => $upcomingEvents,
         ]);
     }
-    
 
-  
-    
-public function userManage()
-{
-    $session = session();
-
-    if ($session->get('LEVEL_USER') !== '2') {
-        return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-    }
-    $search = $this->request->getGet('search'); // Filter pencarian (opsional)
-    $perPage = 10; // Jumlah data per halaman
-    $page = $this->request->getGet('page') ?? 1; // Halaman saat ini, default halaman 1
-
-    $userQuery = $this->userModel;
-
-    if (!empty($search)) {
-        $userQuery->like('USERNAME', $search); // Filter berdasarkan username
-    }
-
-    $totalRecords = $userQuery->countAllResults(false); // Total data (tanpa reset query)
-    $totalPages = ceil($totalRecords / $perPage); // Total halaman
-    $userQuery->orderBy('USERNAME', 'ASC'); // Urutkan berdasarkan username
-    $users = $userQuery->findAll($perPage, ($page - 1) * $perPage); // Ambil data dengan offset
-
-    // Base URL untuk pagination
-    $baseUrl = site_url('superadmin/user/manage');
-
-    // Query params untuk pagination
-    $queryParams = [
-        'search' => $search,
-    ];
-
-    return view('superadmin/user/manage', [
-        'users' => $users,
-        'search' => $search,
-        'page' => (int)$page,
-        'totalPages' => $totalPages,
-        'baseUrl' => $baseUrl,
-        'queryParams' => $queryParams, // Kirim query params ke view
-    ]);
-}
-
-
-
-    public function addUserForm()
-    {
-        $session = session();
-
-        if ($session->get('LEVEL_USER') !== '2') {
-            return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-        }
-        return view('superadmin/user/add_user');
-    }
-
-public function editUser($username)
-{
-    $session = session();
-
-    if ($session->get('LEVEL_USER') !== '2') {
-        return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-    }
-    
-    $user = $this->userModel->getUserByUsername($username);
-
-    if (!$user) {
-        return redirect()->to('superadmin/user/manage')->with('error', 'User tidak ditemukan!');
-    }
-
-    return view('superadmin/user/edit_user', ['user' => $user]);
-}
-
-
-public function saveUser()
-{
-    $session = session();
-
-    if ($session->get('LEVEL_USER') !== '2') {
-        return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-    }
-
-    $validation = $this->validate([
-        'nama_lengkap' => 'required',
-        'username' => 'required|is_unique[USER.USERNAME]',
-        'password' => 'required|min_length[8]',
-        'level_user' => 'required'
-    ]);
-
-    if (!$validation) {
-        $errors = $this->validator->getErrors();
-
-        // Ubah pesan kesalahan menjadi lebih ramah pengguna
-        if (isset($errors['username']) && str_contains($errors['username'], 'unique')) {
-            $errors['username'] = 'Username telah digunakan, silakan gunakan username lain.';
-        }
-
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => implode(', ', $errors)
-        ]);
-    }
-
-    $data = [
-        'NAMA_USER' => $this->request->getPost('nama_lengkap'),
-        'USERNAME' => $this->request->getPost('username'),
-        'PASSWORD_USER' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-        'LEVEL_USER' => $this->request->getPost('level_user'),
-    ];
-
-    try {
-        $this->userModel->insert($data);
-        return $this->response->setJSON(['success' => true]);
-    } catch (\Exception $e) {
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Terjadi kesalahan saat menambahkan pengguna: ' . $e->getMessage()
-        ]);
-    }
-}
-
-
-public function updateUser()
-{
-    $session = session();
-
-    if ($session->get('LEVEL_USER') !== '2') {
-        return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-    }
-
-    if (!$this->request->is('post')) {
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Invalid request method.'
-        ]);
-    }
-
-    $originalUsername = $this->request->getPost('original_username');
-    $newUsername = $this->request->getPost('username');
-
-    // Validasi input form
-    $validation = $this->validate([
-        'nama_lengkap' => 'required',
-        'username' => "required|is_unique[USER.USERNAME,USERNAME,{$originalUsername}]",
-        'level_user' => 'required'
-    ]);
-
-    if (!$validation) {
-        $message = $this->validator->hasError('username') 
-            ? 'Username telah digunakan, silakan gunakan username lain.' 
-            : 'Mohon isi semua field dengan benar.';
-
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => $message
-        ]);
-    }
-
-    $data = [
-        'NAMA_USER' => $this->request->getPost('nama_lengkap'),
-        'USERNAME' => $newUsername,
-        'LEVEL_USER' => $this->request->getPost('level_user'),
-    ];
-
-    if ($this->request->getPost('password')) {
-        $data['PASSWORD_USER'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
-    }
-
-    $this->userModel->updateUserWithTransaction($originalUsername, $data);
-
-    if ($originalUsername === session()->get('username')) {
-        session()->destroy(); // Hancurkan session jika username sendiri diubah
-    
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Username Anda telah berubah. Silakan login kembali.',
-            'redirect' => site_url('login')
-        ]);
-    } else {
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'User berhasil diperbarui.',
-            'redirect' => site_url('superadmin/user/manage')
-        ]);
-    }
-}    
-
-
-public function deleteUser($username)
-{
-    $session = session();
-
-    if ($session->get('LEVEL_USER') !== '2') {
-        return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
-    }
-
-    $userModel = new \App\Models\UserModel(); // Model user
-
-    try {
-        // Cari pengguna berdasarkan username
-        $user = $userModel->where('USERNAME', $username)->first();
-
-        if (!$user) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Pengguna tidak ditemukan.'
-            ]);
-        }
-
-        // Hapus pengguna dari database
-        if ($userModel->where('USERNAME', $username)->delete()) {
-            // Hapus token pengguna dari database (opsional, jika Anda menyimpan token secara terpisah)
-            $userModel->update($username, ['USER_TOKEN' => null]);
-
-            // Jika pengguna yang dihapus adalah pengguna aktif
-            if ($session->get('username') === $username) {
-                $session->destroy(); // Hapus sesi aktif
-                return $this->response->setJSON([
-                    'success' => true,
-                    'message' => 'Akun Anda telah dihapus. Anda akan diarahkan ke halaman login.',
-                    'redirect' => site_url('/login')
-                ]);
-            }
-
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Pengguna berhasil dihapus.'
-            ]);
-        }
-
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Gagal menghapus pengguna.'
-        ]);
-    } catch (\Exception $e) {
-        // Tangani jika ada error
-        return $this->response->setJSON([
-            'success' => false,
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-        ]);
-    }
-}
-
-
-
-    
-    
     // ==========================
     // FUNGSI UNTUK MANAJEMEN BERITA
     // ==========================
@@ -391,7 +148,7 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         // Ambil parameter filter dari request
@@ -433,7 +190,7 @@ public function deleteUser($username)
             return $item['tahun'];
         }, $allYears);
     
-        return view('superadmin/berita/manage', [
+        return view('admin/berita/manage', [
             'berita' => $berita,
             'search' => $search,
             'month' => $month,
@@ -444,11 +201,15 @@ public function deleteUser($username)
         ]);
     }
     
+
+    
+    
+    
     public function detailBerita($id)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         // Ambil data berita berdasarkan ID
@@ -460,7 +221,7 @@ public function deleteUser($username)
         }
     
         // Render view detail_berita
-        return view('superadmin/berita/detail_berita', ['berita' => $berita]);
+        return view('admin/berita/detail_berita', ['berita' => $berita]);
     }
     
     
@@ -470,20 +231,20 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-        return view('superadmin/berita/add_berita');
+        return view('admin/berita/add_berita');
     }
 
     public function saveBerita()
     {
+        // Validasi input
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-        // Validasi input
         $validation = \Config\Services::validation();
     
         $validation->setRules([
@@ -564,27 +325,25 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $berita = $this->beritaModel->find($id_berita);
 
         if (!$berita) {
-            return redirect()->to('superadmin/berita/manage')->with('error', 'Berita tidak ditemukan!');
+            return redirect()->to('admin/berita/manage')->with('error', 'Berita tidak ditemukan!');
         }
 
-        return view('superadmin/berita/edit_berita', ['berita' => $berita]);
+        return view('admin/berita/edit_berita', ['berita' => $berita]);
     }
 
     public function updateBerita()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $id_berita = $this->request->getPost('id_berita');
     
         // Aturan validasi
@@ -632,7 +391,7 @@ public function deleteUser($username)
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'Berita berhasil diperbarui.',
-                'redirect' => site_url('superadmin/berita/manage')
+                'redirect' => site_url('admin/berita/manage')
             ]);
         } catch (\Exception $e) {
             return $this->response->setJSON([
@@ -649,10 +408,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         try {
             $berita = $this->beritaModel->find($id_berita);
     
@@ -690,10 +448,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $search = $this->request->getGet('search'); // Filter pencarian (opsional)
         $perPage = 10; // Jumlah data per halaman
         $page = $this->request->getGet('page') ?? 1; // Halaman saat ini, default halaman 1
@@ -710,14 +467,14 @@ public function deleteUser($username)
         $categories = $categoryQuery->findAll($perPage, ($page - 1) * $perPage); // Ambil data dengan offset
     
         // Base URL untuk pagination
-        $baseUrl = site_url('superadmin/event/category');
+        $baseUrl = site_url('admin/event/category');
     
         // Query params untuk pagination
         $queryParams = [
             'search' => $search,
         ];
     
-        return view('superadmin/event/category', [
+        return view('admin/event/category', [
             'categories' => $categories,
             'search' => $search,
             'page' => (int)$page,
@@ -732,15 +489,14 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         // Ambil semua kategori dari database
         $categories = $this->kategoriEventModel->findAll();
     
         // Kirim data kategori ke view
-        return view('superadmin/event/add_category', ['categories' => $categories]);
+        return view('admin/event/add_category', ['categories' => $categories]);
     }
     
 
@@ -748,10 +504,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $validation = \Config\Services::validation();
     
         $validation->setRules([
@@ -796,27 +551,25 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $category = $this->kategoriEventModel->find($id_kevent);
     
         if (!$category) {
-            return redirect()->to('superadmin/event/category')->with('error', 'Kategori tidak ditemukan.');
+            return redirect()->to('admin/event/category')->with('error', 'Kategori tidak ditemukan.');
         }
     
-        return view('superadmin/event/edit_category', ['category' => $category]);
+        return view('admin/event/edit_category', ['category' => $category]);
     }
     
     public function updateCategory()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $id_kevent = $this->request->getPost('id_kevent');
         $data = [
             'KATEGORI_KEVENT' => $this->request->getPost('kategori_kevent'),
@@ -843,10 +596,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         try {
             // Cek apakah kategori masih digunakan di tabel event
             $eventCount = $this->db->table('event')
@@ -887,7 +639,7 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         // Ambil filter dari request
@@ -935,7 +687,7 @@ public function deleteUser($username)
         $categories = $this->kategoriEventModel->findAll();
     
         // Kirim data ke view
-        return view('superadmin/event/manage', [
+        return view('admin/event/manage', [
             'events' => $events,
             'search' => $search,
             'category' => $category,
@@ -955,7 +707,7 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         $eventModel = new \App\Models\EventModel();
@@ -968,7 +720,7 @@ public function deleteUser($username)
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Event with ID $id not found");
         }
     
-        return view('superadmin/event/detail_event', ['event' => $event]);
+        return view('admin/event/detail_event', ['event' => $event]);
     }
     
 
@@ -977,22 +729,20 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $categories = $this->kategoriEventModel->findAll();
-        return view('superadmin/event/add_event', ['categories' => $categories]);
+        return view('admin/event/add_event', ['categories' => $categories]);
     }
 
     public function saveEvent()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         // Proses upload poster
         $poster = $this->request->getFile('poster_event');
         $posterName = '';
@@ -1026,18 +776,17 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $event = $this->eventModel->find($id_event);
         $categories = $this->kategoriEventModel->findAll();
 
         if (!$event) {
-            return redirect()->to('superadmin/event/manage')->with('error', 'Event tidak ditemukan.');
+            return redirect()->to('admin/event/manage')->with('error', 'Event tidak ditemukan.');
         }
 
-        return view('superadmin/event/edit_event', [
+        return view('admin/event/edit_event', [
             'event' => $event,
             'categories' => $categories
         ]);
@@ -1047,10 +796,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $id_event = $this->request->getPost('id_event');
     
         // Data untuk di-update
@@ -1103,10 +851,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         try {
             // Temukan event berdasarkan ID
             $event = $this->eventModel->find($id_event);
@@ -1157,10 +904,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         // Konfigurasi pagination
         $perPage = 10; // Jumlah item per halaman
         $page = $this->request->getGet('page') ?? 1; // Halaman saat ini
@@ -1180,11 +926,11 @@ public function deleteUser($username)
         $totalPages = ceil($totalRecords / $perPage); // Total halaman
     
         // Kirim data ke view
-        return view('superadmin/koleksi/category', [
+        return view('admin/koleksi/category', [
             'categories' => $categories,
             'page' => (int)$page,
             'totalPages' => $totalPages,
-            'baseUrl' => site_url('superadmin/koleksi/category'),
+            'baseUrl' => site_url('admin/koleksi/category'),
             'queryParams' => '&search=' . ($search ?? '') // Tambahkan query params ke pagination
         ]);
     }
@@ -1195,11 +941,10 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
-        return view('superadmin/koleksi/add_category');
+        return view('admin/koleksi/add_category');
     }
 
     // Menyimpan kategori koleksi baru
@@ -1207,10 +952,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $validation = \Config\Services::validation();
     
         $validation->setRules([
@@ -1252,27 +996,25 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $category = $this->kategoriKoleksiModel->find($id_kkoleksi);
     
         if (!$category) {
-            return redirect()->to('superadmin/koleksi/category')->with('error', 'Kategori tidak ditemukan.');
+            return redirect()->to('admin/koleksi/category')->with('error', 'Kategori tidak ditemukan.');
         }
     
-        return view('superadmin/koleksi/edit_category', ['category' => $category]);
+        return view('admin/koleksi/edit_category', ['category' => $category]);
     }
     
     public function updateKategoriKoleksi()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $validation = \Config\Services::validation();
     
         $validation->setRules([
@@ -1320,10 +1062,9 @@ public function deleteUser($username)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         try {
             // Cek apakah kategori ada
             $category = $this->kategoriKoleksiModel->find($id_kkoleksi);
@@ -1374,10 +1115,9 @@ public function koleksiManage()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     // Dapatkan nilai pencarian dan kategori dari request
     $search = $this->request->getGet('search');
     $category = $this->request->getGet('category');
@@ -1410,7 +1150,7 @@ public function koleksiManage()
     // Ambil kategori untuk filter
     $categories = $this->kategoriKoleksiModel->findAll();
 
-    return view('superadmin/koleksi/manage', [
+    return view('admin/koleksi/manage', [
         'koleksi' => $koleksi,
         'categories' => $categories,
         'search' => $search,
@@ -1425,10 +1165,9 @@ public function koleksiDetail($id)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $koleksiModel = new \App\Models\KoleksiModel();
 
     // Ensure correct join with kategori_koleksi to get the KATEGORI_KKOLEKSI
@@ -1441,29 +1180,27 @@ public function koleksiDetail($id)
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Koleksi dengan ID $id tidak ditemukan.");
     }
 
-    return view('superadmin/koleksi/detail_collection', ['collection' => $collection]);
+    return view('admin/koleksi/detail_collection', ['collection' => $collection]);
 }
 
 public function addKoleksiForm()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $categories = $this->kategoriKoleksiModel->findAll();
-    return view('superadmin/koleksi/add_collection', ['categories' => $categories]);
+    return view('admin/koleksi/add_collection', ['categories' => $categories]);
 }
 
 public function saveKoleksi()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $validation = \Config\Services::validation();
 
     $validation->setRules([
@@ -1508,18 +1245,17 @@ public function editKoleksi($id_koleksi)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $koleksi = $this->koleksiModel->find($id_koleksi);
     $categories = $this->kategoriKoleksiModel->findAll();
 
     if (!$koleksi) {
-        return redirect()->to('superadmin/koleksi/manage')->with('error', 'Koleksi tidak ditemukan.');
+        return redirect()->to('admin/koleksi/manage')->with('error', 'Koleksi tidak ditemukan.');
     }
 
-    return view('superadmin/koleksi/edit_collection', [
+    return view('admin/koleksi/edit_collection', [
         'koleksi' => $koleksi,
         'categories' => $categories
     ]);
@@ -1531,10 +1267,9 @@ public function updateKoleksi()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $id_koleksi = $this->request->getPost('id_koleksi');
 
     // Konfigurasi validasi
@@ -1601,10 +1336,9 @@ public function deleteKoleksi($id_koleksi)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     try {
         // Cek apakah koleksi ditemukan
         $koleksi = $this->koleksiModel->find($id_koleksi);
@@ -1653,10 +1387,9 @@ public function reservationManage()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $search = $this->request->getGet('search');
     $status = $this->request->getGet('status');
     $bulan = $this->request->getGet('bulan');
@@ -1699,7 +1432,7 @@ public function reservationManage()
     }, $allYears);
 
     // Base URL untuk pagination
-    $baseUrl = site_url('superadmin/reservasi/manage');
+    $baseUrl = site_url('admin/reservasi/manage');
 
     // Query params
     $queryParams = [
@@ -1708,7 +1441,7 @@ public function reservationManage()
         'tahun' => $tahun,
     ];
 
-    return view('superadmin/reservasi/manage', [
+    return view('admin/reservasi/manage', [
         'reservasi' => $reservasi,
         'search' => $search,
         'status' => $status,
@@ -1727,7 +1460,7 @@ public function detail_reservasi($id)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     // Mengambil data reservasi berdasarkan ID
@@ -1739,7 +1472,7 @@ public function detail_reservasi($id)
     }
 
     // Mengirim data ke view detail_reservasi.php
-    return view('superadmin/reservasi/detail_reservasi', [
+    return view('admin/reservasi/detail_reservasi', [
         'reservasi' => $reservasi
     ]);
 }
@@ -1748,10 +1481,9 @@ public function updateStatus($id_reservasi)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $status = $this->request->getVar('status_reservasi');
 
     if (!in_array($status, ['setuju', 'tolak', 'pending'])) {
@@ -1786,10 +1518,9 @@ public function deleteReservation($id_reservasi)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     try {
         // Ambil data reservasi untuk mendapatkan path file sebelum menghapus
         $reservasi = $this->reservasiModel->find($id_reservasi);
@@ -1841,10 +1572,9 @@ public function manageBukuTamu()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     $search = $this->request->getGet('search');
     $tipeTamu = $this->request->getGet('tipe_tamu');
     $bulan = $this->request->getGet('bulan');
@@ -1928,7 +1658,7 @@ public function manageBukuTamu()
         return $item['tahun'];
     }, $allYears);
 
-    return view('superadmin/bukutamu/manage', [
+    return view('admin/bukutamu/manage', [
         'bukutamu' => $bukutamu,
         'search' => $search,
         'tipeTamu' => $tipeTamu,
@@ -1940,15 +1670,17 @@ public function manageBukuTamu()
     ]);
 }
 
+
+
+
     // Hapus data buku tamu
     public function deleteBukuTamu($id_tamu)
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         try {
             // Find the guest data
             $tamu = $this->bukuTamuModel->find($id_tamu);
@@ -1990,7 +1722,7 @@ public function manageBukuTamu()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
         // Load model
@@ -2000,11 +1732,11 @@ public function manageBukuTamu()
         $tamu = $bukuTamuModel->find($id_tamu);
     
         if (!$tamu) {
-            return redirect()->to('/superadmin/bukutamu/manage')->with('error', 'Data tamu tidak ditemukan.');
+            return redirect()->to('/admin/bukutamu/manage')->with('error', 'Data tamu tidak ditemukan.');
         }
     
         // Pass the data to the view
-        return view('superadmin/bukutamu/detail_guestbook', [
+        return view('admin/bukutamu/detail_guestbook', [
             'tamu' => $tamu
         ]);
     }
@@ -2015,14 +1747,13 @@ public function grantGuestbookAccess()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
-
     // Set session khusus untuk autentikasi buku tamu
     session()->set('guestbook_auth', true);
 
-    // Hapus sesi login untuk mencegah akses kembali ke halaman superadmin
+    // Hapus sesi login untuk mencegah akses kembali ke halaman admin
     session()->remove('isLoggedIn');
     
     // Redirect langsung ke form buku tamu
@@ -2034,7 +1765,7 @@ public function form()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     // Tampilkan form buku tamu tanpa menghapus sesi guestbook_auth
@@ -2051,7 +1782,7 @@ public function manageBukuDigital()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     // Ambil parameter filter dari request
@@ -2082,7 +1813,7 @@ public function manageBukuDigital()
         ->orderBy('JUDUL_BUKU', 'ASC') // Urutkan jika diperlukan
         ->findAll($perPage, ($page - 1) * $perPage);
 
-    return view('superadmin/bukudigital/manage', [
+    return view('admin/bukudigital/manage', [
         'bukudigital' => $bukudigital,
         'search' => $search,
         'page' => (int)$page,
@@ -2090,14 +1821,17 @@ public function manageBukuDigital()
     ]);
 }
 
+
+
+
     public function addBukuDigital()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-        return view('superadmin/bukudigital/add_bukudigital');
+        return view('admin/bukudigital/add_bukudigital');
     }
 
     // Function to save the digital book
@@ -2105,10 +1839,9 @@ public function manageBukuDigital()
     {
         $session = session();
 
-        if ($session->get('LEVEL_USER') !== '2') {
+        if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
-
         $validation = \Config\Services::validation();
     
         $validation->setRules([
@@ -2184,7 +1917,7 @@ public function manageBukuDigital()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     // Load the book details from the database
@@ -2196,14 +1929,14 @@ public function manageBukuDigital()
     }
 
     // Pass the book data to the view
-    return view('superadmin/bukudigital/view_buku_digital', ['book' => $book]);
+    return view('admin/bukudigital/view_buku_digital', ['book' => $book]);
 }
 
 public function editBukuDigital($id_buku)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     $book = $this->bukuDigitalModel->find($id_buku);
@@ -2212,7 +1945,7 @@ public function editBukuDigital($id_buku)
         throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Buku Digital dengan ID $id_buku tidak ditemukan.");
     }
 
-    return view('superadmin/bukudigital/edit_bukudigital', ['bukudigital' => $book]);
+    return view('admin/bukudigital/edit_bukudigital', ['bukudigital' => $book]);
 }
 
 
@@ -2220,7 +1953,7 @@ public function updateBukuDigital()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     $id_buku = $this->request->getPost('id_buku');
@@ -2289,7 +2022,7 @@ public function updateBukuDigital()
         return $this->response->setJSON([
             'success' => true,
             'message' => 'Buku digital berhasil diperbarui.',
-            'redirect' => site_url('superadmin/bukudigital/manage')
+            'redirect' => site_url('admin/bukudigital/manage')
         ]);
     } catch (\Exception $e) {
         return $this->response->setJSON([
@@ -2302,7 +2035,7 @@ public function deleteBukuDigital($id_buku)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     try {
@@ -2351,9 +2084,10 @@ public function manageSaran()
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
+
     $search = $this->request->getGet('search');
     $bulan = $this->request->getGet('bulan');
     $tahun = $this->request->getGet('tahun');
@@ -2390,7 +2124,7 @@ public function manageSaran()
     }, $allYears);
 
     // Base URL untuk pagination
-    $baseUrl = site_url('superadmin/saran/manage');
+    $baseUrl = site_url('admin/saran/manage');
 
     // Build query params
     $queryParams = [
@@ -2399,7 +2133,7 @@ public function manageSaran()
         'tahun' => $tahun,
     ];
 
-    return view('superadmin/saran/manage', [
+    return view('admin/saran/manage', [
         'saranList' => $saranList,
         'search' => $search,
         'bulan' => $bulan,
@@ -2420,7 +2154,7 @@ public function deleteSaran($id)
 {
     $session = session();
 
-    if ($session->get('LEVEL_USER') !== '2') {
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     // Check if the suggestion exists
@@ -2443,8 +2177,8 @@ public function deleteSaran($id)
 public function detailSaran($id)
 {
     $session = session();
-
-    if ($session->get('LEVEL_USER') !== '2') {
+    
+    if ($session->get('LEVEL_USER') !== '1') {
         return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
     // Load model Saran
@@ -2459,7 +2193,7 @@ public function detailSaran($id)
     }
 
     // Tampilkan view detail_saran dengan data
-    return view('superadmin/saran/detail_saran', ['saran' => $saran]);
+    return view('admin/saran/detail_saran', ['saran' => $saran]);
 }
 
 }

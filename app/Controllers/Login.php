@@ -57,19 +57,16 @@ class Login extends BaseController
         ]);
     
         // Redirect berdasarkan LEVEL_USER
-        if ($user['LEVEL_USER'] === '2') {
-            return redirect()->to('/superadmin/dashboard');
-        } elseif ($user['LEVEL_USER'] === '1') {
+        if ($user['LEVEL_USER'] === '1') {
             return redirect()->to('/admin/dashboard');
+        } elseif ($user['LEVEL_USER'] === '2') {
+            return redirect()->to('/superadmin/dashboard');
         } else {
             $session->destroy();
             return redirect()->to('/login')->with('error', 'Role pengguna tidak dikenali.');
         }
     }
     
-    
-    
-
     public function logout()
     {
         session()->destroy();
