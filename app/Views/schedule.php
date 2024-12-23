@@ -44,12 +44,12 @@
             <!-- Grid Kalender -->
             <div id="calendar" class="grid grid-cols-7 gap-px bg-gray-200 min-h-[80vh]"></div>
         </div>
-        <p class="italic">Klik pada tanggal untuk melakukan reservasi.</p>
+        <p class="italic">Note: Klik pada tanggal untuk melakukan reservasi.</p>
     </div>
 </section>
 
 <!-- Modal Form Reservasi -->
-<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-30">
     <div class="bg-gray-200 p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
@@ -513,8 +513,209 @@ fileInput.addEventListener('click', function () {
     }
 });
 
+// ===================================================
+
 
 </script>
+
+<script>
+const NewCalendar = (function() {
+    let currentDate = new Date();
+    let events = <?= json_encode($events) ?>;
+    let reservations = <?= json_encode($reservations) ?>;
+
+    function formatTanggal(date) {
+        const tahun = date.getFullYear();
+        const bulan = String(date.getMonth() + 1).padStart(2, '0');
+        const tanggal = String(date.getDate()).padStart(2, '0');
+        return `${tahun}-${bulan}-${tanggal}`;
+    }
+
+    // Fungsi untuk mengambil data baru
+    async function fetchData(bulan, tahun) {
+        try {
+            const response = await fetch(`/schedule?month=${bulan}&year=${tahun}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const data = await response.json();
+            events = data.events;
+            reservations = data.reservations;
+            renderCalendar(currentDate);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    function renderCalendar(date) {
+        const calendar = document.getElementById('calendar');
+        const monthYear = document.getElementById('monthYear');
+        calendar.innerHTML = '';
+
+        const tahun = date.getFullYear();
+        const bulan = date.getMonth();
+        const hariPertama = new Date(tahun, bulan, 1).getDay();
+        const tanggalTerakhir = new Date(tahun, bulan + 1, 0).getDate();
+
+        monthYear.textContent = date.toLocaleString('id-ID', { 
+            month: 'long', 
+            year: 'numeric' 
+        });
+
+        // Tambah div kosong untuk hari-hari sebelum tanggal 1
+        for (let i = 0; i < hariPertama; i++) {
+            calendar.appendChild(document.createElement('div'));
+        }
+
+        // Render semua tanggal dalam bulan
+        for (let hari = 1; hari <= tanggalTerakhir; hari++) {
+            const tanggalObj = new Date(tahun, bulan, hari);
+            const tanggalStr = formatTanggal(tanggalObj);
+            
+            const dayElement = document.createElement('div');
+            // Menambahkan kelas hover dan transisi
+            dayElement.className = 'text-center px-2 py-1 border border-gray-300 rounded cursor-pointer min-h-[80px] transition-all duration-200 hover:shadow-lg hover:border-gray-400 hover:scale-105';
+            
+            // Tambahkan nomor tanggal
+            const tanggalSpan = document.createElement('div');
+            tanggalSpan.textContent = hari;
+            tanggalSpan.className = 'font-bold';
+            dayElement.appendChild(tanggalSpan);
+
+            // Tandai hari ini
+            const today = new Date();
+            if (hari === today.getDate() && bulan === today.getMonth() && tahun === today.getFullYear()) {
+                dayElement.classList.add('bg-yellow-100', 'hover:bg-yellow-100');
+                const todayText = document.createElement('div');
+                todayText.textContent = 'Hari ini';
+                todayText.className = 'text-xs mt-1 font-medium text-yellow-600';
+                dayElement.appendChild(todayText);
+            }
+
+            // Cek dan tampilkan event
+            const event = events.find(e => e.tanggal_event === tanggalStr);
+            if (event) {
+                dayElement.classList.remove('bg-yellow-100', 'hover:bg-yellow-200');
+                dayElement.classList.add('bg-green-200', 'hover:bg-green-300');
+                
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'text-xs mt-1 font-medium text-green-800';
+                eventDiv.textContent = event.nama_event;
+                dayElement.appendChild(eventDiv);
+
+                dayElement.addEventListener('click', () => {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Event Tanggal ini',
+                        text: `${event.nama_event} `,
+                        showCancelButton: true,
+                        confirmButtonText: 'Lihat Detail',
+                        confirmButtonColor: '#fab911',
+                        cancelButtonText: 'Kembali',
+                        cancelButtonColor: '#424242',
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.confirm) {
+                            window.location.href = "<?= site_url(); ?>/event/" + encodeURIComponent(event.nama_event);
+                        }
+                    });
+                });
+            }
+
+            // Cek dan tampilkan reservasi
+            const reservation = reservations.find(r => r.tanggal_reservasi === tanggalStr);
+            if (reservation) {
+                dayElement.classList.remove('bg-yellow-100', 'hover:bg-yellow-200');
+                dayElement.classList.add('bg-blue-200', 'hover:bg-blue-300');
+                
+                const reservationDiv = document.createElement('div');
+                reservationDiv.className = 'text-xs mt-1 font-medium text-blue-800';
+                reservationDiv.textContent = 'Reserved';
+                dayElement.appendChild(reservationDiv);
+
+                dayElement.addEventListener('click', () => {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tanggal Direservasi',
+                        text: `Tanggal ini telah direservasi oleh ${reservation.instansi_reservasi}`
+                    });
+                });
+            }
+
+            // Tambahkan listener untuk tanggal kosong
+            if (!event && !reservation) {
+                // Tambahkan hover effect untuk tanggal kosong
+                dayElement.classList.add('hover:bg-gray-100');
+                
+                dayElement.addEventListener('click', () => {
+                    const selectedDate = new Date(tahun, bulan, hari);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    if (selectedDate <= today) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Tidak dapat memilih tanggal hari ini atau sebelumnya!'
+                        });
+                        return;
+                    }
+
+                    const modal = document.getElementById('reservationModal');
+                    const selectedDateText = document.getElementById('selectedDateText');
+                    const selectedDateInput = document.getElementById('selectedDate');
+
+                    selectedDateText.textContent = `Tanggal Dipilih: ${selectedDate.toLocaleDateString('id-ID', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}`;
+                    selectedDateInput.value = formatTanggal(selectedDate);
+                    modal.classList.remove('hidden');
+                });
+            }
+
+            calendar.appendChild(dayElement);
+        }
+    }
+
+    // Event listeners untuk navigasi
+    document.getElementById('prev').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        const bulan = currentDate.getMonth() + 1;
+        const tahun = currentDate.getFullYear();
+        fetchData(bulan, tahun);
+    });
+
+    document.getElementById('next').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        const bulan = currentDate.getMonth() + 1;
+        const tahun = currentDate.getFullYear();
+        fetchData(bulan, tahun);
+    });
+
+    document.getElementById('today').addEventListener('click', () => {
+        currentDate = new Date();
+        const bulan = currentDate.getMonth() + 1;
+        const tahun = currentDate.getFullYear();
+        fetchData(bulan, tahun);
+    });
+
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('reservationModal').classList.add('hidden');
+    });
+
+    renderCalendar(currentDate);
+
+    return {
+        renderCalendar,
+        currentDate
+    };
+})();
+</script>
+
+
 
         
 

@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 // Halaman Utama dan Halaman Lain
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
-$routes->get('/schedule', 'ReservationController::index');
+$routes->get('/schedule', 'ScheduleController::index');
 $routes->post('saran/saveSaran', 'SaranController::saveSaran');
 
 

@@ -21,5 +21,12 @@ class ReservasiModel extends Model
             'STATUS_RESERVASI',
             'SURAT_RESERVASI'
         ];
-        
+        public function getReservationsByMonth($month, $year)
+{
+                return $this->select("DATE_FORMAT(tanggal_reservasi, '%Y-%m-%d') AS tanggal_reservasi, instansi_reservasi, id_reservasi AS id")
+            ->where('MONTH(tanggal_reservasi)', $month)
+            ->where('YEAR(tanggal_reservasi)', $year)
+            ->findAll();
+
+}
 }
