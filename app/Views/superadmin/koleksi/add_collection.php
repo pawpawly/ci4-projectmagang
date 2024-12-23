@@ -150,7 +150,7 @@ function handleFilesKoleksi(files) {
         }
 
         // Validasi ukuran file (maksimal 2MB)
-        if (file.size > 2 * 1024 * 1024) {
+        if (file.size > 8 * 1024 * 1024) {
             Swal.fire({
                 icon: 'error',
                 title: 'Ukuran File Terlalu Besar!',

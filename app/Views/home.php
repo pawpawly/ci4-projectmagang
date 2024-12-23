@@ -264,55 +264,43 @@
     </section>
 
 
-    <!-- Section Kayuh Baimbai TV -->
-    <section class="py-12 bg-gray-200">
+        <!-- Section Kayuh Baimbai Instagram -->
+        <section class="py-12 bg-gray-200">
         <div class="container mx-auto max-w-7xl px-4">
             <!-- Judul Section -->
             <div class="relative text-center mb-8">
-                <h2 class="event-overlay">KAYUH BAIMBAI TV</h2>
+                <h2 class="event-overlay">IG KAYUH BAIMBAI</h2>
                 <h2 class="text-4xl font-bold text-gray-900 mb-4 hover:scale-105 transition-transform duration-300">
-                    KAYUH BAIMBAI TV
+                    IG KAYUH BAIMBAI
                 </h2>
             </div>
 
-            <!-- Video Besar -->
-            <div class="mb-8 flex justify-center">
-                <iframe width="100%" height="500" src="https://www.youtube.com/embed/9pRIoZr-jZ0" 
-                        title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen class="rounded-xl shadow-lg"></iframe>
-            </div>
-
-            <!-- Grid Video Kecil -->
+            <!-- Grid Instagram Posts -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Video Kecil 1 -->
+                <!-- Instagram Post 1 -->
                 <div>
-                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/w4jypfkkOXw" 
-                            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen class="rounded-xl shadow-lg"></iframe>
+                    <iframe width="100%" height="500" src="https://www.instagram.com/p/CIjLpMSBCbz/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
                 </div>
-                <!-- Video Kecil 2 -->
+                <!-- Instagram Post 2 -->
                 <div>
-                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/m_oAtvIruqg" 
-                            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen class="rounded-xl shadow-lg"></iframe>
+                    <iframe width="100%" height="500" src="https://www.instagram.com/p/CIjLpFSBCbz/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
                 </div>
-                <!-- Video Kecil 3 -->
+                <!-- Instagram Post 3 -->
                 <div>
-                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/yRjmuzSq4h4" 
-                            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen class="rounded-xl shadow-lg"></iframe>
+                    <iframe width="100%" height="500" src="https://www.instagram.com/p/CIjLpKSBCbz/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
                 </div>
             </div>
 
             <!-- Tombol Lihat Lainnya -->
             <div class="text-center mt-8">
-                <a href="https://www.youtube.com/@EwingHDTV" target="_blank" 
+                <a href="https://www.instagram.com/museum_kayuhbaimbai?igsh=MTcyeWQ5OTA2andjYw==" target="_blank" 
                 class="bg-gray-900 text-yellow-500 px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-gray-600 transition-transform duration-300">
                     Lihat Lainnya...
                 </a>
             </div>
         </div>
     </section>
+
     
     <!-- Saran Section -->
     <section class="py-12" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">
