@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 ///////////////////////////// PUBLIC ROUTE ///////////////////////////// 
 $routes->get('/', 'Home::index');
 $routes->get('/aboutus', 'AboutUs::index');
-$routes->get('/schedule', 'ReservationController::index');
+$routes->get('/schedule', 'ScheduleController::index');
 $routes->post('saran/saveSaran', 'SaranController::saveSaran');
 
 $routes->group('berita', function ($routes) {

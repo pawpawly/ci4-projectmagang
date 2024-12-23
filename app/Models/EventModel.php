@@ -19,4 +19,13 @@ class EventModel extends Model
                     ->join('kategori_event', 'kategori_event.ID_KEVENT = event.ID_KEVENT', 'left')
                     ->findAll();
     }
+
+    public function getEventsByMonth($month, $year)
+    {
+        return $this->select("DATE_FORMAT(tanggal_event, '%Y-%m-%d') AS tanggal_event, nama_event, id_event AS id")
+            ->where('MONTH(tanggal_event)', $month)
+            ->where('YEAR(tanggal_event)', $year)
+            ->findAll();
+
+    }
 }
