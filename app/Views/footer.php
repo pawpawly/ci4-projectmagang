@@ -1,12 +1,13 @@
-<footer class="bg-black text-white py-8">
+
+<footer class="bg-gray-900 text-white py-8">
     <div class="container mx-auto px-6">
         <div class="flex flex-wrap justify-between">
             <!-- Left Side: Visit Us -->
             <div class="w-full md:w-1/3 mb-6">
                 <h3 class="text-white text-lg font-semibold mb-4">Kunjungi Kami</h3>
                 <p>
-                    Jl. Teluk Kelayan No.17, RT.005/RW.001,<br>
-                    Kelayan Barat, Kecamatan Banjarmasin Selatan,<br>
+                    Jl. Teluk Kelayan, Kelayan Barat,<br>
+                    Kecamatan Banjarmasin Selatan,<br>
                     Kota Banjarmasin, Kalimantan Selatan 70234<br>
                     WhatsApp: 08xx-xxxx-xxxx
                 </p>
@@ -21,28 +22,117 @@
             </div>
 
             <!-- Right Side: Social Media -->
-            <div class="w-full md:w-1/4 mb-6 md:ml-auto text-right">
-                <h3 class="text-white text-lg font-semibold mb-4">Social Media</h3>
-                <div class="flex justify-end space-x-4">
-                    <!-- Instagram Icon -->
-                    <a href="https://www.instagram.com" class="social-icon" target="_self">
-                        <img src="<?= base_url('pict/instagramlogo.png'); ?>" alt="Instagram" class="w-8 h-8">
-                    </a>
-                    <!-- Facebook Icon -->
-                    <a href="https://www.facebook.com" class="social-icon" target="_self">
-                        <img src="<?= base_url('pict/facebooklogo.png'); ?>" alt="Facebook" class="w-8 h-8">
-                    </a>
-                    <!-- Twitter Icon -->
-                    <a href="https://www.twitter.com" class="social-icon" target="_self">
-                        <img src="<?= base_url('pict/xlogo.png'); ?>" alt="Twitter" class="w-8 h-8">
-                    </a>
-                    <!-- YouTube Icon -->
-                    <a href="https://www.youtube.com" class="social-icon" target="_self">
-                        <img src="<?= base_url('pict/youtubelogo.png'); ?>" alt="YouTube" class="w-8 h-8">
-                    </a>
-                </div>
-            </div>
-        </div>
+            <div class="w-full md:w-1/4 mb-6 md:ml-auto text-right"> 
+    <h3 class="text-white text-lg font-semibold mb-4">Social Media</h3>
+    <div class="flex justify-end space-x-4">
+        <!-- Instagram Icon -->
+        <a href="https://www.instagram.com" target="_blank" style="display: inline-block;">
+            <div id="lottie-facebook" class="lottie-icon" style="width: 40px; height: 40px;"></div>
+        </a>
+        <!-- Facebook Icon -->
+        <a href="https://www.facebook.com" target="_blank" style="display: inline-block;">
+            <div id="lottie-instagram" class="lottie-icon" style="width: 40px; height: 40px;"></div>
+        </a>
+        <!-- TikTok Icon -->
+        <a href="https://www.tiktok.com" target="_blank" style="display: inline-block;">
+            <div id="lottie-tiktok" class="lottie-icon" style="width: 40px; height: 40px;"></div>
+        </a>
+        <!-- YouTube Icon -->
+        <a href="https://www.youtube.com" target="_blank" style="display: inline-block;">
+            <div id="lottie-youtube" class="lottie-icon" style="width: 40px; height: 40px;"></div>
+        </a>
+    </div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
+<script>
+    // Load Lottie Animation for YouTube
+    const youtubeAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-youtube'),
+        renderer: 'svg',
+        loop: false, // Disable looping
+        autoplay: false, // Don't autoplay on load
+        path: '<?php echo base_url("js/icons8-youtube.json"); ?>' // Replace with your Lottie JSON file path
+    });
+
+    // Add hover event listeners
+    const youtubeIcon = document.getElementById('lottie-youtube');
+    
+    youtubeIcon.addEventListener('mouseenter', () => {
+        youtubeAnim.goToAndPlay(0, true); // Play animation from the beginning
+    });
+
+    youtubeIcon.addEventListener('mouseleave', () => {
+        youtubeAnim.stop(); // Stop animation when the cursor leaves
+    });
+</script>
+
+<script>
+    // Load Lottie Animation for YouTube
+    const instagramAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-instagram'),
+        renderer: 'svg',
+        loop: false, // Disable looping
+        autoplay: false, // Don't autoplay on load
+        path: '<?php echo base_url("js/icons8-instagram.json"); ?>' // Replace with your Lottie JSON file path
+    });
+
+    // Add hover event listeners
+    const instagramIcon = document.getElementById('lottie-instagram');
+    
+    instagramIcon.addEventListener('mouseenter', () => {
+        instagramAnim.goToAndPlay(0, true); // Play animation from the beginning
+    });
+
+    instagramIcon.addEventListener('mouseleave', () => {
+        instagramAnim.stop(); // Stop animation when the cursor leaves
+    });
+</script>
+
+<script>
+    // Load Lottie Animation for YouTube
+    const tiktokAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-tiktok'),
+        renderer: 'svg',
+        loop: false, // Disable looping
+        autoplay: false, // Don't autoplay on load
+        path: '<?php echo base_url("js/icons8-tiktok.json"); ?>' // Replace with your Lottie JSON file path
+    });
+
+    // Add hover event listeners
+    const tiktokIcon = document.getElementById('lottie-tiktok');
+    
+    tiktokIcon.addEventListener('mouseenter', () => {
+        tiktokAnim.goToAndPlay(0, true); // Play animation from the beginning
+    });
+
+    tiktokIcon.addEventListener('mouseleave', () => {
+        tiktokAnim.stop(); // Stop animation when the cursor leaves
+    });
+</script>
+
+<script>
+    // Load Lottie Animation for YouTube
+    const facebookAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-facebook'),
+        renderer: 'svg',
+        loop: false, // Disable looping
+        autoplay: false, // Don't autoplay on load
+        path: '<?php echo base_url("js/icons8-facebook.json"); ?>' // Replace with your Lottie JSON file path
+    });
+
+    // Add hover event listeners
+    const facebookIcon = document.getElementById('lottie-facebook');
+    
+    facebookIcon.addEventListener('mouseenter', () => {
+        facebookAnim.goToAndPlay(0, true); // Play animation from the beginning
+    });
+
+    facebookIcon.addEventListener('mouseleave', () => {
+        facebookAnim.stop(); // Stop animation when the cursor leaves
+    });
+</script>
 
         <!-- Footer Bottom -->
         <div class="mt-8 text-center text-white border-t border-white pt-4">

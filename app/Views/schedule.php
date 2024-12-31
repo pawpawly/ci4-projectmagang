@@ -35,7 +35,7 @@
             <div class="grid grid-cols-7 gap-px bg-gray-300">
                 <?php foreach (['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $day): ?>
                     <div class="text-center py-3 font-yellow-500" 
-                         style="background-color: #111827; color: #f59e0b; font-weight: 600;">
+                         style="background-color: #111827; color: #eab308; font-weight: 600;">
                         <?= $day; ?>
                     </div>
                 <?php endforeach; ?>

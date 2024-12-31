@@ -11,7 +11,7 @@ class SaranFaker extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 300; $i++) {
+        for ($i = 0; $i < 70; $i++) {
             $data = [
                 'NAMA_SARAN'      => $faker->name,
                 'EMAIL_SARAN'     => $faker->email,

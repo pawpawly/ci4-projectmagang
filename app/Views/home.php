@@ -47,11 +47,11 @@
                 </h1>
                 <p class="text-lg text-gray-800 mt-10">
                     Selamat datang di <strong class="font-bold ">Museum Kayuh Baimbai!</strong><br>
-                    Jelajahi sejarah masa lalu, masa kini, dan masa depan kebudayaan Banjarmasin.
+                    Jelajahi sejarah masa lalu, masa kini, dan masa depan Sejarah Kota Banjarmasin.
                 </p>
                 <p class="text-base text-gray-800 mt-4">
                     Kunjungan Museum Kayuh Baimbai Terbuka Untuk Siapa Saja
-                    <strong class="text-green-600">Gratis!!</strong>
+                    <strong class="text-green-500">Gratis!!</strong>
                 </p>
 
                 <!-- Informasi Jam Operasional -->
@@ -75,7 +75,7 @@
                 <!-- Tombol Reservasi -->
                 <div class="mt-6 text-center md:text-left">
                     <a href="<?= site_url('schedule');?>" class="inline-block bg-gray-900 text-yellow-500 py-2 px-6 rounded-lg font-semibold shadow-lg hover:bg-gray-600 transition duration-300">
-                        Reservasi Kunjungan
+                        Reservasi Kunjungan →
                     </a>
                 </div>
             </div>
@@ -279,15 +279,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Instagram Post 1 -->
                 <div>
-                    <iframe width="100%" height="500" src="https://www.instagram.com/p/CIjLpMSBCbz/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
+                    <iframe width="100%" height="560" src="https://www.instagram.com/reel/C4HOU9pS-ki/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
                 </div>
                 <!-- Instagram Post 2 -->
                 <div>
-                    <iframe width="100%" height="500" src="https://www.instagram.com/p/CIjLpFSBCbz/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
+                    <iframe width="100%" height="560" src="https://www.instagram.com/reel/DDvt1eZTABR/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
                 </div>
                 <!-- Instagram Post 3 -->
                 <div>
-                    <iframe width="100%" height="500" src="https://www.instagram.com/p/CIjLpKSBCbz/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
+                    <iframe width="100%" height="560" src="https://www.instagram.com/reel/C36m9gxxHZP/embed" frameborder="0" scrolling="no" allowtransparency="true" class="rounded-xl shadow-lg"></iframe>
                 </div>
             </div>
 
@@ -295,7 +295,7 @@
             <div class="text-center mt-8">
                 <a href="https://www.instagram.com/museum_kayuhbaimbai?igsh=MTcyeWQ5OTA2andjYw==" target="_blank" 
                 class="bg-gray-900 text-yellow-500 px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-gray-600 transition-transform duration-300">
-                    Lihat Lainnya...
+                    Lihat Lainnya
                 </a>
             </div>
         </div>
@@ -303,7 +303,7 @@
 
     
     <!-- Saran Section -->
-    <section class="py-12" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">
+    <section class="py-12 bg-gray-200" style="background-image: url('<?= base_url('pict/mountain3.png'); ?>'); background-size: cover; background-position: center;">
         <div class="container mx-auto px-8">
             <div class="relative text-center mb-12">
                 <h2 class="event-overlay text-6xl font-extrabold text-gray-200 mb-2">SARAN</h2>

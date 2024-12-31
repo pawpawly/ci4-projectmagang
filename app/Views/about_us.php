@@ -68,12 +68,12 @@
         <div class="flex flex-col md:flex-row items-center justify-center gap-8">
             <div class="w-full md:w-1/2 fade-in-left">
                 <p class="text-lg text-gray-600 leading-relaxed text-justify">
-                    Museum Penerangan adalah unit pelaksana teknis di lingkungan Direktorat Jenderal Informasi dan Komunikasi Publik 
-                    yang berada di bawah dan bertanggung jawab kepada Direktur Jenderal Informasi dan Komunikasi Publik, 
-                    secara administratif dibina oleh Sekretaris Direktorat Jenderal Informasi dan Komunikasi Publik. Hal ini diatur dan 
-                    ditetapkan dalam PERMENKOMINFO NO. 05/PER/M.KOMINFO/03/2011 TAHUN 2011, LL. KEMKOMINFO: 5 HLM. 
-                    Bahwa dengan ditetapkannya Peraturan Menteri Komunikasi dan Informatika ini, tentang Organisasi dan Tata Kerja 
-                    Kementerian Komunikasi dan Informatika, maka dipandang perlu untuk melakukan penataan organisasi dan tata kerja museum penerangan.
+                    Museum Kayuh Baimbai adalah unit pelaksana teknis di lingkungan Dinas Kebudayaan, Pariwisata, Kepemudaan, dan Olahraga 
+                    (Disbudporapar) Kota Banjarmasin yang berada di bawah dan bertanggung jawab kepada Kepala Disbudporapar Kota Banjarmasin 
+                    serta secara administratif dibina oleh Sekretaris Disbudporapar Kota Banjarmasin. Hal ini diatur dan ditetapkan dalam 
+                    Peraturan Wali Kota Banjarmasin No. [Nomor Peraturan], tentang Organisasi dan Tata Kerja Disbudporapar Kota Banjarmasin 
+                    Dengan ditetapkannya peraturan ini, maka dipandang perlu untuk melakukan penataan organisasi dan tata kerja Museum Kayuh 
+                    Baimbai guna mendukung pelestarian budaya serta pengelolaan informasi sejarah di Kota Banjarmasin.
                 </p>
             </div>
             <div class="w-full md:w-1/2 flex justify-center fade-in-right">
