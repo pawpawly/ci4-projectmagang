@@ -739,10 +739,33 @@ class AdminController extends Controller
     public function saveEvent()
     {
         $session = session();
-
+    
         if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
+    
+        // Ambil input tanggal event
+        $tanggalEvent = date('Y-m-d', strtotime($this->request->getPost('tanggal_event')));
+        
+        // Cek konflik dengan reservasi yang sudah ada
+        $existingReservation = $this->db->table('reservasi')
+            ->where('TANGGAL_RESERVASI', $tanggalEvent)
+            ->get()
+            ->getRow();
+    
+        // Cek konflik dengan event yang sudah ada
+        $existingEvent = $this->eventModel
+            ->where('TANGGAL_EVENT', $tanggalEvent)
+            ->first();
+    
+        // Jika ada konflik
+        if ($existingReservation || $existingEvent) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Tanggal tersebut sudah ada event atau reservasi yang terjadwal.'
+            ]);
+        }
+    
         // Proses upload poster
         $poster = $this->request->getFile('poster_event');
         $posterName = '';
@@ -757,7 +780,7 @@ class AdminController extends Controller
             'USERNAME' => session()->get('username'),
             'NAMA_EVENT' => $this->request->getPost('nama_event'),
             'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-            'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
+            'TANGGAL_EVENT' => $tanggalEvent,
             'JAM_EVENT' => $this->request->getPost('jam_event'),
             'FOTO_EVENT' => $posterName,
         ];
@@ -795,19 +818,41 @@ class AdminController extends Controller
     public function updateEvent()
     {
         $session = session();
-
+    
         if ($session->get('LEVEL_USER') !== '1') {
             return redirect()->to('/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
+    
         $id_event = $this->request->getPost('id_event');
+        $tanggalEvent = date('Y-m-d', strtotime($this->request->getPost('tanggal_event')));
+    
+        // Validasi Konflik dengan Reservasi
+        $existingReservation = $this->db->table('reservasi')
+            ->where('TANGGAL_RESERVASI', $tanggalEvent)
+            ->get()
+            ->getRow();
+    
+        // Validasi Konflik dengan Event Lain (selain event yang sedang diupdate)
+        $existingEvent = $this->eventModel
+            ->where('TANGGAL_EVENT', $tanggalEvent)
+            ->where('ID_EVENT !=', $id_event) // Abaikan event yang sedang diupdate
+            ->first();
+    
+        // Jika terjadi konflik, kirim respon error
+        if ($existingReservation || $existingEvent) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Tanggal tersebut sudah ada event atau reservasi yang terjadwal.'
+            ]);
+        }
     
         // Data untuk di-update
         $data = [
             'ID_KEVENT' => $this->request->getPost('kategori_id'),
             'NAMA_EVENT' => $this->request->getPost('nama_event'),
             'DEKSRIPSI_EVENT' => $this->request->getPost('deskripsi_event'),
-            'TANGGAL_EVENT' => date('Y-m-d', strtotime($this->request->getPost('tanggal_event'))),
-            'JAM_EVENT' => $this->request->getPost('jam_event')
+            'TANGGAL_EVENT' => $tanggalEvent,
+            'JAM_EVENT' => $this->request->getPost('jam_event'),
         ];
     
         // Cek apakah ada file foto yang diunggah
@@ -843,8 +888,6 @@ class AdminController extends Controller
             ]);
         }
     }
-    
-    
     
     
     public function deleteEvent($id_event)
