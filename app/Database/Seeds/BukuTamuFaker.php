@@ -12,7 +12,7 @@ class BukuTamuFaker extends Seeder
 
         $data = [];
 
-        for ($i = 0; $i < 600; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $tipeTamu = $faker->numberBetween(1, 2);
 
             if ($tipeTamu === 1) {
