@@ -43,7 +43,7 @@ if (!$validation->withRequest($this->request)->run()) {
     return $this->response->setJSON([
         'success' => false,
         'icon'    => 'error',
-        'message' => 'Format data tidak valid.',
+        'message' => 'CAPTCHA tidak valid, silakan coba lagi.',
         'errors'  => $errors
     ]);
 }
