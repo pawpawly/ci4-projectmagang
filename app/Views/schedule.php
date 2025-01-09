@@ -70,9 +70,9 @@
 
                 <!-- Nama Instansi -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Nama Instansi</label>
+                    <label class="block text-sm font-medium text-gray-700">Nama Instansi, Lembaga, Komuntasi, dan lainnya</label>
                     <input type="text" maxlength="60" name="instansi_reservasi"
-                    placeholder="Masukkan Nama Instansi"
+                    placeholder="Masukkan Nama Instansi, Lembaga, Komuntasi, dan lainnya"
                     class="w-full border rounded px-3 py-2" autocomplete="off">
                 </div>
 
