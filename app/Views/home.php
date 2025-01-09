@@ -42,8 +42,8 @@
         <div class="w-full md:w-1/2 text-left mb-8 md:mb-0 flex justify-center md:justify-start md:pl-16 lg:pl-32">
             <div class="max-w-lg">
                 <!-- Judul -->
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 leading-snug">
-                    Halo Dingsanak,
+                <h1 class="text-4xl md:text-4xl font-bold text-gray-800 leading-snug">
+                    Salam Museum Dihati❤️,
                 </h1>
                 <p class="text-lg text-gray-800 mt-10">
                     Selamat datang di <strong class="font-bold ">Museum Kayuh Baimbai!</strong><br>
