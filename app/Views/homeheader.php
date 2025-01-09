@@ -17,10 +17,5 @@
         <a href="<?= site_url('aboutus');?>" class="text-gray-200 hover:text-yellow-400 font-semibold">Tentang Kami</a>
       </nav>
     </div>
-
-    <!-- Tombol Login -->
-    <a href="<?= site_url('login');?>" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-400">
-      Login
-    </a>
   </div>
 </header>
