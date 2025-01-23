@@ -229,7 +229,7 @@
                         <?php foreach (array_slice($berita, 0, 3) as $item): ?>
                             <div class="forum-card relative">
                             <div class="forum-image-wrapper overflow-hidden rounded-lg relative">
-                                <a href="<?= site_url('berita/' . urlencode($item['NAMA_BERITA'])); ?>"> 
+                                <a href="<?= site_url('berita/' . $item['ID_BERITA']); ?>"> 
                                     <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
                                          alt="<?= esc($item['NAMA_BERITA']); ?>"
                                          class="forum-image transition-transform duration-300 ease-in-out hover:scale-105">
