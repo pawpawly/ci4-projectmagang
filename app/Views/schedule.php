@@ -62,7 +62,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Nama -->
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Nama</label>
+                    <label class="block text-sm font-medium text-gray-700">&nbsp;<br><p>Nama</p></label>
                     <input type="text" maxlength="60" name="nama_reservasi" 
                     placeholder="Masukkan Nama "
                     class="w-full border rounded px-3 py-2" autocomplete="off">
@@ -429,7 +429,7 @@ window.addEventListener('scroll', () => {
         text: 'Reservasi berhasil diajukan, silahkan melanjutkan konfirmasi ke WhatsApp.',
         confirmButtonText: 'Lanjutkan ke WhatsApp',
     }).then(() => {
-        window.location.href = 'https://wa.me/6281231231231';
+        window.location.href = 'https://wa.me/6288258093431';
     });
     <?php endif; ?>
 
