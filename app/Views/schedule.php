@@ -42,7 +42,7 @@
             </div>
 
             <!-- Grid Kalender -->
-            <div id="calendar" class="grid grid-cols-7 gap-px bg-gray-200 min-h-[80vh]"></div>
+            <div id="calendar" class="grid grid-cols-7 gap-px bg-gray-200 min-h-[60vh] md:min-h-[80vh]"></div>
         </div>
         <p class="italic">Note: Klik pada tanggal untuk melakukan reservasi.</p>
     </div>
@@ -50,7 +50,7 @@
 
 <!-- Modal Form Reservasi -->
 <div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-30">
-    <div class="bg-gray-200 p-6 rounded-lg shadow-lg w-full max-w-lg">
+    <div class="bg-gray-200 p-4 md:p-6 rounded-lg shadow-lg w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold mb-2">Form Reservasi</h2>
         <p id="selectedDateText" class="text-gray-700 mb-4"></p>
         <form id="reservationForm" action="/reservasi/store" method="post" enctype="multipart/form-data" autocomplete="off">

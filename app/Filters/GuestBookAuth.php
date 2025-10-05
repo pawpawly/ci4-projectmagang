@@ -5,7 +5,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
 
-class GuestbookAuth implements FilterInterface
+class GuestBookAuth implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
