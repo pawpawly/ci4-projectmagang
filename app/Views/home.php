@@ -16,7 +16,7 @@
     </section>
         
     <!-- Section Icon -->
-    <section class="py-5 mx-2 md:mx-10" style="background-image: url('<?= base_url('pict/sasiranganabu2.png'); ?>'); background-size: cover; background-position: center;">
+    <section class="py-5 mx-0 md:mx-0" style="background-image: url('<?= base_url('pict/sasiranganabu2.png'); ?>'); background-size: cover; background-position: center;">
         <div class="container mx-auto text-center">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="group flex justify-center">
