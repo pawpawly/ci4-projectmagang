@@ -34,6 +34,9 @@ class Koleksi extends BaseController
             $this->koleksiModel->where('koleksi.ID_KKOLEKSI', $kategoriId);
         }
 
+        // Urutkan berdasarkan ID_KOLEKSI terbesar (terbaru) sebelum paginate
+        $this->koleksiModel->orderBy('koleksi.ID_KOLEKSI', 'DESC');
+
         $kategori = $this->kategoriKoleksiModel->findAll();
         $koleksi = $this->koleksiModel->paginate(8);
         $pager = $this->koleksiModel->pager;

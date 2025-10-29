@@ -138,7 +138,8 @@
                             <div class="relative w-full h-full">
                                 <img src="<?= base_url('uploads/koleksi/' . $item['FOTO_KOLEKSI']); ?>" 
                                      alt="<?= esc($item['NAMA_KOLEKSI']); ?>" 
-                                     class="absolute inset-0 w-full h-full object-cover">
+                                     class="absolute inset-0 w-full h-full object-cover"
+                                     onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'%23e5e7eb\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%236b7280\' font-family=\'Arial\' font-size=\'24\'%3EImage not found%3C/text%3E%3C/svg%3E'">
                             </div>
                             <!-- Deskripsi Koleksi (Hanya di Slide Tengah) -->
                             <div class="deskripsi hidden absolute inset-0 flex flex-col justify-center p-6 bg-white opacity-0 transition-opacity duration-300">
@@ -171,49 +172,6 @@
 
 
 
-
-
-
-<!-- ==================================================================================== -->
-
-    <!-- Section Event -->
-    <section class="py-12 bg-gray-200">
-        <div class="container mx-auto px-8 relative">
-            <div class="relative text-center">
-                <h2 class="event-overlay">EVENT</h2>
-                <h2 class="event-heading text-4xl font-bold mb-8 hover:grayscale-0 hover:scale-105 duration-300 ease-in-out">Event</h2>
-            </div>
-
-            <?php if (!empty($events) && is_array($events)): ?>
-                <div class="swiper-container" style="padding: 0 200px;">
-                    <!-- Wrapper -->
-                    <div class="swiper-wrapper">
-                        <?php foreach ($events as $event): ?>
-                            <div class="swiper-slide">
-                            <div class="event-item flex-none w-full md:w-[200px] bg-white shadow-md rounded-lg snap-center p-4 select-none">
-                                    <img 
-                                        src="<?= base_url('uploads/poster/' . $event['FOTO_EVENT']); ?>" 
-                                        alt="<?= esc($event['NAMA_EVENT']); ?>" 
-                                        class="rounded-md h-40 w-full object-cover">
-                                    <h3 class="text-lg font-semibold truncate mt-2"><?= esc($event['NAMA_EVENT']); ?></h3>
-                                    <p class="text-gray-600"><?= formatTanggalIndonesia($event['TANGGAL_EVENT']); ?></p>
-                                    <p class="text-sm text-gray-500 mt-2 truncate"><?= esc($event['DEKSRIPSI_EVENT']); ?></p>
-                                    <a href="<?= site_url('event/' . $event['ID_EVENT']); ?>"
-                                    class="block mt-4 bg-gray-900 text-yellow-500 text-center font-semibold py-2 rounded-lg hover:bg-gray-600 text-xs">
-                                    Baca Selengkapnya
-                                    </a>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php else: ?>
-                <p class="text-center text-gray-500 text-lg mt-2">Tidak ada event yang tersedia saat ini.</p>
-            <?php endif; ?>
-        </div>
-    </section>
-
-
     <!-- Forum Section -->
     <section class="py-12 bg-gray-200">
         <div class="container mx-auto px-8">
@@ -232,7 +190,8 @@
                                 <a href="<?= site_url('berita/' . $item['ID_BERITA']); ?>"> 
                                     <img src="<?= base_url('uploads/berita/' . $item['FOTO_BERITA']); ?>"
                                          alt="<?= esc($item['NAMA_BERITA']); ?>"
-                                         class="forum-image transition-transform duration-300 ease-in-out hover:scale-105">
+                                         class="forum-image transition-transform duration-300 ease-in-out hover:scale-105"
+                                         onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'%23e5e7eb\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%236b7280\' font-family=\'Arial\' font-size=\'24\'%3EImage not found%3C/text%3E%3C/svg%3E'">
                                     <!-- Inner Shadow -->
                                     <div class="absolute inset-0 pointer-events-none rounded-lg" 
                                          style="box-shadow: inset 0 -30px 100px -10px rgba(0, 0, 0, 0.5);"></div>
@@ -569,6 +528,7 @@
 
 .line-clamp-3 {
     display: -webkit-box;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -630,9 +590,6 @@ window.addEventListener('scroll', () => {
         1024: { slidesPerView: 4 },  // Jika lebar layar >= 1024px, tampilkan 4 slide
     },
 });
-
-
-
                 // Custom controls for swiper
                 const leftArrow = document.querySelector('.swiper-button-prev');
                 const rightArrow = document.querySelector('.swiper-button-next');
@@ -728,7 +685,8 @@ window.addEventListener('scroll', () => {
         let isDown = false;
         let startX;
         let scrollLeft;
-
+        const eventCarousel = document.querySelector('.swiper-wrapper');
+        if (eventCarousel) {
         eventCarousel.addEventListener('mousedown', (e) => {
             isDown = true;
             eventCarousel.classList.add('grabbing');
@@ -753,11 +711,14 @@ window.addEventListener('scroll', () => {
             const walk = (x - startX) * 2; // Sensitivitas drag
             eventCarousel.scrollLeft = scrollLeft - walk;
         });
+        }
 
         // Sembunyikan Tombol Navigasi jika Tidak Ada Event
         if (!eventCarousel || eventCarousel.children.length === 0) {
-            leftArrow.style.display = 'none';
-            rightArrow.style.display = 'none';
+            const leftArrow = document.querySelector('.swiper-button-prev');
+            const rightArrow = document.querySelector('.swiper-button-next');
+            if (leftArrow) leftArrow.style.display = 'none';
+            if (rightArrow) rightArrow.style.display = 'none';
             document.addEventListener('DOMContentLoaded', function () {
         // Inisialisasi Swiper untuk Event Section
         const swiperEvent = new Swiper('.swiper-container', {
@@ -785,6 +746,7 @@ window.addEventListener('scroll', () => {
         
         // Fetch data ketika tahun diganti untuk bagian lain
         const yearSelector = document.getElementById('yearSelector');
+        if (yearSelector) {
         yearSelector.addEventListener('change', function () {
             const selectedYear = yearSelector.value;
             fetch(`<?= site_url('superadmin/statistik/bulanan') ?>?year=${selectedYear}`)
@@ -800,18 +762,23 @@ window.addEventListener('scroll', () => {
                 })
                 .catch(error => console.error('Error:', error));
         });
+        }
 
         // Untuk Tombol Navigasi
         const leftArrow = document.getElementById('leftArrow');
         const rightArrow = document.getElementById('rightArrow');
 
-        leftArrow.addEventListener('click', () => {
-            swiperEvent.slidePrev();  // Swipe ke slide sebelumnya
-        });
+        if (leftArrow) {
+            leftArrow.addEventListener('click', () => {
+                swiperEvent.slidePrev();  // Swipe ke slide sebelumnya
+            });
+        }
 
-        rightArrow.addEventListener('click', () => {
-            swiperEvent.slideNext();  // Swipe ke slide berikutnya
-        });
+        if (rightArrow) {
+            rightArrow.addEventListener('click', () => {
+                swiperEvent.slideNext();  // Swipe ke slide berikutnya
+            });
+        }
 
         // Mencegah aksi default pada mouse drag untuk penggeser
         let isDown = false;
@@ -819,6 +786,7 @@ window.addEventListener('scroll', () => {
         let scrollLeft;
 
         const eventCarousel = document.querySelector('.swiper-wrapper'); // Mengambil container slide
+        if (eventCarousel) {
         eventCarousel.addEventListener('mousedown', (e) => {
             isDown = true;
             eventCarousel.classList.add('grabbing');
@@ -843,6 +811,7 @@ window.addEventListener('scroll', () => {
             const walk = (x - startX) * 2; // Sensitivitas drag
             eventCarousel.scrollLeft = scrollLeft - walk;
         });
+        }
     });
 
     }
@@ -867,6 +836,7 @@ window.addEventListener('scroll', () => {
     ];
 
     // Prevent default untuk drag
+    if (carouselInner) {
     carouselInner.addEventListener('mousedown', (e) => {
         e.preventDefault(); // Mencegah default behavior
         startDrag(e);
@@ -885,6 +855,7 @@ window.addEventListener('scroll', () => {
     carouselInner.addEventListener('mouseleave', () => {
         if (isDragging) endDrag();
     });
+    }
 
     function startDrag(event) {
         isDragging = true;
@@ -935,13 +906,17 @@ window.addEventListener('scroll', () => {
     }
 
     // Auto Slide
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % slideCount;
-        setPositionByIndex();
-    }, 5000);
+    if (carouselInner && slideCount > 0) {
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % slideCount;
+            setPositionByIndex();
+        }, 5000);
+    }
 
     // Inisialisasi awal
-    updateCarousel(currentIndex);
+    if (carouselInner) {
+        updateCarousel(currentIndex);
+    }
     </script>
 
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
